@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html class="dark" lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>ATE - Aether Trinity Evolution</title>
+    
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#5b13ec",
+                        "primary-glow": "#7c42ff",
+                        "primary-light": "#7c42f2",
+                        "primary-dark": "#3e0ca6",
+                        "secondary": "#06b6d4",
+                        "gold": "#D4AF37",
+                        "gold-light": "#F9E58A",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#0a0a0c", 
+                        "surface-dark": "#16161a",
+                        "surface-highlight": "#23232a",
+                    },
+                    fontFamily: {
+                        "display": ["Manrope", "Noto Sans TC", "sans-serif"],
+                        "body": ["Noto Sans TC", "Manrope", "sans-serif"],
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "2xl": "2.5rem", "3xl": "3rem", "full": "9999px"
+                    },
+                    backgroundImage: {
+                        'aurora': 'radial-gradient(circle at 50% 0%, rgba(91, 19, 236, 0.15) 0%, rgba(6, 182, 212, 0.05) 40%, rgba(10, 10, 12, 0) 70%)',
+                        'glass-gradient': 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+                    },
+                    boxShadow: {
+                        "glow": "0 0 20px rgba(91, 19, 236, 0.3)",
+                        "gold-glow": "0 0 15px -3px rgba(255, 215, 0, 0.4)",
+                        "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
+                    }
+                },
+            },
+        }
+    </script>
+    
+    <style>
+        body { min-height: max(884px, 100dvh); -webkit-tap-highlight-color: transparent; }
+        .glass-panel { background: rgba(22, 22, 26, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        .glass-card { background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); transition: transform 0.2s ease, border-color 0.2s ease; }
+        .glass-card:active { transform: scale(0.98); border-color: rgba(91, 19, 236, 0.3); }
+        .text-glow { text-shadow: 0 0 20px rgba(91, 19, 236, 0.5); }
+        .text-gradient-gold { background: linear-gradient(to right, #D4AF37, #F9E58A, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        @keyframes float { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
+        .animate-blob { animation: float 10s infinite ease-in-out; }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .calendar-day-active { background: linear-gradient(135deg, #5b13ec 0%, #4a0db8 100%); box-shadow: 0 4px 12px rgba(91, 19, 236, 0.3); }
+        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .app-view { display: none; }
+        .app-view.active { display: flex; animation: fadeIn 0.3s ease-out forwards; }
+    </style>
+</head>
+
+<body class="bg-background-dark text-slate-100 font-display selection:bg-primary selection:text-white overflow-x-hidden min-h-screen relative">
+    
+    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div class="absolute top-[-10%] left-[20%] w-[80%] h-[50%] bg-primary/20 rounded-full blur-[120px] animate-blob"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-secondary/10 rounded-full blur-[100px] animate-blob" style="animation-delay: 2s;"></div>
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
+    </div>
+
+    <div class="relative z-10 mx-auto w-full max-w-md min-h-screen bg-black/20 shadow-2xl flex flex-col">
+
+        <main id="view-hub" class="app-view active flex-col flex-1 pb-24">
+            <header class="pt-14 pb-6 px-6 flex flex-col gap-6">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-center gap-4">
+                        <div class="relative group" onclick="clearData()" title="點擊清除數據 (Demo用)">
+                            <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
+                            <div class="relative h-16 w-16 rounded-full border-2 border-white/20 overflow-hidden bg-surface-dark cursor-pointer">
+                                <img alt="Profile" class="object-cover w-full h-full" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM1YjEzZWMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4="/>
+                            </div>
+                            <div class="absolute -bottom-1 -right-1 bg-surface-dark rounded-full p-1 border border-white/10">
+                                <span class="material-symbols-outlined text-yellow-400 text-[18px] filled">workspace_premium</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold tracking-tight text-white leading-none mb-1">覺醒女神</h1>
+                            <p class="text-slate-400 text-xs font-medium tracking-wide">LEVEL 42</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <section class="px-6 pb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                        <span class="material-symbols-outlined text-primary text-[20px]">spa</span>
+                        三位一體概覽 (Trinity)
+                    </h2>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl">accessibility_new</span></div>
+                        <div class="flex justify-between items-start mb-4 relative z-10">
+                            <div class="flex items-center gap-3">
+                                <div class="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+                                    <span class="material-symbols-outlined text-rose-400">fitness_center</span>
+                                </div>
+                                <div><h3 class="text-base font-bold text-white">Body (身)</h3><p class="text-xs text-slate-400">今日完成度</p></div>
+                            </div>
+                            <div class="flex flex-col items-end"><span id="hub-body-pct" class="text-xl font-display font-bold text-white">0%</span></div>
+                        </div>
+                        <div class="flex items-center gap-3 relative z-10">
+                            <div class="flex-1 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+                                <div id="hub-body-bar" class="h-full bg-rose-500 w-[0%] rounded-full shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-all duration-500"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+
+        <main id="view-body" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-4 space-y-6">
+            <header class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Aether Trinity Evolution</p>
+                    <h1 class="text-2xl font-bold text-white tracking-tight">身體進化</h1>
+                </div>
+            </header>
+
+            <section class="relative overflow-hidden rounded-2xl glass-panel p-6 shadow-glow border border-primary/20">
+                <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="flex items-start justify-between mb-6">
+                    <div>
+                        <h2 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-blue-400">water_drop</span>水分攝入</h2>
+                        <p class="text-sm text-slate-400">Target: 1900ml</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="water-current" class="text-3xl font-bold text-white tracking-tight">0</span>
+                        <span class="text-sm text-slate-400 font-medium ml-1">ml</span>
+                    </div>
+                </div>
+                <div class="relative h-4 w-full bg-slate-800/50 rounded-full overflow-hidden mb-6">
+                    <div id="water-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-primary w-[0%] rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500"></div>
+                </div>
+                <div class="flex gap-3 relative z-10">
+                    <button onclick="addWater(250)" class="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 text-white border border-primary/30 h-12 rounded-xl font-semibold text-sm backdrop-blur-sm">
+                        <span class="material-symbols-outlined text-base">add</span> 250ml
+                    </button>
+                    <button onclick="addWater(500)" class="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white shadow-glow h-12 rounded-xl font-semibold text-sm">
+                        <span class="material-symbols-outlined text-base">add</span> 500ml
+                    </button>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="text-lg font-bold text-white mb-4 px-1 flex items-center gap-2">
+                    <span class="w-1 h-5 bg-primary rounded-full"></span>今日任務 (Daily Tasks)
+                </h3>
+                <div class="space-y-3">
+                    <div id="task-1" class="group flex items-center gap-4 p-4 rounded-2xl glass-panel border border-slate-800 transition-all duration-300">
+                        <div class="task-icon flex-shrink-0 h-12 w-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-transparent transition-all">
+                            <span class="material-symbols-outlined">fitness_center</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="task-title font-bold text-white text-lg transition-all">晨間伸展 (10m)</h4>
+                        </div>
+                        <button onclick="toggleTask(1)" class="task-btn h-10 w-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all z-10">
+                            <span class="material-symbols-outlined">done</span>
+                        </button>
+                    </div>
+                    <div id="task-2" class="group flex items-center gap-4 p-4 rounded-2xl glass-panel border border-slate-800 transition-all duration-300">
+                        <div class="task-icon flex-shrink-0 h-12 w-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-transparent transition-all">
+                            <span class="material-symbols-outlined">restaurant</span>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="task-title font-bold text-white text-lg transition-all">DIAAS 酸奶早餐</h4>
+                        </div>
+                        <button onclick="toggleTask(2)" class="task-btn h-10 w-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all z-10">
+                            <span class="material-symbols-outlined">done</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+
+        <main id="view-mind" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-4">
+            <header class="flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-bold tracking-wide text-white">心智與靈魂</h1>
+            </header>
+            <div class="bg-surface-dark rounded-2xl p-6 relative overflow-hidden border border-white/5 shadow-glass">
+                <p class="text-slate-400 text-sm">此頁面結構已建立，目前資料持久化主要展示於 Body 與 Calendar 模組中。</p>
+            </div>
+        </main>
+
+        <main id="view-calendar" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-2">
+            <header class="flex items-center justify-between px-4 pb-4">
+                <div class="flex flex-col">
+                    <h1 class="text-2xl font-bold tracking-wide text-white">進化日歷</h1>
+                    <span class="text-xs text-primary font-medium tracking-widest uppercase opacity-80">Evolution</span>
+                </div>
+            </header>
+
+            <div class="px-4 pb-2">
+                <div class="flex items-center justify-between rounded-2xl bg-surface-dark border border-white/5 p-2 shadow-glass">
+                    <button onclick="changeMonth(-1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
+                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
+                    </button>
+                    <div id="calendar-month-title" class="text-center"></div>
+                    <button onclick="changeMonth(1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
+                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="px-4 pb-6 mt-4">
+                <div class="w-full glass-panel rounded-2xl p-4">
+                    <div class="grid grid-cols-7 mb-2">
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">日</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">一</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">二</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">三</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">四</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">五</div>
+                        <div class="py-2 text-center text-xs font-medium text-slate-500">六</div>
+                    </div>
+                    <div id="calendar-grid" class="grid grid-cols-7 gap-y-2 gap-x-1 mt-2"></div>
+                </div>
+            </div>
+        </main>
+
+
+        <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-6 pt-2 pointer-events-none">
+            <div class="glass-panel mx-auto w-[90%] max-w-[380px] rounded-full flex justify-between items-center py-3 px-6 shadow-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/10 relative pointer-events-auto">
+                <button onclick="switchView('hub')" class="nav-btn flex flex-col items-center gap-1 group w-12" data-target="hub">
+                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
+                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-100 transition-opacity"></div>
+                        <span class="material-symbols-outlined text-[24px] text-primary-glow filled transition-colors" id="icon-hub">dashboard</span>
+                    </div>
+                    <span class="text-[10px] font-bold text-white transition-colors" id="text-hub">Hub</span>
+                </button>
+                <button onclick="switchView('body')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="body">
+                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
+                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
+                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-body">accessibility_new</span>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-body">Body</span>
+                </button>
+                <button onclick="switchView('body')" class="relative -top-5 bg-gradient-to-br from-primary to-primary-glow h-14 w-14 flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(91,19,236,0.4)] border-4 border-[#0a0a0c] group hover:scale-105 transition-transform flex-shrink-0">
+                    <span class="material-symbols-outlined text-white text-[28px]">add</span>
+                </button>
+                <button onclick="switchView('mind')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="mind">
+                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
+                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
+                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-mind">psychology</span>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-mind">Mind</span>
+                </button>
+                <button onclick="switchView('calendar')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="calendar">
+                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
+                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
+                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-calendar">calendar_month</span>
+                    </div>
+                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-calendar">Evo</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        // --- 1. State Management (LocalStorage) ---
+        const STORAGE_KEY = 'ate_evolution_data';
+        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+        
+        // 取得今日格式化字串 (e.g., "2026-02-19")
+        function getTodayKey() {
+            const today = new Date();
+            // 注意時區偏移，確保格式固定為 YYYY-MM-DD
+            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        }
+
+        const todayKey = getTodayKey();
+
+        // 初始化今日資料結構
+        if (!appState[todayKey]) {
+            appState[todayKey] = {
+                water: 0,
+                tasks: { 1: false, 2: false },
+                isPerfect: false
+            };
+            saveState();
+        }
+
+        function saveState() {
+            // 檢查是否達成完美一天 (水 >= 1900 且 任務皆完成)
+            const todayData = appState[todayKey];
+            const tasksDone = todayData.tasks[1] && todayData.tasks[2];
+            todayData.isPerfect = (todayData.water >= 1900 && tasksDone);
+            
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
+            updateUI();
+        }
+
+        // 清除數據 (Demo 用，綁定在 Hub 的大頭貼上)
+        function clearData() {
+            if(confirm("確定要清除所有 Demo 數據嗎？")) {
+                localStorage.removeItem(STORAGE_KEY);
+                location.reload();
+            }
+        }
+
+        // --- 2. Interaction Functions ---
+        const WATER_TARGET = 1900;
+
+        function addWater(amount) {
+            appState[todayKey].water += amount;
+            saveState();
+        }
+
+        function toggleTask(taskId) {
+            appState[todayKey].tasks[taskId] = !appState[todayKey].tasks[taskId];
+            saveState();
+        }
+
+        // --- 3. UI Update Logic ---
+        function updateUI() {
+            const todayData = appState[todayKey];
+            
+            // 水分 UI
+            const waterEl = document.getElementById('water-current');
+            const waterBar = document.getElementById('water-bar');
+            if(waterEl && waterBar) {
+                waterEl.innerText = todayData.water;
+                let pct = Math.min((todayData.water / WATER_TARGET) * 100, 100);
+                waterBar.style.width = `${pct}%`;
+            }
+
+            // 任務 UI
+            [1, 2].forEach(id => {
+                const taskDiv = document.getElementById(`task-${id}`);
+                if (!taskDiv) return;
+                
+                const isDone = todayData.tasks[id];
+                const iconBox = taskDiv.querySelector('.task-icon');
+                const btn = taskDiv.querySelector('.task-btn');
+                const title = taskDiv.querySelector('.task-title');
+
+                if (isDone) {
+                    taskDiv.classList.add('border-primary/50', 'shadow-glow');
+                    iconBox.classList.replace('bg-slate-800', 'bg-primary/20');
+                    iconBox.classList.replace('text-slate-400', 'text-primary');
+                    iconBox.classList.add('border-primary/30');
+                    btn.classList.replace('bg-slate-700', 'bg-primary');
+                    btn.innerHTML = '<span class="material-symbols-outlined">check</span>';
+                    title.classList.add('text-primary');
+                } else {
+                    taskDiv.classList.remove('border-primary/50', 'shadow-glow');
+                    iconBox.classList.replace('bg-primary/20', 'bg-slate-800');
+                    iconBox.classList.replace('text-primary', 'text-slate-400');
+                    iconBox.classList.remove('border-primary/30');
+                    btn.classList.replace('bg-primary', 'bg-slate-700');
+                    btn.innerHTML = '<span class="material-symbols-outlined">done</span>';
+                    title.classList.remove('text-primary');
+                }
+            });
+
+            // Hub 總結進度條
+            const hubPct = document.getElementById('hub-body-pct');
+            const hubBar = document.getElementById('hub-body-bar');
+            if (hubPct && hubBar) {
+                let totalTasks = 2;
+                let completedTasks = (todayData.tasks[1] ? 1 : 0) + (todayData.tasks[2] ? 1 : 0);
+                let waterScore = Math.min(todayData.water / WATER_TARGET, 1) * 0.5; // 水佔 50%
+                let taskScore = (completedTasks / totalTasks) * 0.5; // 任務佔 50%
+                let finalPct = Math.round((waterScore + taskScore) * 100);
+                
+                hubPct.innerText = `${finalPct}%`;
+                hubBar.style.width = `${finalPct}%`;
+            }
+
+            // 確保日曆視圖若開啟中，也要重繪
+            if (document.getElementById('view-calendar').classList.contains('active')) {
+                renderCalendar();
+            }
+        }
+
+        // --- 4. Dynamic Calendar Engine (Reading from Storage) ---
+        let currentCalDate = new Date(); 
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar-grid');
+            const title = document.getElementById('calendar-month-title');
+            if (!grid || !title) return;
+
+            const year = currentCalDate.getFullYear();
+            const month = currentCalDate.getMonth();
+            
+            const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
+            const engMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            
+            title.innerHTML = `
+                <h2 class="text-xl font-bold text-white">${year}年 ${monthNames[month]}</h2>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-medium mt-1">${engMonths[month]}</p>
+            `;
+
+            const firstDay = new Date(year, month, 1).getDay(); 
+            const daysInMonth = new Date(year, month + 1, 0).getDate(); 
+            const todayDateObj = new Date();
+            const isViewingCurrentMonth = todayDateObj.getFullYear() === year && todayDateObj.getMonth() === month;
+
+            let html = '';
+            for (let i = 0; i < firstDay; i++) {
+                html += `<div class="aspect-square"></div>`;
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = isViewingCurrentMonth && day === todayDateObj.getDate();
+                
+                // 檢查 LocalStorage 是否有這天的完美紀錄
+                const dayData = appState[dateString];
+                const isPerfect = dayData && dayData.isPerfect;
+                
+                if (isToday) {
+                    html += `
+                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl border-2 border-primary ${isPerfect ? 'bg-primary text-white shadow-glow' : 'bg-primary/10 text-white shadow-glow'}">
+                        <span class="text-sm font-bold">${day}</span>
+                        ${isPerfect ? '<span class="absolute bottom-1.5 h-1 w-1 rounded-full bg-white"></span>' : ''}
+                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary blur-xl opacity-40 -z-10"></div>
+                    </button>`;
+                } else if (isPerfect) {
+                    html += `
+                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl calendar-day-active text-white shadow-glow">
+                        <span class="text-sm font-bold">${day}</span>
+                        <span class="absolute bottom-1.5 h-1 w-1 rounded-full bg-white/50"></span>
+                    </button>`;
+                } else {
+                    // 若這天有資料但未達標，稍微提亮
+                    const hasData = dayData && (dayData.water > 0 || dayData.tasks[1] || dayData.tasks[2]);
+                    html += `
+                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl hover:bg-white/5 transition-colors ${hasData ? 'bg-surface-dark border border-white/5' : ''}">
+                        <span class="text-sm font-medium ${hasData ? 'text-slate-300' : 'text-slate-500'}">${day}</span>
+                    </button>`;
+                }
+            }
+            grid.innerHTML = html;
+        }
+
+        function changeMonth(offset) {
+            currentCalDate.setMonth(currentCalDate.getMonth() + offset);
+            renderCalendar();
+        }
+
+        // --- 5. Routing Logic ---
+        function switchView(viewId) {
+            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+            document.getElementById('view-' + viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.add('opacity-60');
+                btn.classList.remove('opacity-100');
+                let target = btn.getAttribute('data-target');
+                let icon = document.getElementById('icon-' + target);
+                let text = document.getElementById('text-' + target);
+                let glow = btn.querySelector('.active-glow');
+                
+                icon.classList.remove('text-primary-glow', 'filled');
+                icon.classList.add('text-slate-300');
+                text.classList.remove('font-bold', 'text-white');
+                text.classList.add('font-medium', 'text-slate-400');
+                glow.classList.replace('opacity-100', 'opacity-0');
+            });
+
+            let activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
+            if(activeBtn) {
+                activeBtn.classList.remove('opacity-60');
+                activeBtn.classList.add('opacity-100');
+                document.getElementById('icon-' + viewId).classList.replace('text-slate-300', 'text-primary-glow');
+                document.getElementById('icon-' + viewId).classList.add('filled');
+                document.getElementById('text-' + viewId).classList.replace('text-slate-400', 'text-white');
+                document.getElementById('text-' + viewId).classList.replace('font-medium', 'font-bold');
+                activeBtn.querySelector('.active-glow').classList.replace('opacity-0', 'opacity-100');
+            }
+
+            if(viewId === 'calendar') renderCalendar();
+        }
+
+        // Init App
+        updateUI();
+        switchView('hub'); 
+    </script>
+</body>
+</html>
