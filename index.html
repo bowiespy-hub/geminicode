@@ -1,1010 +1,895 @@
-<!doctype html>
-<html lang="zh-Hant">
+<!DOCTYPE html>
+<html lang="zh-Hant" class="dark">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-  <title>ATE｜Aether Trinity Evolution</title>
-
-  <!-- Premium Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-
-  <style>
-    :root {
-      /* Smart Spatial Theme */
-      --bg: #090a0f;
-      --panel: rgba(30, 33, 45, 0.55);
-      --panel-hover: rgba(40, 45, 60, 0.7);
-      --card-solid: rgba(255, 255, 255, 0.03);
-      --line: rgba(255, 255, 255, 0.08);
-      --line-bright: rgba(255, 255, 255, 0.15);
-      
-      --text: #f8fafc;
-      --text-muted: #94a3b8;
-
-      /* Brand Colors */
-      --primary: #f97316;     
-      --primary-glow: #fb923c;
-      --accent: #2dd4bf;      
-      --gold: #fbbf24;
-      --danger: #ef4444;
-      --success: #10b981;
-
-      --shadow-glass: 0 24px 40px -12px rgba(0, 0, 0, 0.5);
-      --shadow-glow: 0 8px 30px rgba(249, 115, 22, 0.3);
-      
-      --radius-sm: 18px;
-      --radius-md: 28px;
-      --radius-lg: 36px;
-      --maxw: 430px;
-    }
-
-    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
-    html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); overflow: hidden; }
-    body { font-family: "Manrope", "Noto Sans TC", sans-serif; color: var(--text); }
-
-    /* --- Animated Ambient Background --- */
-    .bg-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-    .orb-1 {
-      position: absolute; top: -10%; left: 60%; width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(249, 115, 22, 0.12) 0%, transparent 60%);
-      border-radius: 50%; filter: blur(60px);
-      animation: floatOrb 15s ease-in-out infinite alternate;
-    }
-    .orb-2 {
-      position: absolute; bottom: -20%; left: -10%; width: 500px; height: 500px;
-      background: radial-gradient(circle, rgba(45, 212, 191, 0.08) 0%, transparent 60%);
-      border-radius: 50%; filter: blur(60px);
-      animation: floatOrb 20s ease-in-out infinite alternate-reverse;
-    }
-    @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-20px, 20px) scale(1.05); } }
-
-    .grain {
-      position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
-
-    .app-container { position: relative; max-width: var(--maxw); margin: 0 auto; height: 100%; display: flex; flex-direction: column; z-index: 10; }
-    .scroll-area { flex: 1; overflow-y: auto; padding: 24px 20px 140px 20px; scrollbar-width: none; }
-    .scroll-area::-webkit-scrollbar { display: none; }
-
-    /* --- Subtle Animations (No Bounce) --- */
-    .stagger-1 { animation: slideUpFade 0.4s ease-out 0.05s both; opacity: 0; }
-    .stagger-2 { animation: slideUpFade 0.4s ease-out 0.10s both; opacity: 0; }
-    .stagger-3 { animation: slideUpFade 0.4s ease-out 0.15s both; opacity: 0; }
-    .stagger-4 { animation: slideUpFade 0.4s ease-out 0.20s both; opacity: 0; }
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+    <title>ATE - Aether Trinity Evolution</title>
     
-    @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round|Material+Icons+Outlined" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
 
-    /* --- Glass & Bento Cards --- */
-    .bento-card {
-      background: var(--panel); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border: 1px solid var(--line); border-radius: var(--radius-md);
-      padding: 24px; display: flex; flex-direction: column; justify-content: space-between;
-      box-shadow: var(--shadow-glass); position: relative; overflow: hidden;
-      transition: all 0.2s ease-out;
-    }
-    .bento-card::before {
-      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
-    }
-    .press-card:active { transform: scale(0.98); background: var(--panel-hover); }
-    .grid-bento { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .col-span-2 { grid-column: span 2; }
-
-    /* --- Typography & Tags --- */
-    h1, h2, h3, h4 { margin: 0; font-weight: 800; letter-spacing: 0.3px; }
-    h2 { font-size: 26px; margin-bottom: 4px; line-height: 1.2; }
-    .greeting { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2;}
-    .date-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-    .val-huge { font-size: 40px; font-weight: 300; font-feature-settings: "tnum"; letter-spacing: -1px; }
-
-    .c-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
-    .c-val { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
-    .c-sub { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
     
-    .pill-tag {
-      display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 12px; border-radius: 99px;
-      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
-      background: rgba(255,255,255,0.06); border: 1px solid var(--line); line-height: 1;
-    }
-    .pill-tag.amber { background: rgba(249, 115, 22, 0.15); color: var(--primary-glow); border-color: rgba(249, 115, 22, 0.3); }
-    .pill-tag.cyan { background: rgba(45, 212, 191, 0.15); color: var(--accent); border-color: rgba(45, 212, 191, 0.3); }
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Manrope"', '"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                        display: ['"Playfair Display"', '"Noto Sans TC"', 'serif'],
+                    },
+                    colors: {
+                        primary: "#D4AF37", 
+                        "primary-glow": "#F9E076",
+                        obsidian: "#0A0A0F",
+                        "obsidian-light": "#1A1A24",
+                        "indigo-deep": "#0F0F2D",
+                        "indigo-glow": "#4B0082",
+                        "background-dark": "#050508",
+                        "violet-glow": "#8B5CF6",
+                        "accent-purple": "#A894F8",
+                        "accent-blue": "#4a5cd8",
+                    },
+                    backgroundImage: {
+                        'glass-gradient': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
+                        'gold-gradient': 'linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
+                        'bar-gradient': 'linear-gradient(90deg, #F59E0B 0%, #FCD34D 50%, #FFFBEB 100%)',
+                    },
+                    boxShadow: {
+                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
+                        'glow-gold': '0 0 20px rgba(212, 175, 55, 0.4)',
+                        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.4)',
+                        'glow-purple': '0 0 15px rgba(168, 85, 247, 0.4)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'fadeIn': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
+                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                    }
+                },
+            },
+        };
+    </script>
 
-    /* Editable Name */
-    .editable-name {
-      display: inline-block; border-bottom: 1px dashed transparent; transition: 0.2s;
-      outline: none; min-width: 50px;
-    }
-    .editable-name:focus { border-bottom: 1px dashed var(--primary-glow); color: var(--primary-glow); }
+    <style>
+        body {
+            background-color: #050508;
+            background-image: 
+                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
+                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
+                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+            background-attachment: fixed;
+            color: #E2E8F0;
+            overflow-x: hidden;
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    /* --- Progress Rings & Bars --- */
-    .prog-bar-bg { height: 6px; background: rgba(0,0,0,0.4); border-radius: 99px; overflow: hidden; margin-top: 12px; }
-    .prog-bar-fill { height: 100%; background: linear-gradient(90deg, #f97316, #f59e0b); border-radius: 99px; transition: width 0.6s ease-out; box-shadow: var(--shadow-glow); }
-    .prog-bar-cyan { background: linear-gradient(90deg, #0ea5e9, #2dd4bf); box-shadow: 0 0 15px rgba(45,212,191,0.4); }
+        .app-container { position: relative; max-width: 430px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; z-index: 10; background: rgba(0,0,0,0.2); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
+        .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 120px; scrollbar-width: none; }
+        .scroll-area::-webkit-scrollbar { display: none; }
 
-    /* --- Top Header --- */
-    .top-bar { display: flex; justify-content: space-between; align-items: center; }
-    .top-avatar { 
-      width: 48px; height: 48px; border-radius: 16px; overflow: hidden; 
-      border: 1px solid var(--line-bright); cursor: pointer; transition: transform 0.2s ease-out;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
-    }
-    .top-avatar:active { transform: scale(0.95); }
-    .top-avatar img { width: 100%; height: 100%; object-fit: cover; }
+        /* Glass Utilities */
+        .glass-panel {
+            background: rgba(20, 20, 30, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+        .press:active { transform: scale(0.97); }
+        
+        .glass-modal {
+            background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        }
 
-    /* --- Task Widgets --- */
-    .widget {
-      background: var(--card-solid); border: 1px solid var(--line);
-      border-radius: var(--radius-md); padding: 18px;
-      display: flex; flex-direction: column; justify-content: space-between;
-      min-height: 140px; position: relative; transition: 0.2s ease-out;
-    }
-    .widget.active { background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.3); }
-    .w-top { display: flex; justify-content: space-between; align-items: flex-start; }
-    .w-icon { 
-      width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.05); 
-      display: flex; align-items: center; justify-content: center; color: var(--text-muted);
-      transition: 0.2s; line-height: 1;
-    }
-    .widget.active .w-icon { background: var(--primary); color: #fff; box-shadow: var(--shadow-glow); }
-    .w-title { font-size: 15px; font-weight: 700; margin-top: auto; padding-top: 16px; }
-    .w-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
-    
-    .w-actions { display: flex; gap: 8px; align-items: center; }
-    .w-btn {
-      width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--line-bright);
-      background: rgba(255,255,255,0.05); color: #fff; display: flex; align-items: center; justify-content: center;
-      cursor: pointer; transition: 0.2s ease-out; backdrop-filter: blur(10px); line-height: 1;
-    }
-    .w-btn:active { transform: scale(0.95); }
-    .widget.active .w-btn { border-color: transparent; background: transparent; color: var(--primary); }
+        /* Glow Text */
+        .text-glow { text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+        .gold-text-glow { text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
 
-    /* --- Inputs --- */
-    .input-glass {
-      width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--line);
-      color: white; padding: 18px; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px;
-      outline: none; transition: border-color 0.2s, background 0.2s; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .input-glass:focus { border-color: var(--primary-glow); background: rgba(249, 115, 22, 0.05); }
-    textarea.input-glass { resize: none; min-height: 110px; line-height: 1.6; }
+        /* SVG Timer */
+        .timer-circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 6; }
+        .timer-circle-progress {
+            fill: none; stroke: url(#gradientStroke); stroke-width: 6; stroke-linecap: round;
+            stroke-dasharray: 880; stroke-dashoffset: 880; /* Will be set by JS */
+            transition: stroke-dashoffset 1s linear; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
+        }
 
-    /* --- Buttons --- */
-    .btn-solid {
-      width: 100%; border: none; background: var(--line-bright); color: white;
-      padding: 14px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700;
-      cursor: pointer; transition: 0.2s ease-out; display: flex; align-items: center; justify-content: center; gap: 6px;
-      line-height: 1;
-    }
-    .btn-solid.accent { background: var(--primary); box-shadow: var(--shadow-glow); }
-    .btn-solid:active { transform: scale(0.98); }
-    
-    .btn-icon {
-      width: 44px; height: 44px; border-radius: 50%; border: none;
-      display: flex; align-items: center; justify-content: center;
-      background: rgba(255,255,255,0.1); color: white; cursor: pointer; transition: 0.2s ease-out; line-height: 1;
-    }
-    .btn-icon:active { transform: scale(0.98); }
+        /* Nav */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 12px 16px 24px 16px; z-index: 50; display: flex; justify-content: space-around;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #64748b; font-size: 10px; cursor: pointer; transition: 0.3s;
+        }
+        .nav-item.active { color: #D4AF37; }
+        .nav-item .material-icons-round { font-size: 24px; transition: 0.3s; }
+        .nav-item.active .material-icons-round { filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)); transform: translateY(-2px); }
 
-    /* --- Switch --- */
-    .switch {
-      width: 52px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 99px;
-      position: relative; transition: 0.2s ease-out; cursor: pointer; border: 1px solid var(--line);
-    }
-    .switch::after {
-      content: ''; position: absolute; left: 4px; top: 4px; width: 22px; height: 22px;
-      background: var(--text-muted); border-radius: 50%; transition: 0.2s ease-out;
-    }
-    .switch.on { background: var(--primary); border-color: var(--primary-glow); box-shadow: var(--shadow-glow); }
-    .switch.on::after { transform: translateX(20px); background: #fff; }
+        /* Modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.open { opacity: 1; pointer-events: auto; }
+        .modal-sheet { width: 100%; max-width: 430px; border-radius: 32px 32px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-top: 1px solid rgba(255,255,255,0.1); }
+        .modal-overlay.open .modal-sheet { transform: translateY(0); }
 
-    /* --- Bottom Nav --- */
-    .nav-wrap {
-      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
-      width: calc(100% - 48px); max-width: 360px; z-index: 100;
-    }
-    .nav-pill {
-      background: rgba(15, 18, 25, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-      border-radius: 99px; border: 1px solid var(--line);
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 8px 16px; box-shadow: 0 24px 50px rgba(0,0,0,0.8);
-    }
-    .nav-item {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 56px; height: 56px; border-radius: 50%;
-      color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s ease-out;
-      line-height: 1;
-    }
-    .nav-item.active { color: var(--primary-glow); transform: translateY(-2px); }
-    .nav-item .material-symbols-outlined { font-size: 24px; margin-bottom: 4px; transition: 0.2s ease-out; display: block; }
-    .nav-item.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; filter: drop-shadow(0 0 10px var(--primary)); }
-    .nav-item:active { transform: scale(0.95); }
+        /* XP FX */
+        .xp-float { position: fixed; z-index: 999; pointer-events: none; font-weight: 800; font-family: 'Playfair Display', serif; font-size: 24px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); transform: translate(-50%, -50%); opacity: 0; animation: floatUp 1s ease-out forwards; }
+        .xp-plus { color: #F9E076; }
+        .xp-minus { color: #ef4444; }
+        @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.9); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
 
-    /* --- Modals --- */
-    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-out; }
-    .modal-overlay.open { opacity: 1; pointer-events: auto; }
-    .modal-sheet { background: var(--bg); width: 100%; max-width: var(--maxw); border-radius: 40px 40px 0 0; padding: 32px 24px 40px; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.4s ease-out; border-top: 1px solid var(--line); box-shadow: 0 -20px 50px rgba(0,0,0,0.6); }
-    .modal-overlay.open .modal-sheet { transform: translateY(0); }
-    .modal-sheet::-webkit-scrollbar { display:none; }
+        /* Custom Inputs */
+        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 16px; font-family: inherit; font-size: 14px; outline: none; transition: 0.3s; }
+        input:focus, textarea:focus { border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
 
-    /* --- Modal Detail Grid --- */
-    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
-    .d-card { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; }
-    .d-card-full { grid-column: span 2; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; }
-    .d-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-    .d-row:last-child { border-bottom: none; }
-    .d-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
-    .d-icon.ok { background: rgba(45,212,191,0.2); color: var(--accent); }
-    .d-icon.no { background: rgba(255,255,255,0.1); color: var(--muted); }
-    .d-text { font-size: 14px; line-height: 1.6; color: #fff; margin-top: 8px; font-style: italic; opacity: 0.9;}
-
-    /* --- Calendar Grid --- */
-    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 16px; }
-    .cal-day {
-      aspect-ratio: 1; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-      background: var(--card-solid); font-weight: 700; font-size: 14px; color: var(--text-muted);
-      position: relative; border: 1px solid var(--line); cursor: pointer; transition: 0.2s ease-out;
-    }
-    .cal-day:active { transform: scale(0.95); }
-    .cal-day.perfect { background: linear-gradient(135deg, var(--primary), #ea580c); color: white; box-shadow: var(--shadow-glow); border: none; }
-    .cal-day.today { border-color: var(--accent); color: white; }
-    .cal-day.selected { outline: 2px solid white; outline-offset: 2px; background: rgba(255,255,255,0.1); color: white; }
-
-    /* --- XP FX --- */
-    .xp-float { position: fixed; z-index: 999; pointer-events: none; font-weight: 800; font-size: 18px; letter-spacing: 0.5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transform: translate(-50%, -50%); opacity: 0; animation: floatUp 0.8s ease-out forwards; }
-    .xp-plus { color: var(--primary-glow); }
-    .xp-minus { color: var(--danger); }
-    @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.9); } 15% { opacity: 1; transform: translate(-50%, -15px) scale(1.05); } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1); } }
-
-    .view-section { display: none; opacity: 0; }
-    .view-section.active { display: flex; opacity: 1; }
-
-    /* Toast */
-    .toast{ position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-10px); z-index:90; padding:12px 20px; border-radius:99px; border:1px solid var(--line-bright); background:rgba(30,33,45,.95); backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size:13px; font-weight:800; letter-spacing:1px; text-transform:uppercase; opacity:0; pointer-events:none; transition: all 0.3s ease-out; color: white; }
-    .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
-
-  </style>
+        .view-section { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
+        .view-section.active { display: flex; }
+    </style>
 </head>
 <body>
 
-  <div class="bg-fx">
-    <div class="orb-1"></div>
-    <div class="orb-2"></div>
-  </div>
-  <div class="grain"></div>
-  <canvas id="confetti" style="position:fixed; inset:0; pointer-events:none; z-index:300;"></canvas>
-  <div class="toast" id="toast">Saved</div>
+    <div class="app-container">
+        <!-- DYNAMIC CONTENT -->
+        <div id="main-view" class="scroll-area"></div>
 
-  <div class="app-container">
-    
-    <div id="main-view" class="scroll-area"></div>
-
-    <div class="nav-wrap">
-      <div class="nav-pill">
-        <div class="nav-item active" onclick="router('hub')" id="nav-hub">
-          <span class="material-symbols-outlined">dashboard</span><span>Hub</span>
+        <!-- NAVIGATION -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="router('hub')" id="nav-hub">
+                <span class="material-icons-round">rocket_launch</span><span>進化</span>
+            </div>
+            <div class="nav-item" onclick="router('body')" id="nav-body">
+                <span class="material-icons-round">fitness_center</span><span>身體</span>
+            </div>
+            <div class="nav-item" onclick="router('mind')" id="nav-mind">
+                <span class="material-icons-round">psychology</span><span>心智</span>
+            </div>
+            <div class="nav-item" onclick="router('cal')" id="nav-cal">
+                <span class="material-icons-round">calendar_today</span><span>日曆</span>
+            </div>
         </div>
-        <div class="nav-item" onclick="router('body')" id="nav-body">
-          <span class="material-symbols-outlined">vital_signs</span><span>Body</span>
-        </div>
-        <div class="nav-item" onclick="router('mind')" id="nav-mind">
-          <span class="material-symbols-outlined">psychology</span><span>Mind</span>
-        </div>
-        <div class="nav-item" onclick="router('cal')" id="nav-cal">
-          <span class="material-symbols-outlined">calendar_month</span><span>History</span>
-        </div>
-      </div>
     </div>
 
-  </div>
-
-  <!-- MODAL: TIMER -->
-  <div class="modal-overlay" id="timer-modal">
-    <div class="modal-sheet">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-        <div class="pill-tag amber"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">timer</span> Focus Session</div>
-        <button class="btn-icon press" style="width:36px; height:36px;" onclick="closeModal('timer-modal')">
-          <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">close</span>
-        </button>
-      </div>
-      <h2 id="timer-title" style="text-align:center; font-size:28px;">Task</h2>
-      <div class="val-huge" style="font-size:72px; text-align:center; margin:30px 0; color:var(--text);" id="timer-display">00:00</div>
-      
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-        <button class="btn-solid accent" id="timer-toggle-btn" onclick="toggleTimerState()">Start</button>
-        <button class="btn-solid" onclick="resetTimer()">Reset</button>
-      </div>
+    <!-- MODAL: TIMER -->
+    <div class="modal-overlay" id="timer-modal">
+        <div class="modal-sheet glass-modal relative overflow-hidden">
+            <div class="absolute -top-20 -right-20 w-64 h-64 bg-violet-glow/20 rounded-full blur-[80px]"></div>
+            
+            <div class="flex justify-between items-center mb-8 relative z-10">
+                <div class="text-xs tracking-widest text-gray-400 uppercase font-bold" id="timer-label">FOCUS SESSION</div>
+                <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="closeModal('timer-modal')">
+                    <span class="material-icons-round text-sm">close</span>
+                </button>
+            </div>
+            
+            <h2 id="timer-title" class="text-center text-2xl font-display text-white mb-8 relative z-10">Task</h2>
+            
+            <div class="relative w-64 h-64 mx-auto mb-10 flex items-center justify-center relative z-10">
+                <div class="absolute inset-0 rounded-full border border-violet-500/10 shadow-[0_0_40px_rgba(139,92,246,0.1)]"></div>
+                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 300 300">
+                    <defs>
+                        <linearGradient id="gradientStroke" x1="0%" x2="100%" y1="0%" y2="0%">
+                            <stop offset="0%" style="stop-color:#8B5CF6; stop-opacity:1"></stop>
+                            <stop offset="50%" style="stop-color:#D4AF37; stop-opacity:1"></stop>
+                            <stop offset="100%" style="stop-color:#8B5CF6; stop-opacity:1"></stop>
+                        </linearGradient>
+                    </defs>
+                    <circle class="timer-circle-bg" cx="150" cy="150" r="140"></circle>
+                    <circle id="timer-svg-prog" class="timer-circle-progress" cx="150" cy="150" r="140"></circle>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <div class="text-6xl font-light text-white font-display tracking-tighter tabular-nums drop-shadow-lg" id="timer-display">00:00</div>
+                </div>
+            </div>
+            
+            <div class="flex gap-4 relative z-10">
+                <button class="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2" id="timer-toggle-btn" onclick="toggleTimerState()">
+                    <span class="material-icons-round" id="timer-icon">play_arrow</span>
+                    <span id="timer-text">開始</span>
+                </button>
+                <button class="w-16 bg-white/10 text-white rounded-2xl flex items-center justify-center press" onclick="resetTimer()">
+                    <span class="material-icons-round">refresh</span>
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- MODAL: DAY DETAIL -->
-  <div class="modal-overlay" id="day-modal">
-    <div class="modal-sheet">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-        <div class="pill-tag cyan"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">history</span> Timeline History</div>
-        <button class="btn-icon press" style="width:36px; height:36px;" onclick="closeModal('day-modal')">
-          <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">close</span>
-        </button>
-      </div>
-      <h2 id="day-modal-title" style="margin-bottom:24px; font-size:32px;">Date</h2>
-      <div id="day-modal-content"></div>
-      <button class="btn-solid" style="margin-top:32px; background:rgba(249, 115, 22, 0.1); color:var(--primary-glow); border:1px solid var(--primary-glow)" onclick="setActiveDayFromModal()">Edit This Day (補登此日)</button>
+    <!-- MODAL: DAY DETAIL -->
+    <div class="modal-overlay" id="day-modal">
+        <div class="modal-sheet glass-modal">
+            <div class="flex justify-between items-center mb-6">
+                <h2 id="day-modal-title" class="text-2xl font-display text-primary gold-text-glow">Date</h2>
+                <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="closeModal('day-modal')">
+                    <span class="material-icons-round text-sm">close</span>
+                </button>
+            </div>
+            <div id="day-modal-content" class="space-y-4"></div>
+            <button class="w-full mt-6 py-4 rounded-xl border border-primary/50 text-primary font-bold tracking-wide press bg-primary/5 hover:bg-primary/10 transition-colors" onclick="setActiveDayFromModal()">
+                編輯此日紀錄 (補登)
+            </button>
+        </div>
     </div>
-  </div>
 
-  <script>
-    /* =========================================
-       ATE V15 - ULTIMATE ZERO-FLICKER ENGINE
-    ========================================= */
-    const DB_KEY = 'ATE_PRO_V15'; 
-    const WATER_TARGET = 1900;
-    
-    const META = {
-      squat: { title: "Squats", xp: 60, icon: "fitness_center", type: "timer", dur: 15*60 },
-      resist: { title: "Resistance", xp: 80, icon: "exercise", type: "timer", dur: 30*60 },
-      read: { title: "Deep Reading", xp: 70, icon: "menu_book", type: "timer", dur: 20*60 },
-      breakfast: { title: "DIAAS Yogurt", xp: 30, icon: "restaurant", type: "check" },
-      devotion: { title: "Devotion", xp: 60, icon: "spa", type: "timer", dur: 10*60 },
-      bowel: { xp: 20 },
-      notes: { growth: 40, brand: 40, scripture: 30, spirit: 50, journal: 30 },
-      waterGoal: 100 
-    };
-
-    let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
-    let activeDate = getTodayStr(); 
-    let timerObj = { id: null, rem: 0, total: 0, interval: null, running: false };
-    let isNavigating = false; // Flag to control enter animations
-
-    // --- DB UTILS ---
-    function getTodayStr() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-    }
-
-    function initDB() {
-      if (!db.settings) db.settings = { userName: "覺醒女神" };
-      if (!db.gamify) db.gamify = { combo: 1, lastActive: 0 };
-      if (!db.logs) db.logs = {};
-    }
-
-    function initDate(dateStr) {
-      if (!db.logs[dateStr]) {
-        db.logs[dateStr] = {
-          water: 0, bowel: false,
-          tasks: { squat: false, resist: false, read: false, breakfast: false, devotion: false },
-          notes: { growth: "", brand: "", scripture: "", spirit: "", journal: "" }
+    <script>
+        /* =========================================
+           ATE V16 - OBSIDIAN ULTIMATE ENGINE
+           - Seamless Vanilla JS
+           - Stateless XP & Combo
+           - Premium UI Mappings
+        ========================================= */
+        const DB_KEY = 'ATE_OBSIDIAN_V16';
+        const WATER_TARGET = 1900;
+        
+        const META = {
+            squat: { title: "大師深蹲 (15m)", xp: 60, icon: "fitness_center", type: "timer", dur: 15*60 },
+            resist: { title: "阻力訓練 (30m)", xp: 80, icon: "exercise", type: "timer", dur: 30*60 },
+            breakfast: { title: "DIAAS 早餐", xp: 30, icon: "restaurant", type: "check" },
+            read: { title: "深度閱讀 (20m)", xp: 70, icon: "menu_book", type: "timer", dur: 20*60 },
+            devotion: { title: "靜默靈修 (10m)", xp: 60, icon: "spa", type: "timer", dur: 10*60 },
+            bowel: { xp: 20 },
+            notes: { growth: 40, brand: 40, scripture: 30, spirit: 50, journal: 30 },
+            waterGoal: 100 
         };
-        saveDB();
-      }
-    }
 
-    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+        let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
+        let activeDate = getTodayStr(); 
+        let timerObj = { id: null, rem: 0, total: 0, interval: null, running: false };
 
-    function resetAll() {
-      if(confirm("【系統重置】確定要清除所有紀錄並從 0 開始嗎？")) {
-        localStorage.removeItem(DB_KEY); location.reload();
-      }
-    }
-
-    function isPerfect(dateStr) {
-      const d = db.logs[dateStr];
-      if(!d || !d.tasks) return false;
-      return (d.water >= WATER_TARGET) && d.tasks.squat && d.tasks.resist && d.tasks.breakfast;
-    }
-
-    // --- GAMIFICATION ENGINE ---
-    function calcStreak() {
-      let streak = 0;
-      const today = new Date();
-      for (let i=0; i<365; i++) {
-        const checkDate = new Date(today);
-        checkDate.setDate(today.getDate() - i);
-        const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
-        
-        const d = db.logs[dateStr];
-        let isActive = false;
-        if (d) {
-           const tasksDone = Object.values(d.tasks).some(v => v);
-           const notesWritten = Object.values(d.notes).some(v => v.trim() !== "");
-           isActive = (d.water > 0) || tasksDone || notesWritten || d.bowel;
+        function getTodayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         }
+
+        function initDB() {
+            if (!db.settings) db.settings = { userName: "覺醒女神" };
+            if (!db.gamify) db.gamify = { combo: 1, lastActive: 0 };
+            if (!db.logs) db.logs = {};
+        }
+
+        function initDate(dateStr) {
+            if (!db.logs[dateStr]) {
+                db.logs[dateStr] = {
+                    water: 0, bowel: false,
+                    tasks: { squat: false, resist: false, read: false, breakfast: false, devotion: false },
+                    notes: { growth: "", brand: "", scripture: "", spirit: "", journal: "" }
+                };
+                saveDB();
+            }
+        }
+
+        function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+        function resetAll() {
+            if(confirm("【系統重置】確定要清除所有紀錄並從 0 開始嗎？")) {
+                localStorage.removeItem(DB_KEY); location.reload();
+            }
+        }
+
+        function isPerfect(dateStr) {
+            const d = db.logs[dateStr];
+            if(!d || !d.tasks) return false;
+            return (d.water >= WATER_TARGET) && d.tasks.squat && d.tasks.resist && d.tasks.breakfast;
+        }
+
+        // --- XP & STREAK ---
+        function calcStreak() {
+            let streak = 0;
+            const today = new Date();
+            for (let i=0; i<365; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() - i);
+                const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
+                
+                const d = db.logs[dateStr];
+                let isActive = false;
+                if (d) {
+                    const tasksDone = Object.values(d.tasks).some(v => v);
+                    const notesWritten = Object.values(d.notes).some(v => v.trim() !== "");
+                    isActive = (d.water > 0) || tasksDone || notesWritten || d.bowel;
+                }
+                if (isActive) streak++;
+                else if (i > 0) break;
+            }
+            return streak;
+        }
+
+        function calcTotalXP() {
+            let total = 0;
+            Object.keys(db.logs).forEach(date => {
+                const d = db.logs[date];
+                if(!d || !d.tasks) return; 
+                
+                if(d.tasks.squat) total += META.squat.xp;
+                if(d.tasks.resist) total += META.resist.xp;
+                if(d.tasks.read) total += META.read.xp;
+                if(d.tasks.breakfast) total += META.breakfast.xp;
+                if(d.tasks.devotion) total += META.devotion.xp;
+                if(d.bowel) total += META.bowel.xp;
+                
+                if(d.notes.growth?.trim()) total += META.notes.growth;
+                if(d.notes.brand?.trim()) total += META.notes.brand;
+                if(d.notes.scripture?.trim()) total += META.notes.scripture;
+                if(d.notes.spirit?.trim()) total += META.notes.spirit;
+                if(d.notes.journal?.trim()) total += META.notes.journal;
+                
+                if(d.water >= WATER_TARGET) total += META.waterGoal;
+                total += Math.floor(d.water / 500) * 10; 
+            });
+            return total;
+        }
+
+        function updateName(newName) {
+            if(newName.trim() !== "") {
+                db.settings.userName = newName.trim();
+                saveDB();
+            }
+        }
+
+        // --- ACTIONS (Stateless) ---
+        function actionWrapper(fn, event, isPositiveAction) {
+            const oldXP = calcTotalXP();
+            const now = Date.now();
+            
+            if (isPositiveAction) {
+                if (now - db.gamify.lastActive <= 5 * 60 * 1000) db.gamify.combo = Math.min(db.gamify.combo + 1, 5); 
+                else db.gamify.combo = 1;
+                db.gamify.lastActive = now;
+            }
+
+            fn();
+            saveDB();
+            
+            const newXP = calcTotalXP();
+            const diff = newXP - oldXP;
+            
+            if(diff !== 0 && event && event.currentTarget) {
+                const rect = event.currentTarget.getBoundingClientRect();
+                showFloatingXP(diff, rect.left + rect.width / 2, rect.top, db.gamify.combo);
+            }
+            refreshUI(); 
+        }
+
+        function modWater(amount, event) {
+            if (db.logs[activeDate].water + amount < 0) return;
+            actionWrapper(() => { db.logs[activeDate].water += amount; }, event, amount > 0);
+        }
+
+        function toggleBowel(event) {
+            const willBeTrue = !db.logs[activeDate].bowel;
+            actionWrapper(() => { db.logs[activeDate].bowel = willBeTrue; }, event, willBeTrue);
+        }
+
+        function toggleTask(id, event) {
+            const willBeTrue = !db.logs[activeDate].tasks[id];
+            actionWrapper(() => { db.logs[activeDate].tasks[id] = willBeTrue; }, event, willBeTrue);
+        }
+
+        function saveNote(type, val) {
+            const wasEmpty = db.logs[activeDate].notes[type].trim() === "";
+            const isEmpty = val.trim() === "";
+            actionWrapper(() => { db.logs[activeDate].notes[type] = val; }, null, !isEmpty);
+        }
+
+        // --- TARGETED UI REFRESH (Zero Flicker) ---
+        function updateEl(id, val) { const el = document.getElementById(id); if(el) el.innerHTML = val; }
+        function updateStyle(id, prop, val) { const el = document.getElementById(id); if(el) el.style[prop] = val; }
+
+        function refreshUI() {
+            const data = db.logs[activeDate];
+            const xp = calcTotalXP();
+            const level = Math.floor(xp / 500) + 1;
+            const xpPct = ((xp % 500) / 500) * 100;
+            const currentStreak = calcStreak();
+            
+            const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
+            const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
+            const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
+
+            // View: Hub
+            updateEl('hub-bscore', `${bScore}%`);
+            updateStyle('hub-bbar', 'width', `${bScore}%`);
+            updateEl('hub-level', level);
+            updateEl('hub-xp-text', `${xp} / ${level*500} XP`);
+            updateStyle('hub-xp-bar', 'width', `${xpPct}%`);
+            updateEl('hub-streak', currentStreak);
+
+            // View: Body
+            if(document.getElementById('water-val')) {
+                updateEl('water-val', data.water);
+                updateStyle('water-bar', 'height', `${wScore}%`); // Beaker UI
+                
+                ['squat', 'resist', 'breakfast'].forEach(id => {
+                    updateEl(`task-${id}`, buildTaskInner(id));
+                });
+                
+                const bTog = document.getElementById('bowel-toggle');
+                if(bTog) {
+                    bTog.className = `w-14 h-8 rounded-full relative transition-colors duration-300 border border-white/10 ${data.bowel ? 'bg-primary' : 'bg-gray-700/50'}`;
+                    bTog.children[0].style.transform = data.bowel ? 'translateX(24px)' : 'translateX(0)';
+                }
+            }
+
+            // View: Mind
+            if(document.getElementById('task-read')) {
+                updateEl('task-read', buildTaskInner('read'));
+                updateEl('task-devotion', buildTaskInner('devotion'));
+            }
+
+            // View: Calendar
+            if (currentView === 'cal') renderCalendarGrid();
+        }
+
+        // --- ROUTER & RENDER ---
+        let currentView = 'hub';
         
-        if (isActive) streak++;
-        else if (i > 0) break;
-      }
-      return streak;
-    }
+        function router(view) {
+            currentView = view;
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(`nav-${view}`).classList.add('active');
+            renderView();
+        }
 
-    function calcTotalXP() {
-      let total = 0;
-      Object.keys(db.logs).forEach(date => {
-        const d = db.logs[date];
-        if(!d || !d.tasks) return; 
-        
-        if(d.tasks.squat) total += META.squat.xp;
-        if(d.tasks.resist) total += META.resist.xp;
-        if(d.tasks.read) total += META.read.xp;
-        if(d.tasks.breakfast) total += META.breakfast.xp;
-        if(d.tasks.devotion) total += META.devotion.xp;
-        if(d.bowel) total += META.bowel.xp;
-        
-        if(d.notes.growth?.trim()) total += META.notes.growth;
-        if(d.notes.brand?.trim()) total += META.notes.brand;
-        if(d.notes.scripture?.trim()) total += META.notes.scripture;
-        if(d.notes.spirit?.trim()) total += META.notes.spirit;
-        if(d.notes.journal?.trim()) total += META.notes.journal;
-        
-        if(d.water >= WATER_TARGET) total += META.waterGoal;
-        total += Math.floor(d.water / 500) * 10; 
-      });
-      return total;
-    }
+        function renderView() {
+            const main = document.getElementById('main-view');
+            initDB(); initDate(activeDate);
+            const data = db.logs[activeDate];
+            const xp = calcTotalXP();
+            const level = Math.floor(xp / 500) + 1;
+            const nextXP = level * 500;
+            const xpPct = ((xp % 500) / 500) * 100;
+            const currentStreak = calcStreak();
+            
+            const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
+            const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
+            const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
+            
+            let html = '';
 
-    function updateName(newName) {
-      if(newName.trim() !== "") {
-        db.settings.userName = newName.trim();
-        saveDB();
-        toast("Profile Updated");
-      }
-    }
+            if (currentView === 'hub') {
+                html = `
+                    <header class="px-2 py-4 flex justify-between items-center relative z-10 mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="material-icons-round text-primary/80">nightlight_round</span>
+                            <span class="text-sm tracking-widest uppercase text-gray-400 font-light">ATE SYSTEM</span>
+                        </div>
+                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center overflow-hidden press" onclick="resetAll()">
+                            <img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0"/>
+                        </div>
+                    </header>
 
-    // --- ACTIONS (STATELESS) ---
-    function actionWrapper(fn, event, isPositiveAction) {
-      const oldXP = calcTotalXP();
-      const now = Date.now();
-      
-      if (isPositiveAction) {
-        if (now - db.gamify.lastActive <= 5 * 60 * 1000) db.gamify.combo = Math.min(db.gamify.combo + 1, 5); 
-        else db.gamify.combo = 1;
-        db.gamify.lastActive = now;
-      }
+                    <div class="text-center space-y-1 mb-8">
+                        <h1 class="text-3xl font-serif tracking-wide text-white text-glow">
+                            Welcome, <span class="editable-name" contenteditable="true" onblur="updateName(this.innerText)">${db.settings.userName}</span>
+                        </h1>
+                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">Evolution Checkpoint</p>
+                    </div>
 
-      fn();
-      saveDB();
-      
-      const newXP = calcTotalXP();
-      const diff = newXP - oldXP;
-      
-      if(diff !== 0 && event && event.currentTarget) {
-        const rect = event.currentTarget.getBoundingClientRect();
-        showFloatingXP(diff, rect.left + rect.width / 2, rect.top, db.gamify.combo);
-      }
-      
-      refreshUI(); // Use targeted refresh instead of full render
-    }
+                    <div class="glass-panel rounded-[32px] p-6 mb-6 relative overflow-hidden">
+                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-[50px]"></div>
+                        <div class="text-center space-y-1 relative z-10 mb-6">
+                            <h2 class="text-gray-300 text-sm font-medium tracking-wider">Evolution Level</h2>
+                            <h1 class="text-5xl font-display text-transparent bg-clip-text bg-gradient-to-b from-amber-100 to-amber-500 gold-text-glow" id="hub-level">${level}</h1>
+                        </div>
+                        <div class="w-full space-y-2 relative z-10">
+                            <div class="h-3 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 shadow-inner">
+                                <div id="hub-xp-bar" class="h-full bg-bar-gradient shadow-glow-gold rounded-full relative" style="width:${xpPct}%"></div>
+                            </div>
+                            <div class="flex justify-between text-[11px] text-gray-400 font-medium px-1 uppercase tracking-wider">
+                                <span id="hub-xp-text">${xp} / ${nextXP} XP</span>
+                                <span>Combo x${db.gamify.combo}</span>
+                            </div>
+                        </div>
+                    </div>
 
-    function modWater(amount, event) {
-      if (db.logs[activeDate].water + amount < 0) return;
-      actionWrapper(() => { db.logs[activeDate].water += amount; }, event, amount > 0);
-    }
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div class="glass-panel rounded-[24px] p-5 press cursor-pointer" onclick="router('body')">
+                            <span class="material-icons-round text-blue-400 mb-2 block">vital_signs</span>
+                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Body Score</div>
+                            <div class="text-2xl font-bold text-white mb-2" id="hub-bscore">${bScore}%</div>
+                            <div class="h-1.5 w-full bg-black/40 rounded-full overflow-hidden"><div id="hub-bbar" class="h-full bg-blue-500 rounded-full" style="width:${bScore}%"></div></div>
+                        </div>
+                        <div class="glass-panel rounded-[24px] p-5 press cursor-pointer" onclick="router('cal')">
+                            <span class="material-icons-round text-primary mb-2 block">local_fire_department</span>
+                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Current Streak</div>
+                            <div class="text-2xl font-bold text-primary gold-text-glow" id="hub-streak">${currentStreak}</div>
+                            <div class="text-[10px] text-gray-500 mt-2">Active Days</div>
+                        </div>
+                    </div>
 
-    function toggleBowel(event) {
-      const willBeTrue = !db.logs[activeDate].bowel;
-      actionWrapper(() => { db.logs[activeDate].bowel = willBeTrue; }, event, willBeTrue);
-    }
+                    <div class="glass-panel rounded-[24px] p-5 mb-6">
+                        <div class="flex items-center gap-2 mb-3">
+                            <span class="material-icons-round text-primary text-sm">edit</span>
+                            <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">Daily Journal</span>
+                        </div>
+                        <textarea class="w-full bg-black/20 border border-white/5 rounded-xl p-4 text-sm text-gray-200 resize-none h-24 focus:border-primary/50 outline-none transition-colors" placeholder="寫下今天的一句話，總結你的進化..." onblur="saveNote('journal', this.value)">${data.notes.journal}</textarea>
+                    </div>
+                `;
+            } 
+            
+            else if (currentView === 'body') {
+                html = `
+                    <header class="px-2 py-4 mb-2">
+                        <h1 class="text-3xl font-serif text-white text-glow mb-1">身體進化</h1>
+                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</p>
+                    </header>
 
-    function toggleTask(id, event) {
-      const willBeTrue = !db.logs[activeDate].tasks[id];
-      actionWrapper(() => { db.logs[activeDate].tasks[id] = willBeTrue; }, event, willBeTrue);
-      if(willBeTrue && isPerfect(activeDate)) confettiBurst();
-    }
+                    <!-- Beaker Water UI -->
+                    <div class="glass-panel rounded-[32px] p-6 mb-6">
+                        <div class="flex justify-between items-start mb-6">
+                            <div><div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Hydration</div><div class="text-3xl font-display text-white" id="water-val">${data.water}</div></div>
+                            <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-[10px] font-bold tracking-wider">${WATER_TARGET} ML</div>
+                        </div>
+                        
+                        <div class="relative w-[120px] h-[180px] mx-auto bg-white/5 rounded-[10px_10px_30px_30px] border-2 border-white/20 border-t-0 overflow-hidden mb-6 shadow-glow-blue">
+                            <div class="absolute -top-[5px] -left-[2px] -right-[2px] h-[15px] border-2 border-white/30 rounded-full z-10"></div>
+                            <div id="water-bar" class="absolute bottom-0 left-0 right-0 w-full bg-gradient-to-t from-blue-600 to-blue-400 opacity-80 transition-all duration-500" style="height:${wScore}%"></div>
+                        </div>
 
-    function saveNote(type, val) {
-      const wasEmpty = db.logs[activeDate].notes[type].trim() === "";
-      const isEmpty = val.trim() === "";
-      actionWrapper(() => { db.logs[activeDate].notes[type] = val; }, null, !isEmpty);
-      
-      if (wasEmpty && !isEmpty) toast("Note Saved +XP");
-      else if (!wasEmpty && isEmpty) toast("Note Cleared");
-      else toast("Saved");
-    }
+                        <div class="flex gap-3">
+                            <button class="flex-1 py-3 glass-panel rounded-xl text-blue-300 border border-blue-500/30 font-bold text-sm press flex justify-center items-center gap-1" onclick="modWater(250, event)"><span class="material-icons-round text-base">add</span>250</button>
+                            <button class="flex-1 py-3 bg-blue-600 text-white rounded-xl shadow-glow-blue font-bold text-sm press flex justify-center items-center gap-1" onclick="modWater(500, event)"><span class="material-icons-round text-base">add</span>500</button>
+                            <button class="w-12 py-3 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold press flex justify-center items-center" onclick="modWater(-250, event)"><span class="material-icons-round text-base">remove</span></button>
+                        </div>
+                    </div>
 
-    // --- TARGETED UI REFRESH (ZERO FLICKER) ---
-    function updateEl(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
-    function updateStyle(id, prop, val) { const el = document.getElementById(id); if(el) el.style[prop] = val; }
+                    <h3 class="text-xs text-gray-400 uppercase tracking-widest mb-3 pl-2">Training & Health</h3>
+                    <div class="space-y-3 mb-6">
+                        <div id="task-squat">${buildTaskInner('squat')}</div>
+                        <div id="task-resist">${buildTaskInner('resist')}</div>
+                        <div id="task-breakfast">${buildTaskInner('breakfast')}</div>
+                    </div>
 
-    function refreshUI() {
-      const data = db.logs[activeDate];
-      const xp = calcTotalXP();
-      const level = Math.floor(xp / 500) + 1;
-      const xpPct = ((xp % 500) / 500) * 100;
-      const currentStreak = calcStreak();
-      const perfCount = Object.keys(db.logs).filter(k => isPerfect(k)).length;
+                    <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center"><span class="material-icons-round">gastroenterology</span></div>
+                            <div><h4 class="font-bold text-white text-sm">排便確認</h4><p class="text-xs text-gray-500">Daily Health</p></div>
+                        </div>
+                        <div id="bowel-toggle" class="w-14 h-8 rounded-full relative transition-colors duration-300 cursor-pointer border border-white/10 ${data.bowel ? 'bg-primary' : 'bg-gray-700/50'}" onclick="toggleBowel(event)">
+                            <div class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-md" style="transform: ${data.bowel ? 'translateX(24px)' : 'translateX(0)'}"></div>
+                        </div>
+                    </div>
+                `;
+            }
 
-      // Update Hub
-      updateEl('hub-level', level);
-      updateEl('hub-xp-text', `${xp} / ${level*500} XP`);
-      updateStyle('hub-xp-bar', 'width', `${xpPct}%`);
-      updateEl('hub-streak', currentStreak);
-      updateEl('hub-perf-count', perfCount);
-      
-      const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
-      const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
-      const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
-      updateEl('hub-body-score', `${bScore}%`);
-      updateStyle('hub-body-bar', 'width', `${bScore}%`);
+            else if (currentView === 'mind') {
+                html = `
+                    <header class="px-2 py-4 mb-2">
+                        <h1 class="text-3xl font-serif text-white text-glow mb-1">心智與靈魂</h1>
+                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</p>
+                    </header>
 
-      // Update Body
-      updateEl('water-val', data.water);
-      updateStyle('water-progress', 'width', `${wScore}%`);
-      const bowelToggle = document.getElementById('bowel-toggle');
-      if(bowelToggle) bowelToggle.className = `switch ${data.bowel ? 'on' : ''}`;
+                    <div class="grid grid-cols-2 gap-4 mb-6">
+                        <div id="task-read">${buildTaskInner('read', true)}</div>
+                        <div id="task-devotion">${buildTaskInner('devotion', true)}</div>
+                    </div>
 
-      // Update Task Widgets Dynamically
-      ['squat', 'resist', 'breakfast', 'read', 'devotion'].forEach(id => {
-         const tWrap = document.getElementById(`task-wrap-${id}`);
-         if (tWrap) {
-             tWrap.className = `widget ${data.tasks[id] ? 'active' : ''}`;
-             tWrap.innerHTML = buildWidgetInner(id);
-         }
-      });
+                    <div class="glass-panel rounded-3xl p-5 mb-4">
+                        <h3 class="text-xs text-primary-glow uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">diamond</span> Brand Strategy</h3>
+                        <textarea class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white resize-none h-24 focus:border-primary/50 outline-none" placeholder="今日品牌策略與靈感..." onblur="saveNote('brand', this.value)">${data.notes.brand}</textarea>
+                    </div>
 
-      // Update Calendar (Safe to re-render grid as it has no inputs)
-      if (currentView === 'cal') renderCalendarGrid();
-    }
+                    <div class="glass-panel rounded-3xl p-5 mb-6">
+                        <h3 class="text-xs text-primary-glow uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">psychology</span> Growth Reflection</h3>
+                        <input type="text" class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white focus:border-primary/50 outline-none" placeholder="今天學到了什麼？" value="${data.notes.growth}" onblur="saveNote('growth', this.value)">
+                    </div>
 
-    function stag(n) { return isNavigating ? `stagger-${n}` : ''; }
+                    <div class="glass-panel rounded-3xl p-5 border-t border-gold/30">
+                        <h3 class="text-xs text-gold uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">auto_stories</span> Spirit & Scripture</h3>
+                        <input type="text" class="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-gold/50 outline-none mb-3" placeholder="Verse (e.g. 詩篇 23:1)" value="${data.notes.scripture}" onblur="saveNote('scripture', this.value)">
+                        <textarea class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white resize-none h-24 focus:border-gold/50 outline-none" placeholder="靈修心得與領受..." onblur="saveNote('spirit', this.value)">${data.notes.spirit}</textarea>
+                    </div>
+                `;
+            }
 
-    // --- ROUTER & RENDER ---
-    function router(view) {
-      currentView = view;
-      isNavigating = true;
-      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-      document.getElementById(`nav-${view}`).classList.add('active');
-      renderView();
-      isNavigating = false;
-    }
+            else if (currentView === 'cal') {
+                const d = new Date(activeDate);
+                const year = d.getFullYear(), month = d.getMonth();
+                const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"][month];
+                const daysInMonth = new Date(year, month + 1, 0).getDate();
+                const firstDay = new Date(year, month, 1).getDay();
 
-    function renderView() {
-      const main = document.getElementById('main-view');
-      initDB();
-      initDate(activeDate);
-      const data = db.logs[activeDate];
-      const xp = calcTotalXP();
-      const level = Math.floor(xp / 500) + 1;
-      const nextXP = level * 500;
-      const xpPct = ((xp % 500) / 500) * 100;
-      const currentStreak = calcStreak();
-      const perfCount = Object.keys(db.logs).filter(k => isPerfect(k)).length;
+                let gridHtml = '';
+                for(let i=0; i<firstDay; i++) gridHtml += `<div></div>`;
+                
+                for(let i=1; i<=daysInMonth; i++) {
+                    const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+                    const dayData = db.logs[dateKey];
+                    const perfect = dayData ? isPerfect(dateKey) : false;
+                    const today = dateKey === getTodayStr();
+                    const selected = dateKey === activeDate;
+                    
+                    let className = 'aspect-square rounded-xl flex items-center justify-center font-bold text-sm relative cursor-pointer press transition-colors ';
+                    if (perfect) className += 'bg-gradient-to-br from-primary to-orange-500 text-white shadow-glow-gold border-none';
+                    else if (selected) className += 'border-2 border-white bg-white/10 text-white';
+                    else if (today) className += 'border border-primary text-primary';
+                    else className += 'bg-white/5 border border-white/5 text-gray-400 hover:bg-white/10';
+                    
+                    const hasData = dayData && (dayData.water>0 || dayData.tasks.squat || dayData.notes.growth);
+                    const dot = hasData && !perfect ? `<div class="absolute bottom-1.5 w-1 h-1 bg-accent-blue rounded-full"></div>` : '';
 
-      let html = '';
+                    gridHtml += `<div class="${className}" onclick="openDayDetail('${dateKey}')">${i}${dot}</div>`;
+                }
 
-      if (currentView === 'hub') {
-        const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
-        const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
-        const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
+                html = `
+                    <header class="px-2 py-4 mb-2 text-center">
+                        <h1 class="text-3xl font-serif text-white text-glow mb-1">進化歷程</h1>
+                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">Evolution Log</p>
+                    </header>
+                    
+                    <div class="glass-panel rounded-[32px] p-6 mb-6">
+                        <div class="flex justify-between items-center mb-6">
+                            <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center press hover:bg-white/10" onclick="changeMonth(-1)"><span class="material-icons-round text-white">chevron_left</span></button>
+                            <h2 class="text-xl font-display text-white tracking-widest">${monthName} ${year}</h2>
+                            <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center press hover:bg-white/10" onclick="changeMonth(1)"><span class="material-icons-round text-white">chevron_right</span></button>
+                        </div>
+                        <div class="grid grid-cols-7 gap-2 text-center text-[10px] text-gray-500 font-bold mb-4">
+                            <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+                        </div>
+                        <div class="grid grid-cols-7 gap-2" id="cal-grid">${gridHtml}</div>
+                        <div class="text-center text-xs text-gray-500 mt-6">點擊日期查看詳細紀錄或補登</div>
+                    </div>
+                `;
+            }
 
-        html = `
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div class="top-bar ${stag(1)}">
-              <div>
-                <h1 class="greeting">Welcome, <br><span class="editable-name" contenteditable="true" onblur="updateName(this.innerText)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${db.settings.userName}</span></h1>
-                <div class="date-sub">${new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
-              </div>
-              <div class="top-avatar" onclick="resetAll()" title="Reset DB">
-                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0">
-              </div>
-            </div>
+            main.innerHTML = html;
+            main.className = `scroll-area active`; 
+        }
 
-            <div class="bento-card col-span-2 press-card ${stag(2)}" onclick="router('body')" style="background: linear-gradient(145deg, rgba(249, 115, 22, 0.12) 0%, rgba(30, 33, 45, 0.6) 100%);">
-              <span class="c-label" style="color:var(--primary-glow)">System Energy</span>
-              <div style="display:flex; justify-content:space-between; align-items:flex-end;">
-                <div><div class="c-val" id="hub-body-score">${bScore}%</div><div class="c-sub">Today's Body Metrics</div></div>
-                <span class="material-symbols-outlined" style="color:var(--primary); font-size:36px; font-variation-settings: 'FILL' 1; line-height:1;">bolt</span>
-              </div>
-              <div class="prog-bar-bg"><div class="prog-bar-fill" id="hub-body-bar" style="width: ${bScore}%"></div></div>
-            </div>
+        // --- UI BUILDERS ---
+        function buildTaskInner(id, isGrid = false) {
+            const isDone = db.logs[activeDate].tasks[id];
+            const m = META[id];
+            
+            if (isGrid) {
+                // Square format for Mind
+                return `
+                <div class="glass-panel rounded-3xl p-5 flex flex-col h-36 relative overflow-hidden transition-all duration-300 ${isDone ? 'border-primary/50 shadow-glow-gold' : ''}">
+                    ${isDone ? '<div class="absolute inset-0 bg-primary/10"></div>' : ''}
+                    <div class="relative z-10 flex justify-between items-start mb-auto">
+                        <div class="w-10 h-10 rounded-full ${isDone ? 'bg-primary text-background-dark' : 'bg-white/5 text-gray-400'} flex items-center justify-center transition-colors"><span class="material-icons-round text-xl">${m.icon}</span></div>
+                        ${m.type === 'timer' && !isDone ? `<button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="openTimer('${id}')"><span class="material-icons-round text-sm">play_arrow</span></button>` : ''}
+                    </div>
+                    <div class="relative z-10 flex items-end justify-between">
+                        <div><h4 class="font-bold text-white text-sm">${m.title.split(' ')[0]}</h4><p class="text-[10px] text-gray-400">${isDone ? 'Completed' : `+${m.xp} XP`}</p></div>
+                        <button class="w-8 h-8 rounded-full border flex items-center justify-center press transition-colors ${isDone ? 'bg-transparent border-primary text-primary' : 'border-white/20 text-gray-400 hover:bg-white/10'}" onclick="toggleTask('${id}', event)"><span class="material-icons-round text-sm">${isDone ? 'check' : 'check'}</span></button>
+                    </div>
+                </div>`;
+            }
 
-            <div class="grid-bento ${stag(3)}">
-              <div class="bento-card">
-                <span class="c-label">Level</span>
-                <div class="c-val" style="font-size:36px; margin-bottom:0;" id="hub-level">${level}</div>
-                <div class="c-sub" style="margin-top:8px" id="hub-xp-text">${xp} / ${nextXP} XP</div>
-                <div class="prog-bar-bg" style="height:4px; margin-top:8px;"><div class="prog-bar-fill prog-bar-cyan" id="hub-xp-bar" style="width: ${xpPct}%"></div></div>
-              </div>
-              <div class="bento-card press-card" onclick="router('cal')">
-                <span class="c-label">Streak</span>
-                <div style="display:flex; align-items:center; gap:8px;">
-                  <span class="material-symbols-outlined" style="color:var(--gold); font-size:32px; font-variation-settings: 'FILL' 1; line-height:1;">local_fire_department</span>
-                  <div class="c-val" style="font-size:36px; margin-bottom:0;" id="hub-streak">${currentStreak}</div>
+            // Row format for Body
+            return `
+            <div class="glass-panel rounded-2xl p-4 flex items-center justify-between transition-all duration-300 ${isDone ? 'border-primary/50 shadow-[0_0_15px_rgba(212,175,55,0.15)] bg-gradient-to-r from-primary/10 to-transparent' : ''}">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors ${isDone ? 'bg-primary text-background-dark shadow-glow-gold' : 'bg-white/5 text-gray-400'}"><span class="material-icons-round">${m.icon}</span></div>
+                    <div><h4 class="font-bold text-white text-sm ${isDone ? 'line-through opacity-70' : ''}">${m.title}</h4><p class="text-xs ${isDone ? 'text-primary' : 'text-gray-500'}">${isDone ? 'Completed' : `+${m.xp} XP`}</p></div>
                 </div>
-                <div class="c-sub" style="margin-top:8px"><span id="hub-perf-count">${perfCount}</span> Perfect Days</div>
-              </div>
-            </div>
-
-            <div class="bento-card col-span-2 press-card ${stag(4)}" onclick="router('mind')" style="flex-direction:row; align-items:center;">
-              <div><div class="c-val" style="font-size:18px">Mind & Spirit</div><div class="c-sub">Log today's strategy & thoughts</div></div>
-              <div class="w-btn" style="background:var(--card-solid)"><span class="material-symbols-outlined" style="line-height:1;">arrow_forward</span></div>
-            </div>
-
-            <div class="bento-card col-span-2 ${stag(4)}" style="border-color: rgba(45, 212, 191, 0.2);">
-              <span class="c-label" style="color:var(--accent)">DAILY JOURNAL</span>
-              <div class="c-sub" style="margin-bottom:12px;">寫下今天的一句話，總結你的進化。</div>
-              <textarea class="input-glass" style="min-height:80px;" placeholder="Today I am grateful for..." onblur="saveNote('journal', this.value)">${data.notes.journal || ''}</textarea>
-            </div>
-          </div>
-        `;
-      } 
-      
-      else if (currentView === 'body') {
-        const wPct = Math.min(data.water / WATER_TARGET * 100, 100);
-        html = `
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div class="top-bar ${stag(1)}">
-              <div><h1 class="greeting">Body</h1><div class="date-sub">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</div></div>
-            </div>
-
-            <div class="bento-card col-span-2 ${stag(2)}">
-              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-                <div><span class="c-label">Hydration</span><div class="val-huge" id="water-val">${data.water}</div></div>
-                <span class="pill-tag cyan"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">flag</span> ${WATER_TARGET} ML</span>
-              </div>
-              <div class="prog-bar-bg" style="height:12px; margin: 16px 0;"><div class="prog-bar-fill prog-bar-cyan" id="water-progress" style="width: ${wPct}%"></div></div>
-              <div style="display:flex; gap:12px;">
-                <button class="btn-solid" style="flex:1" onclick="modWater(250, event)">+ 250</button>
-                <button class="btn-solid accent" style="flex:1" onclick="modWater(500, event)">+ 500</button>
-                <button class="btn-solid" style="width:52px; padding:0; background:rgba(239, 68, 68, 0.15); color:var(--danger);" onclick="modWater(-250, event)"><span class="material-symbols-outlined" style="line-height:1;">remove</span></button>
-              </div>
-            </div>
-
-            <div class="${stag(3)}">
-              <h3 style="margin-bottom:12px;">Training</h3>
-              <div class="grid-bento">
-                <div class="widget ${data.tasks.squat ? 'active' : ''}" id="task-wrap-squat">${buildWidgetInner('squat')}</div>
-                <div class="widget ${data.tasks.resist ? 'active' : ''}" id="task-wrap-resist">${buildWidgetInner('resist')}</div>
-              </div>
-              <div class="grid-bento" style="margin-top:16px;">
-                <div class="widget ${data.tasks.breakfast ? 'active' : ''}" id="task-wrap-breakfast">${buildWidgetInner('breakfast')}</div>
-                <div class="widget ${data.bowel ? 'active' : ''}">
-                  <div class="w-top">
-                    <div class="w-icon"><span class="material-symbols-outlined" style="line-height:1;">gastroenterology</span></div>
-                    <div class="switch ${data.bowel ? 'on' : ''}" id="bowel-toggle" onclick="toggleBowel(event)"></div>
-                  </div>
-                  <div><div class="w-title">Bowel Check</div><div class="w-meta">Daily Health</div></div>
+                <div class="flex gap-2">
+                    ${m.type === 'timer' && !isDone ? `<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white press hover:bg-white/20" onclick="openTimer('${id}')"><span class="material-icons-round">play_arrow</span></button>` : ''}
+                    <button class="w-10 h-10 rounded-full border flex items-center justify-center press transition-colors ${isDone ? 'bg-transparent border-primary text-primary' : 'border-white/20 text-gray-400 hover:bg-white/10'}" onclick="toggleTask('${id}', event)"><span class="material-icons-round">${isDone ? 'undo' : 'check'}</span></button>
                 </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }
+            </div>`;
+        }
 
-      else if (currentView === 'mind') {
-        html = `
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div class="top-bar ${stag(1)}">
-              <div><h1 class="greeting">Mind & Spirit</h1><div class="date-sub">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</div></div>
-            </div>
+        // --- TIMER ---
+        function openTimer(id) {
+            const dur = META[id].dur;
+            timerObj = { id, rem: dur, total: dur, running: false, interval: null };
+            document.getElementById('timer-title').innerText = META[id].title;
+            document.getElementById('timer-modal').classList.add('open');
+            updateTimerUI();
+        }
 
-            <div class="grid-bento ${stag(2)}">
-              <div class="widget ${data.tasks.read ? 'active' : ''}" id="task-wrap-read">${buildWidgetInner('read')}</div>
-              <div class="widget ${data.tasks.devotion ? 'active' : ''}" id="task-wrap-devotion">${buildWidgetInner('devotion')}</div>
-            </div>
+        function toggleTimerState() {
+            const btn = document.getElementById('timer-toggle-btn');
+            const icon = document.getElementById('timer-icon');
+            const text = document.getElementById('timer-text');
+            
+            if (timerObj.running) {
+                clearInterval(timerObj.interval); // Zero latency
+                timerObj.running = false;
+                icon.innerText = 'play_arrow'; text.innerText = '繼續';
+                btn.className = "flex-1 bg-white/10 text-white font-bold py-4 rounded-2xl press flex items-center justify-center gap-2";
+            } else {
+                timerObj.running = true;
+                icon.innerText = 'pause'; text.innerText = '暫停';
+                btn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2";
+                
+                timerObj.interval = setInterval(() => {
+                    timerObj.rem--;
+                    updateTimerUI();
+                    if(timerObj.rem <= 0) finishTimer();
+                }, 1000);
+            }
+        }
 
-            <div class="${stag(3)}">
-              <h3 style="margin-bottom:12px;">Strategy Logs</h3>
-              <div class="bento-card col-span-2" style="padding:20px;">
-                <span class="c-label" style="color:var(--primary-glow)">Brand Strategy</span>
-                <textarea class="input-glass" placeholder="關於個人品牌的策略與靈感..." onblur="saveNote('brand', this.value)">${data.notes.brand}</textarea>
-              </div>
-            </div>
+        function updateTimerUI() {
+            const m = Math.floor(timerObj.rem / 60);
+            const s = timerObj.rem % 60;
+            document.getElementById('timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+            
+            // Update SVG Ring
+            const pct = timerObj.rem / timerObj.total;
+            const offset = 880 - (880 * pct); // 880 is dasharray
+            document.getElementById('timer-svg-prog').style.strokeDashoffset = offset;
+        }
 
-            <div class="bento-card col-span-2 ${stag(3)}" style="padding:20px;">
-              <span class="c-label" style="color:var(--primary-glow)">Growth Reflection</span>
-              <input type="text" class="input-glass" placeholder="今天學到了什麼？" value="${data.notes.growth}" onblur="saveNote('growth', this.value)">
-            </div>
+        function resetTimer() {
+            clearInterval(timerObj.interval);
+            timerObj.running = false;
+            timerObj.rem = timerObj.total;
+            const btn = document.getElementById('timer-toggle-btn');
+            const icon = document.getElementById('timer-icon');
+            const text = document.getElementById('timer-text');
+            icon.innerText = 'play_arrow'; text.innerText = '開始';
+            btn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2";
+            updateTimerUI();
+        }
 
-            <div class="${stag(4)}">
-              <h3 style="margin-bottom:12px; color:var(--gold)">Spirit</h3>
-              <div class="bento-card col-span-2" style="padding:20px; border-color:rgba(245, 158, 11, 0.2);">
-                <span class="c-label" style="color:var(--gold)">Daily Scripture</span>
-                <input type="text" class="input-glass" placeholder="Verse (e.g. Psalm 23:1)" value="${data.notes.scripture}" onblur="saveNote('scripture', this.value)" style="margin-bottom:12px;">
-                <textarea class="input-glass" placeholder="靈修心得與領受..." onblur="saveNote('spirit', this.value)">${data.notes.spirit}</textarea>
-              </div>
-            </div>
-          </div>
-        `;
-      }
+        function finishTimer() {
+            clearInterval(timerObj.interval);
+            closeModal('timer-modal');
+            const L = db.logs[activeDate];
+            if(!L.tasks[timerObj.id]) {
+                actionWrapper(() => { L.tasks[timerObj.id] = true; }, { currentTarget: document.body }, true);
+                confettiBurst();
+            }
+        }
 
-      else if (currentView === 'cal') {
-        html = `
-          <div style="display:flex; flex-direction:column; gap:20px;">
-            <div class="top-bar ${stag(1)}">
-              <div><h1 class="greeting">History</h1><div class="date-sub">Evolution Log</div></div>
-            </div>
-            <div class="bento-card col-span-2 ${stag(2)}" id="calendar-wrapper">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        `;
-        // Delay grid render slightly to ensure wrapper exists
-        setTimeout(renderCalendarGrid, 0); 
-      }
+        // --- CALENDAR MODAL (Magazine Style) ---
+        let viewingDate = null;
 
-      main.innerHTML = html;
-      main.className = `scroll-area active`; 
-    }
+        function openDayDetail(dateStr) {
+            viewingDate = dateStr;
+            const d = db.logs[dateStr] || { water: 0, bowel: false, tasks: {}, notes: {} };
+            document.getElementById('day-modal').classList.add('open');
+            
+            const [y, m, day] = dateStr.split('-');
+            document.getElementById('day-modal-title').innerText = `${m}月${day}日`;
+            
+            const t = d.tasks || {};
+            const n = d.notes || {};
 
-    // --- TARGETED COMPONENT RENDER ---
-    function buildWidgetInner(id) {
-      const isDone = db.logs[activeDate].tasks[id];
-      const m = META[id];
-      
-      let actionBtn = '';
-      if (m.type === 'timer') {
-        actionBtn = `
-          <div class="w-actions">
-            ${!isDone ? `<button class="w-btn" onclick="openTimer('${id}')"><span class="material-symbols-outlined" style="font-size:18px">play_arrow</span></button>` : ''}
-            <button class="w-btn" style="${isDone ? 'background:transparent; border:none; color:var(--primary);' : ''}" onclick="toggleTask('${id}', event)">
-              <span class="material-symbols-outlined" style="font-size:18px">${isDone ? 'check_circle' : 'check'}</span>
-            </button>
-          </div>
-        `;
-      } else {
-        actionBtn = `
-          <div class="w-actions">
-            <button class="w-btn" style="${isDone ? 'background:transparent; border:none; color:var(--primary);' : ''}" onclick="toggleTask('${id}', event)">
-              <span class="material-symbols-outlined" style="font-size:18px">${isDone ? 'check_circle' : 'check'}</span>
-            </button>
-          </div>
-        `;
-      }
+            const row = (label, isDone) => `
+                <div class="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                    <span class="text-sm text-gray-400">${label}</span>
+                    <span class="material-icons-round text-sm ${isDone ? 'text-primary' : 'text-gray-700'}">${isDone ? 'check_circle' : 'remove'}</span>
+                </div>
+            `;
+            
+            const quote = (text, placeholder) => `
+                <div class="relative bg-white/5 rounded-xl p-4 mt-2">
+                    <span class="material-icons-round text-primary/20 absolute top-2 left-2 text-3xl">format_quote</span>
+                    <p class="text-sm text-gray-200 leading-relaxed relative z-10 pl-6 italic">${escape(text) || `<span class="text-gray-600 not-italic">${placeholder}</span>`}</p>
+                </div>
+            `;
 
-      return `
-        <div class="w-top">
-          <div class="w-icon"><span class="material-symbols-outlined" style="line-height:1;">${m.icon}</span></div>
-          ${actionBtn}
-        </div>
-        <div>
-          <div class="w-title">${m.title}</div>
-          <div class="w-meta">${isDone ? 'Completed' : `+${m.xp} XP`}</div>
-        </div>
-      `;
-    }
+            const content = `
+                <div class="grid grid-cols-2 gap-3 mb-6">
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Hydration</div>
+                        <div class="text-2xl font-display text-white">${d.water || 0}<span class="text-xs ml-1 text-gray-400">ml</span></div>
+                    </div>
+                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
+                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Bowel</div>
+                        <div class="text-2xl font-bold ${d.bowel?'text-accent-blue':'text-gray-600'}">${d.bowel?'Healthy':'—'}</div>
+                    </div>
+                </div>
 
-    let calViewDate = new Date();
-    function renderCalendarGrid() {
-      const wrap = document.getElementById('calendar-wrapper');
-      if(!wrap) return;
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Training & Focus</h4>
+                    <div class="bg-white/5 rounded-2xl px-4 py-1 border border-white/5">
+                        ${row('大師深蹲', t.squat)}
+                        ${row('阻力訓練', t.resist)}
+                        ${row('DIAAS 早餐', t.breakfast)}
+                        ${row('深度閱讀', t.read)}
+                        ${row('靜默靈修', t.devotion)}
+                    </div>
+                </div>
 
-      const year = calViewDate.getFullYear();
-      const month = calViewDate.getMonth();
-      const today = new Date();
-      
-      const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"][month];
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      const firstDay = new Date(year, month, 1).getDay();
+                <div class="mb-6">
+                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Mental Logs</h4>
+                    <div class="mb-4">
+                        <span class="text-xs text-gray-400 pl-1">Brand Strategy</span>
+                        ${quote(n.brand, '無策略紀錄')}
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-400 pl-1">Growth Reflection</span>
+                        ${quote(n.growth, '無成長紀錄')}
+                    </div>
+                </div>
 
-      let gridHtml = '';
-      for(let i=0; i<firstDay; i++) gridHtml += `<div></div>`;
-      
-      for(let i=1; i<=daysInMonth; i++) {
-        const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-        const dayData = db.logs[dateKey];
-        const perfect = dayData ? isPerfect(dateKey) : false;
-        const isToday = dateKey === getTodayStr();
-        const selected = dateKey === activeDate;
-        
-        let className = 'cal-day press';
-        if (perfect) className += ' perfect';
-        else if (selected) className += ' selected';
-        else if (isToday) className += ' today';
-        
-        const hasData = dayData && (dayData.water>0 || dayData.tasks.squat || dayData.notes.growth);
-        const dot = hasData && !perfect ? `<div style="position:absolute; bottom:4px; width:4px; height:4px; background:var(--accent); border-radius:50%"></div>` : '';
+                <div>
+                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Spirit & Journal</h4>
+                    <div class="mb-4">
+                        <span class="text-xs text-gold pl-1">${escape(n.scripture) || 'Scripture'}</span>
+                        ${quote(n.spirit, '無靈修心得')}
+                    </div>
+                    <div>
+                        <span class="text-xs text-gray-400 pl-1">Daily Journal</span>
+                        ${quote(n.journal, '無每日總結')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('day-modal-content').innerHTML = content;
+        }
 
-        gridHtml += `<div class="${className}" onclick="openDayDetail('${dateKey}')">${i}${dot}</div>`;
-      }
+        function changeMonth(offset) {
+            const d = new Date(activeDate);
+            d.setMonth(d.getMonth() + offset);
+            activeDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+            renderView();
+        }
 
-      wrap.innerHTML = `
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-          <button class="btn-icon press" style="width:32px;height:32px;" onclick="changeMonth(-1)"><span class="material-symbols-outlined" style="line-height:1;">chevron_left</span></button>
-          <h2 style="margin:0; font-size:20px;">${monthName} ${year}</h2>
-          <button class="btn-icon press" style="width:32px;height:32px;" onclick="changeMonth(1)"><span class="material-symbols-outlined" style="line-height:1;">chevron_right</span></button>
-        </div>
-        <div class="cal-grid" style="color:var(--text-muted); font-size:10px; text-align:center; font-weight:800; letter-spacing:1px;">
-          <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
-        </div>
-        <div class="cal-grid">${gridHtml}</div>
-      `;
-    }
+        function setActiveDayFromModal() {
+            activeDate = viewingDate;
+            closeModal('day-modal');
+            router('body'); 
+        }
 
-    // --- ZERO-LATENCY TIMER ---
-    function openTimer(id) {
-      const dur = META[id].dur;
-      timerObj = { id, rem: dur, total: dur, running: false, interval: null };
-      document.getElementById('timer-title').innerText = META[id].title;
-      document.getElementById('timer-modal').classList.add('open');
-      updateTimerUI();
-    }
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('open');
+            if(id === 'timer-modal') clearInterval(timerObj.interval);
+        }
 
-    function toggleTimerState() {
-      const btn = document.getElementById('timer-toggle-btn');
-      if (timerObj.running) {
-        clearInterval(timerObj.interval); // INSTANT PAUSE
-        timerObj.interval = null;
-        timerObj.running = false;
-        btn.innerText = 'Resume';
-        btn.style.background = 'rgba(255,255,255,0.1)';
-      } else {
-        timerObj.running = true;
-        btn.innerText = 'Pause';
-        btn.style.background = 'var(--primary)';
-        if (timerObj.interval) clearInterval(timerObj.interval);
-        timerObj.interval = setInterval(() => {
-          timerObj.rem--;
-          updateTimerUI();
-          if(timerObj.rem <= 0) finishTimer();
-        }, 1000);
-      }
-    }
+        function escape(s){ return String(s || "").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
 
-    function updateTimerUI() {
-      const m = Math.floor(timerObj.rem / 60);
-      const s = timerObj.rem % 60;
-      document.getElementById('timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    }
+        // --- EFFECTS ---
+        function showFloatingXP(amount, x, y, combo) {
+            const el = document.createElement('div');
+            el.className = `xp-float ${amount > 0 ? 'xp-plus' : 'xp-minus'}`;
+            let text = amount > 0 ? `+${amount} XP` : `${amount} XP`;
+            if (amount > 0 && combo > 1) text += ` (Combo x${combo})`;
+            el.innerText = text;
+            el.style.left = `${x}px`; el.style.top = `${y}px`;
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 1000);
+        }
 
-    function resetTimer() {
-      clearInterval(timerObj.interval);
-      timerObj.interval = null;
-      timerObj.running = false;
-      timerObj.rem = timerObj.total;
-      document.getElementById('timer-toggle-btn').innerText = 'Start';
-      document.getElementById('timer-toggle-btn').style.background = 'var(--primary)';
-      updateTimerUI();
-    }
+        function confettiBurst() {
+            const c = document.getElementById("confetti");
+            const ctx = c.getContext("2d");
+            c.width = window.innerWidth; c.height = window.innerHeight;
+            let particles = [];
+            for(let i=0; i<50; i++) {
+                particles.push({
+                    x: c.width/2, y: c.height/2,
+                    vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15 - 5,
+                    color: `hsl(${Math.random()*40 + 30}, 100%, 60%)`, // Gold/Orange hues
+                    life: 80 + Math.random()*40
+                });
+            }
+            function draw() {
+                ctx.clearRect(0,0,c.width,c.height);
+                particles.forEach((p, i) => {
+                    p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--;
+                    ctx.fillStyle = p.color;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+                    if(p.life <= 0) particles.splice(i, 1);
+                });
+                if(particles.length > 0) requestAnimationFrame(draw);
+            }
+            draw();
+        }
 
-    function finishTimer() {
-      clearInterval(timerObj.interval);
-      closeModal('timer-modal');
-      const L = db.logs[activeDate];
-      if(!L.tasks[timerObj.id]) {
-        // Trigger completion via action wrapper for XP and visual updates
-        actionWrapper(() => { L.tasks[timerObj.id] = true; }, { currentTarget: document.body }, true);
-        confettiBurst();
-      }
-    }
+        // Init App
+        initDB();
+        initDate(activeDate);
+        router('hub');
 
-    // --- CALENDAR MODAL (Full Alignment) ---
-    let viewingDate = null;
-
-    function openDayDetail(dateStr) {
-      viewingDate = dateStr;
-      const d = db.logs[dateStr] || { water: 0, bowel: false, tasks: {}, notes: {} };
-      document.getElementById('day-modal').classList.add('open');
-      document.getElementById('day-modal-title').innerText = dateStr;
-      
-      const t = d.tasks || {};
-      const n = d.notes || {};
-
-      const dIcon = (bool) => bool ? `<div class="d-icon ok"><span class="material-symbols-outlined" style="font-size:16px; line-height:1;">check</span></div>` : `<div class="d-icon no"><span class="material-symbols-outlined" style="font-size:16px; line-height:1;">remove</span></div>`;
-
-      const content = `
-        <div class="detail-grid">
-          <div class="d-card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div class="c-label" style="margin-bottom:2px">Hydration</div>
-              <div style="font-size:18px; font-weight:800">${d.water || 0} <span style="font-size:12px;color:var(--muted)">ml</span></div>
-            </div>
-            ${d.water >= WATER_TARGET ? dIcon(true) : dIcon(false)}
-          </div>
-          <div class="d-card" style="display:flex; justify-content:space-between; align-items:center;">
-            <div>
-              <div class="c-label" style="margin-bottom:2px">Bowel</div>
-              <div style="font-size:18px; font-weight:800; color:${d.bowel?'var(--accent)':'#fff'}">${d.bowel?'Healthy':'—'}</div>
-            </div>
-            ${dIcon(d.bowel)}
-          </div>
-        </div>
-
-        <div class="d-card-full" style="margin-bottom:12px;">
-          <div class="c-label" style="margin-bottom:12px; color:var(--primary-glow)">Training & Focus</div>
-          <div class="d-row"><span class="d-label" style="margin:0;">Squats</span> ${dIcon(t.squat)}</div>
-          <div class="d-row"><span class="d-label" style="margin:0;">Resistance</span> ${dIcon(t.resist)}</div>
-          <div class="d-row"><span class="d-label" style="margin:0;">Breakfast</span> ${dIcon(t.breakfast)}</div>
-          <div class="d-row"><span class="d-label" style="margin:0;">Deep Reading</span> ${dIcon(t.read)}</div>
-          <div class="d-row"><span class="d-label" style="margin:0;">Devotion</span> ${dIcon(t.devotion)}</div>
-        </div>
-        
-        <div class="d-card-full" style="margin-bottom:12px;">
-          <div class="c-label" style="margin-bottom:12px; color:var(--accent)">Mental Logs</div>
-          <div style="margin-bottom:16px;">
-            <span class="d-label" style="font-size:11px; margin-bottom:4px;">BRAND STRATEGY</span>
-            <div class="d-text">${escape(n.brand) || '—'}</div>
-          </div>
-          <div>
-            <span class="d-label" style="font-size:11px; margin-bottom:4px;">GROWTH REFLECTION</span>
-            <div class="d-text">${escape(n.growth) || '—'}</div>
-          </div>
-        </div>
-
-        <div class="d-card-full">
-          <div class="c-label" style="margin-bottom:12px; color:var(--gold)">Spirit & Journal</div>
-          <div style="margin-bottom:16px;">
-            <span class="d-label" style="font-size:11px; margin-bottom:4px;">SCRIPTURE</span>
-            <div class="d-text" style="color:var(--gold)">${escape(n.scripture) || '—'}</div>
-          </div>
-          <div style="margin-bottom:16px;">
-            <span class="d-label" style="font-size:11px; margin-bottom:4px;">REFLECTION</span>
-            <div class="d-text">${escape(n.spirit) || '—'}</div>
-          </div>
-          <div>
-            <span class="d-label" style="font-size:11px; margin-bottom:4px;">DAILY JOURNAL</span>
-            <div class="d-text">${escape(n.journal) || '—'}</div>
-          </div>
-        </div>
-      `;
-      document.getElementById('day-modal-content').innerHTML = content;
-    }
-
-    function changeMonth(offset) {
-      calViewDate.setMonth(calViewDate.getMonth() + offset);
-      renderCalendarGrid();
-    }
-
-    function setActiveDayFromModal() {
-      activeDate = viewingDate;
-      closeModal('day-modal');
-      router('body'); 
-    }
-
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('open');
-      if(id === 'timer-modal') clearInterval(timerObj.interval);
-    }
-
-    function escape(s){ return String(s || "").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
-
-    // --- EFFECTS ---
-    function showFloatingXP(amount, x, y, combo) {
-      const el = document.createElement('div');
-      el.className = `xp-float ${amount > 0 ? 'xp-plus' : 'xp-minus'}`;
-      let text = amount > 0 ? `+${amount} XP` : `${amount} XP`;
-      if (amount > 0 && combo > 1) text += ` (x${combo})`;
-      el.innerText = text;
-      el.style.left = `${x}px`; el.style.top = `${y}px`;
-      document.body.appendChild(el);
-      setTimeout(() => el.remove(), 800);
-    }
-
-    function confettiBurst() {
-      const c = document.getElementById("confetti");
-      const ctx = c.getContext("2d");
-      c.width = window.innerWidth; c.height = window.innerHeight;
-      let particles = [];
-      for(let i=0; i<40; i++) {
-        particles.push({
-          x: c.width/2, y: c.height/2,
-          vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12 - 5,
-          color: `hsl(${Math.random()*60 + 15}, 100%, 60%)`, 
-          life: 80 + Math.random()*40
-        });
-      }
-      function draw() {
-        ctx.clearRect(0,0,c.width,c.height);
-        particles.forEach((p, i) => {
-          p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--;
-          ctx.fillStyle = p.color;
-          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
-          if(p.life <= 0) particles.splice(i, 1);
-        });
-        if(particles.length > 0) requestAnimationFrame(draw);
-      }
-      draw();
-    }
-
-    // Init App
-    initDB();
-    initDate(activeDate);
-    router('hub');
-
-  </script>
+    </script>
 </body>
 </html>
