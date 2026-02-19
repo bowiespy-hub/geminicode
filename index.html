@@ -1,863 +1,1010 @@
-<!DOCTYPE html>
-<html class="dark" lang="zh-Hant">
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>ATE - Aether Trinity Evolution</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <title>ATE｜Aether Trinity Evolution</title>
+
+  <!-- Premium Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+
+  <style>
+    :root {
+      /* Smart Spatial Theme */
+      --bg: #090a0f;
+      --panel: rgba(30, 33, 45, 0.55);
+      --panel-hover: rgba(40, 45, 60, 0.7);
+      --card-solid: rgba(255, 255, 255, 0.03);
+      --line: rgba(255, 255, 255, 0.08);
+      --line-bright: rgba(255, 255, 255, 0.15);
+      
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+
+      /* Brand Colors */
+      --primary: #f97316;     
+      --primary-glow: #fb923c;
+      --accent: #2dd4bf;      
+      --gold: #fbbf24;
+      --danger: #ef4444;
+      --success: #10b981;
+
+      --shadow-glass: 0 24px 40px -12px rgba(0, 0, 0, 0.5);
+      --shadow-glow: 0 8px 30px rgba(249, 115, 22, 0.3);
+      
+      --radius-sm: 18px;
+      --radius-md: 28px;
+      --radius-lg: 36px;
+      --maxw: 430px;
+    }
+
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none; }
+    html, body { height: 100%; margin: 0; padding: 0; background: var(--bg); overflow: hidden; }
+    body { font-family: "Manrope", "Noto Sans TC", sans-serif; color: var(--text); }
+
+    /* --- Animated Ambient Background --- */
+    .bg-fx { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .orb-1 {
+      position: absolute; top: -10%; left: 60%; width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(249, 115, 22, 0.12) 0%, transparent 60%);
+      border-radius: 50%; filter: blur(60px);
+      animation: floatOrb 15s ease-in-out infinite alternate;
+    }
+    .orb-2 {
+      position: absolute; bottom: -20%; left: -10%; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(45, 212, 191, 0.08) 0%, transparent 60%);
+      border-radius: 50%; filter: blur(60px);
+      animation: floatOrb 20s ease-in-out infinite alternate-reverse;
+    }
+    @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(-20px, 20px) scale(1.05); } }
+
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1; opacity: 0.04;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    .app-container { position: relative; max-width: var(--maxw); margin: 0 auto; height: 100%; display: flex; flex-direction: column; z-index: 10; }
+    .scroll-area { flex: 1; overflow-y: auto; padding: 24px 20px 140px 20px; scrollbar-width: none; }
+    .scroll-area::-webkit-scrollbar { display: none; }
+
+    /* --- Subtle Animations (No Bounce) --- */
+    .stagger-1 { animation: slideUpFade 0.4s ease-out 0.05s both; opacity: 0; }
+    .stagger-2 { animation: slideUpFade 0.4s ease-out 0.10s both; opacity: 0; }
+    .stagger-3 { animation: slideUpFade 0.4s ease-out 0.15s both; opacity: 0; }
+    .stagger-4 { animation: slideUpFade 0.4s ease-out 0.20s both; opacity: 0; }
     
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    @keyframes slideUpFade {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- Glass & Bento Cards --- */
+    .bento-card {
+      background: var(--panel); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--line); border-radius: var(--radius-md);
+      padding: 24px; display: flex; flex-direction: column; justify-content: space-between;
+      box-shadow: var(--shadow-glass); position: relative; overflow: hidden;
+      transition: all 0.2s ease-out;
+    }
+    .bento-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .press-card:active { transform: scale(0.98); background: var(--panel-hover); }
+    .grid-bento { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .col-span-2 { grid-column: span 2; }
+
+    /* --- Typography & Tags --- */
+    h1, h2, h3, h4 { margin: 0; font-weight: 800; letter-spacing: 0.3px; }
+    h2 { font-size: 26px; margin-bottom: 4px; line-height: 1.2; }
+    .greeting { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; line-height: 1.2;}
+    .date-sub { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+    .val-huge { font-size: 40px; font-weight: 300; font-feature-settings: "tnum"; letter-spacing: -1px; }
+
+    .c-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: block; }
+    .c-val { font-size: 28px; font-weight: 800; line-height: 1; margin-bottom: 4px; }
+    .c-sub { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    .pill-tag {
+      display: inline-flex; align-items: center; justify-content: center; gap: 4px; padding: 6px 12px; border-radius: 99px;
+      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;
+      background: rgba(255,255,255,0.06); border: 1px solid var(--line); line-height: 1;
+    }
+    .pill-tag.amber { background: rgba(249, 115, 22, 0.15); color: var(--primary-glow); border-color: rgba(249, 115, 22, 0.3); }
+    .pill-tag.cyan { background: rgba(45, 212, 191, 0.15); color: var(--accent); border-color: rgba(45, 212, 191, 0.3); }
+
+    /* Editable Name */
+    .editable-name {
+      display: inline-block; border-bottom: 1px dashed transparent; transition: 0.2s;
+      outline: none; min-width: 50px;
+    }
+    .editable-name:focus { border-bottom: 1px dashed var(--primary-glow); color: var(--primary-glow); }
+
+    /* --- Progress Rings & Bars --- */
+    .prog-bar-bg { height: 6px; background: rgba(0,0,0,0.4); border-radius: 99px; overflow: hidden; margin-top: 12px; }
+    .prog-bar-fill { height: 100%; background: linear-gradient(90deg, #f97316, #f59e0b); border-radius: 99px; transition: width 0.6s ease-out; box-shadow: var(--shadow-glow); }
+    .prog-bar-cyan { background: linear-gradient(90deg, #0ea5e9, #2dd4bf); box-shadow: 0 0 15px rgba(45,212,191,0.4); }
+
+    /* --- Top Header --- */
+    .top-bar { display: flex; justify-content: space-between; align-items: center; }
+    .top-avatar { 
+      width: 48px; height: 48px; border-radius: 16px; overflow: hidden; 
+      border: 1px solid var(--line-bright); cursor: pointer; transition: transform 0.2s ease-out;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center;
+    }
+    .top-avatar:active { transform: scale(0.95); }
+    .top-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* --- Task Widgets --- */
+    .widget {
+      background: var(--card-solid); border: 1px solid var(--line);
+      border-radius: var(--radius-md); padding: 18px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 140px; position: relative; transition: 0.2s ease-out;
+    }
+    .widget.active { background: rgba(249, 115, 22, 0.08); border-color: rgba(249, 115, 22, 0.3); }
+    .w-top { display: flex; justify-content: space-between; align-items: flex-start; }
+    .w-icon { 
+      width: 44px; height: 44px; border-radius: 14px; background: rgba(255,255,255,0.05); 
+      display: flex; align-items: center; justify-content: center; color: var(--text-muted);
+      transition: 0.2s; line-height: 1;
+    }
+    .widget.active .w-icon { background: var(--primary); color: #fff; box-shadow: var(--shadow-glow); }
+    .w-title { font-size: 15px; font-weight: 700; margin-top: auto; padding-top: 16px; }
+    .w-meta { font-size: 12px; color: var(--text-muted); margin-top: 4px; font-variant-numeric: tabular-nums; }
     
-    <!-- Configuration -->
-    <script>
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#5b13ec",
-                        "primary-glow": "#7c42ff",
-                        "primary-dark": "#3e0ca6",
-                        "secondary": "#06b6d4",
-                        "background-dark": "#020617",
-                        "surface-dark": "#0f172a",
-                        "surface-highlight": "#1e293b",
-                        "gold": "#D4AF37",
-                    },
-                    fontFamily: {
-                        "display": ["Manrope", "Noto Sans TC", "sans-serif"],
-                        "body": ["Noto Sans TC", "Manrope", "sans-serif"],
-                    },
-                    boxShadow: {
-                        "glow": "0 0 20px rgba(91, 19, 236, 0.3)",
-                    }
-                },
-            },
-        }
-    </script>
+    .w-actions { display: flex; gap: 8px; align-items: center; }
+    .w-btn {
+      width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--line-bright);
+      background: rgba(255,255,255,0.05); color: #fff; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: 0.2s ease-out; backdrop-filter: blur(10px); line-height: 1;
+    }
+    .w-btn:active { transform: scale(0.95); }
+    .widget.active .w-btn { border-color: transparent; background: transparent; color: var(--primary); }
+
+    /* --- Inputs --- */
+    .input-glass {
+      width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--line);
+      color: white; padding: 18px; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px;
+      outline: none; transition: border-color 0.2s, background 0.2s; box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+    }
+    .input-glass:focus { border-color: var(--primary-glow); background: rgba(249, 115, 22, 0.05); }
+    textarea.input-glass { resize: none; min-height: 110px; line-height: 1.6; }
+
+    /* --- Buttons --- */
+    .btn-solid {
+      width: 100%; border: none; background: var(--line-bright); color: white;
+      padding: 14px 16px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: 0.2s ease-out; display: flex; align-items: center; justify-content: center; gap: 6px;
+      line-height: 1;
+    }
+    .btn-solid.accent { background: var(--primary); box-shadow: var(--shadow-glow); }
+    .btn-solid:active { transform: scale(0.98); }
     
-    <style>
-        body { min-height: 100vh; background-color: #020617; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        .glass-panel { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .glass-card { background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); transition: transform 0.2s ease; }
-        .glass-card:active { transform: scale(0.98); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .calendar-day-active { background: linear-gradient(135deg, #5b13ec 0%, #4a0db8 100%); box-shadow: 0 4px 12px rgba(91, 19, 236, 0.3); }
-        .timer-active { animation: pulse-ring 2s infinite; }
-        @keyframes pulse-ring { 0% { box-shadow: 0 0 0 0 rgba(91, 19, 236, 0.7); } 70% { box-shadow: 0 0 0 10px rgba(91, 19, 236, 0); } 100% { box-shadow: 0 0 0 0 rgba(91, 19, 236, 0); } }
-        .view-section { display: none; opacity: 0; transition: opacity 0.2s ease; }
-        .view-section.active { display: flex; opacity: 1; animation: fadeIn 0.3s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
+    .btn-icon {
+      width: 44px; height: 44px; border-radius: 50%; border: none;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.1); color: white; cursor: pointer; transition: 0.2s ease-out; line-height: 1;
+    }
+    .btn-icon:active { transform: scale(0.98); }
+
+    /* --- Switch --- */
+    .switch {
+      width: 52px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 99px;
+      position: relative; transition: 0.2s ease-out; cursor: pointer; border: 1px solid var(--line);
+    }
+    .switch::after {
+      content: ''; position: absolute; left: 4px; top: 4px; width: 22px; height: 22px;
+      background: var(--text-muted); border-radius: 50%; transition: 0.2s ease-out;
+    }
+    .switch.on { background: var(--primary); border-color: var(--primary-glow); box-shadow: var(--shadow-glow); }
+    .switch.on::after { transform: translateX(20px); background: #fff; }
+
+    /* --- Bottom Nav --- */
+    .nav-wrap {
+      position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+      width: calc(100% - 48px); max-width: 360px; z-index: 100;
+    }
+    .nav-pill {
+      background: rgba(15, 18, 25, 0.85); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border-radius: 99px; border: 1px solid var(--line);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 16px; box-shadow: 0 24px 50px rgba(0,0,0,0.8);
+    }
+    .nav-item {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      width: 56px; height: 56px; border-radius: 50%;
+      color: var(--text-muted); font-size: 10px; font-weight: 700; cursor: pointer; transition: all 0.2s ease-out;
+      line-height: 1;
+    }
+    .nav-item.active { color: var(--primary-glow); transform: translateY(-2px); }
+    .nav-item .material-symbols-outlined { font-size: 24px; margin-bottom: 4px; transition: 0.2s ease-out; display: block; }
+    .nav-item.active .material-symbols-outlined { font-variation-settings: 'FILL' 1; filter: drop-shadow(0 0 10px var(--primary)); }
+    .nav-item:active { transform: scale(0.95); }
+
+    /* --- Modals --- */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(12px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease-out; }
+    .modal-overlay.open { opacity: 1; pointer-events: auto; }
+    .modal-sheet { background: var(--bg); width: 100%; max-width: var(--maxw); border-radius: 40px 40px 0 0; padding: 32px 24px 40px; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: transform 0.4s ease-out; border-top: 1px solid var(--line); box-shadow: 0 -20px 50px rgba(0,0,0,0.6); }
+    .modal-overlay.open .modal-sheet { transform: translateY(0); }
+    .modal-sheet::-webkit-scrollbar { display:none; }
+
+    /* --- Modal Detail Grid --- */
+    .detail-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 24px;}
+    .d-card { background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; }
+    .d-card-full { grid-column: span 2; background: rgba(255,255,255,0.03); border: 1px solid var(--line); border-radius: var(--radius-sm); padding: 16px; }
+    .d-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .d-row:last-child { border-bottom: none; }
+    .d-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; line-height: 1; }
+    .d-icon.ok { background: rgba(45,212,191,0.2); color: var(--accent); }
+    .d-icon.no { background: rgba(255,255,255,0.1); color: var(--muted); }
+    .d-text { font-size: 14px; line-height: 1.6; color: #fff; margin-top: 8px; font-style: italic; opacity: 0.9;}
+
+    /* --- Calendar Grid --- */
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 16px; }
+    .cal-day {
+      aspect-ratio: 1; border-radius: 14px; display: flex; align-items: center; justify-content: center;
+      background: var(--card-solid); font-weight: 700; font-size: 14px; color: var(--text-muted);
+      position: relative; border: 1px solid var(--line); cursor: pointer; transition: 0.2s ease-out;
+    }
+    .cal-day:active { transform: scale(0.95); }
+    .cal-day.perfect { background: linear-gradient(135deg, var(--primary), #ea580c); color: white; box-shadow: var(--shadow-glow); border: none; }
+    .cal-day.today { border-color: var(--accent); color: white; }
+    .cal-day.selected { outline: 2px solid white; outline-offset: 2px; background: rgba(255,255,255,0.1); color: white; }
+
+    /* --- XP FX --- */
+    .xp-float { position: fixed; z-index: 999; pointer-events: none; font-weight: 800; font-size: 18px; letter-spacing: 0.5px; text-shadow: 0 4px 10px rgba(0,0,0,0.8); transform: translate(-50%, -50%); opacity: 0; animation: floatUp 0.8s ease-out forwards; }
+    .xp-plus { color: var(--primary-glow); }
+    .xp-minus { color: var(--danger); }
+    @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.9); } 15% { opacity: 1; transform: translate(-50%, -15px) scale(1.05); } 100% { opacity: 0; transform: translate(-50%, -40px) scale(1); } }
+
+    .view-section { display: none; opacity: 0; }
+    .view-section.active { display: flex; opacity: 1; }
+
+    /* Toast */
+    .toast{ position:fixed; top:24px; left:50%; transform:translateX(-50%) translateY(-10px); z-index:90; padding:12px 20px; border-radius:99px; border:1px solid var(--line-bright); background:rgba(30,33,45,.95); backdrop-filter: blur(20px); box-shadow: 0 10px 30px rgba(0,0,0,0.5); font-size:13px; font-weight:800; letter-spacing:1px; text-transform:uppercase; opacity:0; pointer-events:none; transition: all 0.3s ease-out; color: white; }
+    .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  </style>
 </head>
+<body>
 
-<body class="bg-background-dark text-slate-100 font-display selection:bg-primary selection:text-white min-h-screen relative">
+  <div class="bg-fx">
+    <div class="orb-1"></div>
+    <div class="orb-2"></div>
+  </div>
+  <div class="grain"></div>
+  <canvas id="confetti" style="position:fixed; inset:0; pointer-events:none; z-index:300;"></canvas>
+  <div class="toast" id="toast">Saved</div>
 
-    <!-- Global Background -->
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute top-[-10%] left-[20%] w-[80%] h-[50%] bg-primary/20 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-secondary/10 rounded-full blur-[100px]"></div>
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
+  <div class="app-container">
+    
+    <div id="main-view" class="scroll-area"></div>
+
+    <div class="nav-wrap">
+      <div class="nav-pill">
+        <div class="nav-item active" onclick="router('hub')" id="nav-hub">
+          <span class="material-symbols-outlined">dashboard</span><span>Hub</span>
+        </div>
+        <div class="nav-item" onclick="router('body')" id="nav-body">
+          <span class="material-symbols-outlined">vital_signs</span><span>Body</span>
+        </div>
+        <div class="nav-item" onclick="router('mind')" id="nav-mind">
+          <span class="material-symbols-outlined">psychology</span><span>Mind</span>
+        </div>
+        <div class="nav-item" onclick="router('cal')" id="nav-cal">
+          <span class="material-symbols-outlined">calendar_month</span><span>History</span>
+        </div>
+      </div>
     </div>
 
-    <!-- Main Container -->
-    <div class="relative z-10 mx-auto w-full max-w-md min-h-screen bg-black/20 shadow-2xl flex flex-col pb-24">
+  </div>
 
-        <!-- ================= VIEW 1: HUB ================= -->
-        <div id="view-hub" class="view-section active flex-col flex-1">
-            <header class="pt-14 pb-6 px-6 flex flex-col gap-6">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-4">
-                        <div class="relative group" onclick="confirmReset()">
-                            <div class="relative h-16 w-16 rounded-full border-2 border-white/20 overflow-hidden bg-surface-dark cursor-pointer">
-                                <img alt="Profile" class="object-cover w-full h-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0"/>
-                            </div>
-                            <div class="absolute -bottom-1 -right-1 bg-surface-dark rounded-full p-1 border border-white/10">
-                                <span class="material-symbols-outlined text-yellow-400 text-[18px] filled">workspace_premium</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h1 class="text-2xl font-bold tracking-tight text-white leading-none mb-1">覺醒女神</h1>
-                            <p class="text-slate-400 text-xs font-medium tracking-wide">LEVEL <span id="hub-level">1</span></p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full">
-                        <span class="material-symbols-outlined text-orange-500 text-[20px] filled">local_fire_department</span>
-                        <span class="text-sm font-bold text-white"><span id="hub-streak">0</span> Days</span>
-                    </div>
-                </div>
-                <div class="flex flex-col gap-2">
-                    <div class="flex justify-between items-end text-xs font-medium text-slate-300">
-                        <span>Current XP</span>
-                        <span class="text-primary-glow" id="hub-xp-text">0 / 100 XP</span>
-                    </div>
-                    <div class="h-3 w-full bg-slate-800/50 rounded-full overflow-hidden border border-white/5 backdrop-blur-sm">
-                        <div id="hub-xp-bar" class="h-full bg-gradient-to-r from-primary via-purple-500 to-secondary w-[0%] rounded-full shadow-[0_0_15px_rgba(91,19,236,0.5)] transition-all duration-500"></div>
-                    </div>
-                </div>
-            </header>
-
-            <section class="px-6 pb-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[20px]">spa</span>三位一體概覽
-                    </h2>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div onclick="navTo('body')" class="glass-card rounded-2xl p-5 relative overflow-hidden group cursor-pointer active:scale-[0.98] transition-transform">
-                        <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl">accessibility_new</span></div>
-                        <div class="flex justify-between items-start mb-4 relative z-10">
-                            <div class="flex items-center gap-3">
-                                <div class="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
-                                    <span class="material-symbols-outlined text-rose-400">fitness_center</span>
-                                </div>
-                                <div><h3 class="text-base font-bold text-white">Body (身)</h3><p class="text-xs text-slate-400">今日完成度</p></div>
-                            </div>
-                            <div class="flex flex-col items-end"><span id="hub-body-score" class="text-xl font-display font-bold text-white">0%</span></div>
-                        </div>
-                        <div class="flex items-center gap-3 relative z-10">
-                            <div class="flex-1 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
-                                <div id="hub-body-bar" class="h-full bg-rose-500 w-[0%] rounded-full shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-all duration-500"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div onclick="navTo('mind')" class="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between h-[160px] cursor-pointer">
-                            <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"></div>
-                            <div class="flex justify-between items-start">
-                                <div class="h-10 w-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
-                                    <span class="material-symbols-outlined text-cyan-400">self_improvement</span>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-base font-bold text-white mb-1">Mind (心)</h3>
-                                <p class="text-[10px] text-slate-400">品牌策略 & 正念</p>
-                            </div>
-                        </div>
-                        <div onclick="navTo('calendar')" class="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between h-[160px] cursor-pointer">
-                            <div class="absolute -bottom-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
-                            <div class="flex justify-between items-start">
-                                <div class="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
-                                    <span class="material-symbols-outlined text-primary-glow">calendar_month</span>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 class="text-base font-bold text-white mb-1">History</h3>
-                                <p class="text-[10px] text-slate-400">查看完整紀錄</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!-- ================= VIEW 2: BODY ================= -->
-        <div id="view-body" class="view-section flex-col flex-1 h-full overflow-y-auto no-scrollbar pt-12 px-4 space-y-6">
-            <header class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Aether Trinity Evolution</p>
-                    <h1 class="text-2xl font-bold text-white tracking-tight">身體進化</h1>
-                </div>
-                <!-- Dynamic Date Display -->
-                <div class="px-3 py-1 bg-surface-dark border border-white/10 rounded-full text-xs text-primary font-bold" id="body-date-display">Today</div>
-            </header>
-
-            <!-- Water -->
-            <section class="relative overflow-hidden rounded-2xl glass-panel p-6 shadow-glow border border-primary/20">
-                <div class="flex items-start justify-between mb-6">
-                    <div>
-                        <h2 class="text-lg font-bold flex items-center gap-2 text-white">
-                            <span class="material-symbols-outlined text-blue-400">water_drop</span>水分攝入
-                        </h2>
-                        <p class="text-sm text-slate-400">目標: 1900ml</p>
-                    </div>
-                    <div class="text-right">
-                        <span id="water-val" class="text-3xl font-bold text-white tracking-tight">0</span>
-                        <span class="text-sm text-slate-400 font-medium ml-1">ml</span>
-                    </div>
-                </div>
-                <div class="relative h-4 w-full bg-slate-800/50 rounded-full overflow-hidden mb-6">
-                    <div id="water-progress" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-primary w-[0%] rounded-full transition-all duration-500"></div>
-                </div>
-                <div class="flex gap-2 relative z-10">
-                    <button onclick="modifyWater(-250)" class="flex items-center justify-center w-12 bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30 rounded-xl active:scale-95 transition-transform"><span class="material-symbols-outlined text-base">remove</span></button>
-                    <button onclick="modifyWater(250)" class="flex-1 flex items-center justify-center gap-1 bg-primary/20 hover:bg-primary/30 text-white border border-primary/30 h-12 rounded-xl font-semibold text-sm active:scale-95 transition-transform"><span class="material-symbols-outlined text-base">add</span> 250ml</button>
-                    <button onclick="modifyWater(500)" class="flex-1 flex items-center justify-center gap-1 bg-primary hover:bg-primary/90 text-white shadow-glow h-12 rounded-xl font-semibold text-sm active:scale-95 transition-transform"><span class="material-symbols-outlined text-base">add</span> 500ml</button>
-                </div>
-            </section>
-
-            <!-- Tasks -->
-            <section>
-                <h3 class="text-lg font-bold text-white mb-4 px-1 flex items-center gap-2"><span class="w-1 h-5 bg-primary rounded-full"></span>今日任務</h3>
-                <div class="space-y-3" id="task-container"></div>
-            </section>
-
-            <!-- Bowel -->
-            <section class="pb-6">
-                <div class="glass-panel rounded-2xl p-5 flex items-center justify-between border-t border-slate-700/50">
-                    <div class="flex items-center gap-3">
-                        <div class="h-10 w-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center"><span class="material-symbols-outlined">gastroenterology</span></div>
-                        <div><h4 class="font-bold text-white text-sm">排便確認</h4><p class="text-xs text-slate-400">每日健康監測</p></div>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input id="bowel-toggle" class="sr-only peer" type="checkbox" onchange="toggleBowel(this.checked)"/>
-                        <div class="w-14 h-8 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-slate-400 after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary peer-checked:after:bg-white"></div>
-                    </label>
-                </div>
-            </section>
-        </div>
-
-        <!-- ================= VIEW 3: MIND ================= -->
-        <div id="view-mind" class="view-section flex-col flex-1 h-full overflow-y-auto no-scrollbar pt-12 px-4">
-            <header class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold tracking-wide text-white">心智與靈魂</h1>
-            </header>
-
-            <div class="p-1 bg-surface-dark rounded-full flex relative mb-6 border border-white/5">
-                <div id="tab-slider" class="absolute left-1 top-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-full shadow-lg shadow-primary/30 z-0 transition-transform duration-300"></div>
-                <button onclick="switchTab('mind')" class="flex-1 relative z-10 py-2.5 text-sm font-bold text-white text-center rounded-full transition-colors" id="btn-mind">心智 (Mind)</button>
-                <button onclick="switchTab('spirit')" class="flex-1 relative z-10 py-2.5 text-sm font-medium text-slate-400 hover:text-white text-center rounded-full transition-colors" id="btn-spirit">靈魂 (Spirit)</button>
-            </div>
-
-            <!-- Mind Tab Content -->
-            <div id="tab-mind" class="space-y-6 animate-fade-in">
-                <!-- Reading -->
-                <div class="bg-surface-dark rounded-2xl p-6 relative overflow-hidden group border border-white/5">
-                    <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
-                    <div class="flex justify-between items-start mb-6 relative z-10">
-                        <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="material-symbols-outlined text-gold text-lg">menu_book</span>
-                                <h2 class="text-sm font-bold tracking-wider uppercase text-gold">深度閱讀</h2>
-                            </div>
-                            <p class="text-xs text-slate-400">Deep Reading</p>
-                        </div>
-                        <!-- Manual Complete Checkbox for Reading -->
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-slate-400">直接完成</span>
-                            <button id="read-check-btn" onclick="toggleReadingCheck()" class="h-8 w-8 rounded-full border border-slate-600 flex items-center justify-center transition-colors">
-                                <span class="material-symbols-outlined text-sm">check</span>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center py-4 relative z-10">
-                        <div id="read-display" class="text-6xl font-light text-white tracking-tighter tabular-nums font-display">20:00</div>
-                        <p class="text-sm text-primary mt-2 font-medium">專注計時 (選用)</p>
-                    </div>
-                    <div class="flex gap-3 mt-6 relative z-10 justify-center">
-                        <button id="read-btn" onclick="toggleReading()" class="w-full bg-primary hover:bg-primary-dark text-white py-3.5 rounded-full font-bold shadow-lg flex items-center justify-center gap-2 active:scale-95 transition-transform">
-                            <span class="material-symbols-outlined filled">play_arrow</span>開始計時
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Growth Reflection -->
-                <div class="space-y-3">
-                    <label class="block text-sm font-medium text-slate-300 pl-2">今日成長反思 <span class="text-slate-500 font-normal ml-2">Growth Reflection</span></label>
-                    <div class="relative group">
-                        <div class="absolute inset-y-0 left-4 flex items-center pointer-events-none"><span class="material-symbols-outlined text-slate-500">edit_note</span></div>
-                        <input id="growth-input" onchange="saveInput('growthNote', this.value)" class="w-full bg-surface-dark border border-white/5 focus:border-primary/50 text-white placeholder-slate-600 pl-12 pr-4 py-4 rounded-xl focus:ring-0 focus:outline-none transition-all shadow-sm" placeholder="寫下今天的核心洞察..." type="text"/>
-                    </div>
-                </div>
-
-                <!-- Brand Strategy Log (Replaced Carousel) -->
-                <div class="space-y-3 pt-2 pb-6">
-                    <label class="block text-sm font-medium text-slate-300 pl-2 flex items-center gap-2"><span class="material-symbols-outlined text-primary text-sm">diamond</span> 品牌策略思考 <span class="text-slate-500 font-normal ml-2">Brand Strategy</span></label>
-                    <div class="relative group">
-                        <textarea id="brand-input" onchange="saveInput('brandNote', this.value)" class="w-full bg-surface-dark border border-white/5 focus:border-primary/50 text-white placeholder-slate-600 px-4 py-4 rounded-xl focus:ring-0 focus:outline-none transition-all shadow-sm resize-none h-32" placeholder="紀錄關於個人品牌的策略想法..."></textarea>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Spirit Tab Content -->
-            <div id="tab-spirit" class="space-y-6 animate-fade-in hidden">
-                <div class="bg-surface-dark rounded-2xl p-1 border border-white/5">
-                    <div class="p-4 border-b border-white/5 pb-2"><h3 class="text-gold font-bold text-base flex items-center gap-2"><span class="material-symbols-outlined text-lg">auto_stories</span>靈修日誌</h3></div>
-                    <div class="p-4 space-y-4">
-                        <div><label class="text-xs text-slate-400 block mb-1.5 ml-1">經文出處</label><input id="scripture-input" onchange="saveInput('scripture', this.value)" class="w-full bg-surface-highlight border-none text-white placeholder-slate-600 px-4 py-3 rounded-xl focus:ring-1 focus:ring-primary/50 text-sm" placeholder="例如：詩篇 23:1" type="text"/></div>
-                        <div><label class="text-xs text-slate-400 block mb-1.5 ml-1">心得筆記</label><textarea id="spirit-input" onchange="saveInput('spiritNote', this.value)" class="w-full bg-surface-highlight border-none text-white placeholder-slate-600 px-4 py-3 rounded-xl focus:ring-1 focus:ring-primary/50 text-sm h-32 resize-none" placeholder="記錄您的領受..."></textarea></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= VIEW 4: CALENDAR ================= -->
-        <div id="view-calendar" class="view-section flex-col flex-1 h-full overflow-y-auto no-scrollbar pt-12 px-2">
-            <header class="flex items-center justify-between px-4 pb-4">
-                <div class="flex flex-col"><h1 class="text-2xl font-bold tracking-wide text-white">進化日歷</h1><span class="text-xs text-primary font-medium tracking-widest uppercase opacity-80">Evolution</span></div>
-            </header>
-
-            <div class="px-4 pb-2">
-                <div class="flex items-center justify-between rounded-2xl bg-surface-dark border border-white/5 p-2 shadow-glass">
-                    <button onclick="changeMonth(-1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5"><span class="material-symbols-outlined">chevron_left</span></button>
-                    <div id="cal-month-display" class="text-center font-bold text-white"></div>
-                    <button onclick="changeMonth(1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5"><span class="material-symbols-outlined">chevron_right</span></button>
-                </div>
-            </div>
-
-            <!-- Stats & Grid -->
-            <div class="px-4 py-4 grid grid-cols-2 gap-3">
-                <div class="flex flex-col items-center justify-center rounded-2xl bg-surface-dark border border-white/5 p-3"><span id="cal-perfect-days" class="text-2xl font-bold text-white">0</span><span class="text-[10px] text-slate-400">完美天數</span></div>
-                <div class="flex flex-col items-center justify-center rounded-2xl bg-surface-dark border border-white/5 p-3"><span id="cal-streak" class="text-2xl font-bold text-gold">0</span><span class="text-[10px] text-slate-400">當前連勝</span></div>
-            </div>
-
-            <div class="px-4 pb-6">
-                <div class="w-full glass-panel rounded-2xl p-4">
-                    <div class="grid grid-cols-7 mb-2 text-center text-xs font-medium text-slate-500">
-                        <div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div>
-                    </div>
-                    <div id="cal-grid" class="grid grid-cols-7 gap-y-2 gap-x-1 mt-2"></div>
-                </div>
-            </div>
-
-            <!-- Skool Style Reward -->
-            <div class="px-6 pb-6">
-                <div class="relative w-full overflow-hidden rounded-2xl bg-gradient-to-br from-[#1f1c27] to-[#131118] border border-white/10 p-6">
-                    <div class="flex justify-between items-start">
-                        <div class="w-full">
-                            <div class="inline-flex items-center gap-1.5 rounded-full bg-gold/10 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-gold mb-2 border border-gold/20">
-                                <span class="material-symbols-outlined text-[12px]">star</span>等級 2 解鎖
-                            </div>
-                            <h3 class="text-lg font-bold text-white">本周神祕驚喜</h3>
-                            <p class="text-xs text-slate-400 mt-1">累積 3 個完美天數即可開啟。</p>
-                            <div class="mt-3 w-full bg-slate-800 h-2 rounded-full overflow-hidden">
-                                <div id="reward-progress" class="bg-gold h-full w-[0%] transition-all duration-500"></div>
-                            </div>
-                            <p class="text-[10px] text-gold mt-1 text-right"><span id="reward-count">0</span>/3 Days</p>
-                        </div>
-                    </div>
-                    <button id="reward-btn" class="mt-4 w-full py-2.5 rounded-xl text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed transition-all" disabled>
-                        <span class="flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[16px]">lock</span> 尚未解鎖</span>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Full Detail Overlay -->
-            <div id="detail-overlay" class="mx-4 mb-8 glass-panel rounded-2xl p-5 border border-white/10 shadow-2xl relative overflow-hidden transition-all">
-                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
-                <div class="flex items-center justify-between mb-4">
-                    <h3 id="detail-date" class="text-base font-bold text-white">點擊日期查看紀錄</h3>
-                </div>
-                <div class="space-y-4">
-                    <!-- Body Section -->
-                    <div class="space-y-2">
-                        <h4 class="text-xs text-primary font-bold uppercase tracking-wider">Body</h4>
-                        <div class="grid grid-cols-2 gap-2 text-sm">
-                            <div class="bg-surface-dark p-2 rounded text-slate-400">水: <span id="detail-water" class="text-white font-bold">-</span></div>
-                            <div class="bg-surface-dark p-2 rounded text-slate-400">便: <span id="detail-bowel" class="text-white font-bold">-</span></div>
-                        </div>
-                        <div id="detail-task-list" class="space-y-1 text-xs"></div>
-                    </div>
-                    
-                    <!-- Mind Section -->
-                    <div class="space-y-2">
-                        <h4 class="text-xs text-secondary font-bold uppercase tracking-wider">Mind</h4>
-                        <div class="bg-surface-dark p-2 rounded text-xs">
-                            <span class="text-slate-400 block mb-1">閱讀: <span id="detail-reading" class="text-white">-</span></span>
-                            <span class="text-slate-400 block mb-1">成長: <span id="detail-growth" class="text-white italic">-</span></span>
-                            <span class="text-slate-400 block">品牌: <span id="detail-brand" class="text-white italic">-</span></span>
-                        </div>
-                    </div>
-
-                    <!-- Spirit Section -->
-                    <div class="space-y-2">
-                        <h4 class="text-xs text-gold font-bold uppercase tracking-wider">Spirit</h4>
-                        <div class="bg-surface-dark p-2 rounded text-xs">
-                            <span class="text-slate-400 block mb-1">經文: <span id="detail-scripture" class="text-white">-</span></span>
-                            <span class="text-slate-400 block">心得: <span id="detail-spirit" class="text-white italic">-</span></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- ================= BOTTOM NAV ================= -->
-        <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-6 pt-2">
-            <div class="glass-panel mx-auto w-[90%] max-w-[380px] rounded-full flex justify-between items-center py-3 px-6 shadow-2xl bg-[#0a0a0c]/90 backdrop-blur-xl border border-white/10">
-                <button onclick="navTo('hub')" class="nav-btn flex flex-col items-center gap-1 group w-12" data-target="hub">
-                    <span class="material-symbols-outlined text-[24px] text-primary-glow filled" id="icon-hub">dashboard</span>
-                    <span class="text-[10px] font-bold text-white" id="text-hub">Hub</span>
-                </button>
-                <button onclick="navTo('body')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60" data-target="body">
-                    <span class="material-symbols-outlined text-[24px] text-slate-300" id="icon-body">accessibility_new</span>
-                    <span class="text-[10px] font-medium text-slate-400" id="text-body">Body</span>
-                </button>
-                <button onclick="navTo('mind')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60" data-target="mind">
-                    <span class="material-symbols-outlined text-[24px] text-slate-300" id="icon-mind">psychology</span>
-                    <span class="text-[10px] font-medium text-slate-400" id="text-mind">Mind</span>
-                </button>
-                <button onclick="navTo('calendar')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60" data-target="calendar">
-                    <span class="material-symbols-outlined text-[24px] text-slate-300" id="icon-calendar">calendar_month</span>
-                    <span class="text-[10px] font-medium text-slate-400" id="text-calendar">Evo</span>
-                </button>
-            </div>
-        </nav>
-
+  <!-- MODAL: TIMER -->
+  <div class="modal-overlay" id="timer-modal">
+    <div class="modal-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <div class="pill-tag amber"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">timer</span> Focus Session</div>
+        <button class="btn-icon press" style="width:36px; height:36px;" onclick="closeModal('timer-modal')">
+          <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">close</span>
+        </button>
+      </div>
+      <h2 id="timer-title" style="text-align:center; font-size:28px;">Task</h2>
+      <div class="val-huge" style="font-size:72px; text-align:center; margin:30px 0; color:var(--text);" id="timer-display">00:00</div>
+      
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+        <button class="btn-solid accent" id="timer-toggle-btn" onclick="toggleTimerState()">Start</button>
+        <button class="btn-solid" onclick="resetTimer()">Reset</button>
+      </div>
     </div>
+  </div>
 
-    <!-- Core Logic -->
-    <script>
-        // --- 1. DATA STORAGE & RESET ---
-        const STORAGE_KEY = 'ate_release_v7_final'; 
-        const WATER_TARGET = 1900;
-        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+  <!-- MODAL: DAY DETAIL -->
+  <div class="modal-overlay" id="day-modal">
+    <div class="modal-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
+        <div class="pill-tag cyan"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">history</span> Timeline History</div>
+        <button class="btn-icon press" style="width:36px; height:36px;" onclick="closeModal('day-modal')">
+          <span class="material-symbols-outlined" style="font-size:20px; line-height:1;">close</span>
+        </button>
+      </div>
+      <h2 id="day-modal-title" style="margin-bottom:24px; font-size:32px;">Date</h2>
+      <div id="day-modal-content"></div>
+      <button class="btn-solid" style="margin-top:32px; background:rgba(249, 115, 22, 0.1); color:var(--primary-glow); border:1px solid var(--primary-glow)" onclick="setActiveDayFromModal()">Edit This Day (補登此日)</button>
+    </div>
+  </div>
+
+  <script>
+    /* =========================================
+       ATE V15 - ULTIMATE ZERO-FLICKER ENGINE
+    ========================================= */
+    const DB_KEY = 'ATE_PRO_V15'; 
+    const WATER_TARGET = 1900;
+    
+    const META = {
+      squat: { title: "Squats", xp: 60, icon: "fitness_center", type: "timer", dur: 15*60 },
+      resist: { title: "Resistance", xp: 80, icon: "exercise", type: "timer", dur: 30*60 },
+      read: { title: "Deep Reading", xp: 70, icon: "menu_book", type: "timer", dur: 20*60 },
+      breakfast: { title: "DIAAS Yogurt", xp: 30, icon: "restaurant", type: "check" },
+      devotion: { title: "Devotion", xp: 60, icon: "spa", type: "timer", dur: 10*60 },
+      bowel: { xp: 20 },
+      notes: { growth: 40, brand: 40, scripture: 30, spirit: 50, journal: 30 },
+      waterGoal: 100 
+    };
+
+    let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
+    let activeDate = getTodayStr(); 
+    let timerObj = { id: null, rem: 0, total: 0, interval: null, running: false };
+    let isNavigating = false; // Flag to control enter animations
+
+    // --- DB UTILS ---
+    function getTodayStr() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function initDB() {
+      if (!db.settings) db.settings = { userName: "覺醒女神" };
+      if (!db.gamify) db.gamify = { combo: 1, lastActive: 0 };
+      if (!db.logs) db.logs = {};
+    }
+
+    function initDate(dateStr) {
+      if (!db.logs[dateStr]) {
+        db.logs[dateStr] = {
+          water: 0, bowel: false,
+          tasks: { squat: false, resist: false, read: false, breakfast: false, devotion: false },
+          notes: { growth: "", brand: "", scripture: "", spirit: "", journal: "" }
+        };
+        saveDB();
+      }
+    }
+
+    function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+
+    function resetAll() {
+      if(confirm("【系統重置】確定要清除所有紀錄並從 0 開始嗎？")) {
+        localStorage.removeItem(DB_KEY); location.reload();
+      }
+    }
+
+    function isPerfect(dateStr) {
+      const d = db.logs[dateStr];
+      if(!d || !d.tasks) return false;
+      return (d.water >= WATER_TARGET) && d.tasks.squat && d.tasks.resist && d.tasks.breakfast;
+    }
+
+    // --- GAMIFICATION ENGINE ---
+    function calcStreak() {
+      let streak = 0;
+      const today = new Date();
+      for (let i=0; i<365; i++) {
+        const checkDate = new Date(today);
+        checkDate.setDate(today.getDate() - i);
+        const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
         
-        let activeTimers = {}; // { 1: { interval: null, remaining: sec, status: 'idle' } }
-        let selectedDateKey = null; // Currently selected date in calendar
-
-        function getTodayKey() {
-            const d = new Date();
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        const d = db.logs[dateStr];
+        let isActive = false;
+        if (d) {
+           const tasksDone = Object.values(d.tasks).some(v => v);
+           const notesWritten = Object.values(d.notes).some(v => v.trim() !== "");
+           isActive = (d.water > 0) || tasksDone || notesWritten || d.bowel;
         }
         
-        const todayKey = getTodayKey();
+        if (isActive) streak++;
+        else if (i > 0) break;
+      }
+      return streak;
+    }
+
+    function calcTotalXP() {
+      let total = 0;
+      Object.keys(db.logs).forEach(date => {
+        const d = db.logs[date];
+        if(!d || !d.tasks) return; 
         
-        // Default to today if nothing selected
-        if(!selectedDateKey) selectedDateKey = todayKey;
-
-        // Initialize Today (if new)
-        if (!appState[todayKey]) {
-            appState[todayKey] = { 
-                water: 0, 
-                bowel: false, 
-                tasks: { 1: false, 2: false, 3: false }, 
-                readingDone: false, 
-                growthNote: "", 
-                brandNote: "",
-                scripture: "",
-                spiritNote: "",
-                isPerfect: false 
-            };
-            saveState();
-        }
-
-        function getActiveDateKey() {
-            return selectedDateKey || todayKey;
-        }
-
-        function saveState() {
-            const key = getActiveDateKey();
-            const d = appState[key];
-            if(d) {
-                const tasksDone = d.tasks[1] && d.tasks[2] && d.tasks[3];
-                d.isPerfect = (d.water >= WATER_TARGET && tasksDone);
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-                updateUI(); 
-            }
-        }
-
-        function confirmReset() {
-            if(confirm("【系統重置】確定要清除所有紀錄並從 0 開始嗎？")) {
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
-            }
-        }
-
-        // --- 2. NAVIGATION ---
-        function navTo(viewId) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            ['hub','body','mind','calendar'].forEach(id => {
-                const icon = document.getElementById('icon-' + id);
-                const text = document.getElementById('text-' + id);
-                const btn = icon.parentElement;
-                if (id === viewId) {
-                    btn.classList.remove('opacity-60');
-                    icon.className = 'material-symbols-outlined text-[24px] text-primary-glow filled';
-                    text.className = 'text-[10px] font-bold text-white';
-                } else {
-                    btn.classList.add('opacity-60');
-                    icon.className = 'material-symbols-outlined text-[24px] text-slate-300';
-                    text.className = 'text-[10px] font-medium text-slate-400';
-                }
-            });
-
-            if (viewId === 'body') {
-                const display = document.getElementById('body-date-display');
-                display.innerText = (selectedDateKey === todayKey) ? "Today" : selectedDateKey;
-                if(!appState[selectedDateKey]) {
-                    appState[selectedDateKey] = { water: 0, bowel: false, tasks: {1:false,2:false,3:false}, readingDone:false, growthNote:"", isPerfect:false };
-                }
-                updateUI();
-            }
-
-            if(viewId === 'calendar') {
-                renderCalendar();
-                showDetail(selectedDateKey);
-            }
-        }
-
-        function switchTab(tab) {
-            const mind = document.getElementById('tab-mind');
-            const spirit = document.getElementById('tab-spirit');
-            const slider = document.getElementById('tab-slider');
-            const btnMind = document.getElementById('btn-mind');
-            const btnSpirit = document.getElementById('btn-spirit');
-
-            if(tab === 'mind') {
-                mind.classList.remove('hidden');
-                spirit.classList.add('hidden');
-                slider.style.transform = 'translateX(0%)';
-                btnMind.classList.replace('text-slate-400', 'text-white');
-                btnSpirit.classList.replace('text-white', 'text-slate-400');
-            } else {
-                mind.classList.add('hidden');
-                spirit.classList.remove('hidden');
-                slider.style.transform = 'translateX(100%)';
-                btnSpirit.classList.replace('text-slate-400', 'text-white');
-                btnMind.classList.replace('text-white', 'text-slate-400');
-            }
-        }
-
-        // --- 3. BODY LOGIC ---
-        function modifyWater(amount) {
-            const k = getActiveDateKey();
-            if(!appState[k]) return;
-            if (appState[k].water + amount < 0) return;
-            appState[k].water += amount;
-            saveState();
-        }
-
-        function toggleBowel(checked) {
-            const k = getActiveDateKey();
-            appState[k].bowel = checked;
-            saveState();
-        }
-
-        function toggleTask(id) {
-            const k = getActiveDateKey();
-            appState[k].tasks[id] = !appState[k].tasks[id];
-            
-            // Sync timer state logic if toggled manually
-            if (!appState[k].tasks[id] && activeTimers[id]) {
-                clearInterval(activeTimers[id].interval);
-                activeTimers[id].status = 'idle';
-                activeTimers[id].remaining = activeTimers[id].total;
-            } else if (appState[k].tasks[id] && activeTimers[id]) {
-                clearInterval(activeTimers[id].interval);
-                activeTimers[id].status = 'done';
-            }
-            saveState();
-        }
-
-        // --- FIXED ZERO-LATENCY TIMER ---
-        function toggleTimer(id, duration) {
-            if (!activeTimers[id]) {
-                activeTimers[id] = { remaining: duration, status: 'idle', interval: null, total: duration };
-            }
-            const t = activeTimers[id];
-            
-            if (t.status === 'running') {
-                // PAUSE
-                clearInterval(t.interval);
-                t.status = 'paused';
-            } else {
-                // START / RESUME
-                t.status = 'running';
-                if (t.interval) clearInterval(t.interval);
-                t.interval = setInterval(() => {
-                    t.remaining--;
-                    // Direct DOM Update for performance
-                    const m = Math.floor(t.remaining / 60);
-                    const s = t.remaining % 60;
-                    const display = document.getElementById(`t-display-${id}`);
-                    if(display) display.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                    
-                    if (t.remaining <= 0) {
-                        clearInterval(t.interval);
-                        t.status = 'done';
-                        const k = getActiveDateKey();
-                        appState[k].tasks[id] = true;
-                        saveState(); 
-                    }
-                }, 1000);
-            }
-            renderTasks(); // Update Button State immediately
-        }
-
-        function renderTasks() {
-            const k = getActiveDateKey();
-            const d = appState[k];
-            const container = document.getElementById('task-container');
-            if(!d) return;
-
-            const tasks = [
-                { id: 1, type: 'timer', title: "深蹲練習 (15m)", sub: "核心肌群", icon: "fitness_center", dur: 900 }, 
-                { id: 2, type: 'timer', title: "阻力訓練 (30m)", sub: "全身肌力", icon: "exercise", dur: 1800 }, 
-                { id: 3, type: 'check', title: "DIAAS 酸奶早餐", sub: "建議 08:30 AM", icon: "restaurant" }
-            ];
-
-            let html = '';
-            tasks.forEach(t => {
-                const isDone = d.tasks[t.id];
-                
-                if (isDone) {
-                    html += `
-                    <div class="group flex items-center gap-4 p-4 rounded-2xl glass-panel border border-primary/50 shadow-glow cursor-pointer transition-all" onclick="toggleTask(${t.id})">
-                        <div class="flex-shrink-0 h-12 w-12 rounded-full bg-primary/20 text-primary flex items-center justify-center border border-primary/30"><span class="material-symbols-outlined">check</span></div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-white text-lg line-through decoration-primary/50">${t.title}</h4>
-                            <p class="text-xs text-primary">已完成 (點擊取消)</p>
-                        </div>
-                    </div>`;
-                } else if (t.type === 'check') {
-                    html += `
-                    <div class="group flex items-center gap-4 p-4 rounded-2xl bg-surface-dark border border-slate-800 hover:border-slate-700 transition-colors">
-                        <div class="flex-shrink-0 h-12 w-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center" onclick="toggleTask(${t.id})"><span class="material-symbols-outlined">${t.icon}</span></div>
-                        <div class="flex-1"><h4 class="font-bold text-slate-300 text-lg">${t.title}</h4><p class="text-xs text-slate-500">${t.sub}</p></div>
-                        <button onclick="toggleTask(${t.id})" class="h-10 w-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-lg active:scale-95"><span class="material-symbols-outlined">done</span></button>
-                    </div>`;
-                } else {
-                    // Timer Task
-                    let m = Math.floor(t.dur / 60);
-                    let s = 0;
-                    let isRunning = false;
-                    
-                    if (activeTimers[t.id]) {
-                        m = Math.floor(activeTimers[t.id].remaining / 60);
-                        s = activeTimers[t.id].remaining % 60;
-                        isRunning = activeTimers[t.id].status === 'running';
-                    }
-
-                    const timeStr = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                    const btnIcon = isRunning ? 'pause' : 'play_arrow';
-                    const btnClass = isRunning ? 'bg-white text-primary' : 'bg-primary text-white';
-                    const glowClass = isRunning ? 'border-primary/50 timer-active' : 'border-slate-800';
-
-                    html += `
-                    <div class="group flex items-center gap-4 p-4 rounded-2xl bg-surface-dark border ${glowClass} transition-all">
-                        <div class="flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center bg-slate-800 text-slate-400 cursor-pointer border border-transparent hover:border-slate-600" onclick="toggleTask(${t.id})">
-                            <span class="material-symbols-outlined">${t.icon}</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="font-bold text-white text-lg">${t.title}</h4>
-                            <span id="t-display-${t.id}" class="font-mono text-xl font-bold text-slate-300">${timeStr}</span>
-                        </div>
-                        <button onclick="toggleTimer(${t.id}, ${t.dur})" class="h-10 w-10 rounded-full flex items-center justify-center shadow-lg ${btnClass} active:scale-95 transition-transform">
-                            <span class="material-symbols-outlined">${btnIcon}</span>
-                        </button>
-                    </div>`;
-                }
-            });
-            container.innerHTML = html;
-        }
-
-        // --- 4. MIND ---
-        let readInterval = null;
-        let readTime = 1200; 
-        let readRunning = false;
-
-        function toggleReading() {
-            const btn = document.getElementById('read-btn');
-            const display = document.getElementById('read-display');
-            
-            if (readRunning) {
-                clearInterval(readInterval);
-                readRunning = false;
-                btn.innerHTML = '<span class="material-symbols-outlined filled">play_arrow</span>繼續';
-                btn.className = "w-full bg-primary hover:bg-primary-dark text-white py-3.5 rounded-full font-bold shadow-lg flex items-center justify-center gap-2";
-            } else {
-                readRunning = true;
-                btn.innerHTML = '<span class="material-symbols-outlined filled">pause</span>暫停';
-                btn.className = "w-full bg-white text-primary py-3.5 rounded-full font-bold shadow-lg flex items-center justify-center gap-2";
-                readInterval = setInterval(() => {
-                    readTime--;
-                    const m = Math.floor(readTime / 60);
-                    const s = readTime % 60;
-                    display.innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-                    if(readTime <= 0) { 
-                        clearInterval(readInterval); 
-                        readRunning = false; 
-                        btn.innerText = "完成";
-                        toggleReadingCheck(true);
-                    }
-                }, 1000);
-            }
-        }
-
-        function toggleReadingCheck(forceState) {
-            const k = getActiveDateKey();
-            if (forceState !== undefined) {
-                appState[k].readingDone = forceState;
-            } else {
-                appState[k].readingDone = !appState[k].readingDone;
-            }
-            saveState();
-        }
-
-        function saveInput(field, value) {
-            const k = getActiveDateKey();
-            appState[k][field] = value;
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-            // Update Detail View immediately if open
-            if(document.getElementById('view-calendar').classList.contains('active')) showDetail(k);
-        }
-
-        // --- 5. CALENDAR ---
-        let calViewDate = new Date();
+        if(d.tasks.squat) total += META.squat.xp;
+        if(d.tasks.resist) total += META.resist.xp;
+        if(d.tasks.read) total += META.read.xp;
+        if(d.tasks.breakfast) total += META.breakfast.xp;
+        if(d.tasks.devotion) total += META.devotion.xp;
+        if(d.bowel) total += META.bowel.xp;
         
-        function renderCalendar() {
-            const year = calViewDate.getFullYear();
-            const month = calViewDate.getMonth();
-            const today = new Date();
-            
-            const mNames = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
-            document.getElementById('cal-month-display').innerText = `${year}年 ${mNames[month]}`;
+        if(d.notes.growth?.trim()) total += META.notes.growth;
+        if(d.notes.brand?.trim()) total += META.notes.brand;
+        if(d.notes.scripture?.trim()) total += META.notes.scripture;
+        if(d.notes.spirit?.trim()) total += META.notes.spirit;
+        if(d.notes.journal?.trim()) total += META.notes.journal;
+        
+        if(d.water >= WATER_TARGET) total += META.waterGoal;
+        total += Math.floor(d.water / 500) * 10; 
+      });
+      return total;
+    }
 
-            const firstDay = new Date(year, month, 1).getDay();
-            const daysInM = new Date(year, month + 1, 0).getDate();
-            const isCurrM = today.getFullYear() === year && today.getMonth() === month;
+    function updateName(newName) {
+      if(newName.trim() !== "") {
+        db.settings.userName = newName.trim();
+        saveDB();
+        toast("Profile Updated");
+      }
+    }
 
-            let html = '';
-            for(let i=0; i<firstDay; i++) html += `<div></div>`;
+    // --- ACTIONS (STATELESS) ---
+    function actionWrapper(fn, event, isPositiveAction) {
+      const oldXP = calcTotalXP();
+      const now = Date.now();
+      
+      if (isPositiveAction) {
+        if (now - db.gamify.lastActive <= 5 * 60 * 1000) db.gamify.combo = Math.min(db.gamify.combo + 1, 5); 
+        else db.gamify.combo = 1;
+        db.gamify.lastActive = now;
+      }
 
-            let perfectCount = 0;
+      fn();
+      saveDB();
+      
+      const newXP = calcTotalXP();
+      const diff = newXP - oldXP;
+      
+      if(diff !== 0 && event && event.currentTarget) {
+        const rect = event.currentTarget.getBoundingClientRect();
+        showFloatingXP(diff, rect.left + rect.width / 2, rect.top, db.gamify.combo);
+      }
+      
+      refreshUI(); // Use targeted refresh instead of full render
+    }
 
-            for(let d=1; d<=daysInM; d++) {
-                const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-                const entry = appState[dateKey];
-                const isPerfect = entry && entry.isPerfect;
-                const isToday = isCurrM && d === today.getDate();
-                const isSelected = dateKey === selectedDateKey;
-                
-                if(isPerfect) perfectCount++;
+    function modWater(amount, event) {
+      if (db.logs[activeDate].water + amount < 0) return;
+      actionWrapper(() => { db.logs[activeDate].water += amount; }, event, amount > 0);
+    }
 
-                let css = "aspect-square flex flex-col items-center justify-center rounded-xl transition-all cursor-pointer border-2 ";
-                if (isSelected) css += "border-white bg-white/10 text-white ";
-                else if (isToday) css += "border-primary bg-primary/20 text-white ";
-                else if (isPerfect) css += "calendar-day-active text-white shadow-glow border-transparent ";
-                else css += "border-transparent hover:bg-white/5 text-slate-400 ";
+    function toggleBowel(event) {
+      const willBeTrue = !db.logs[activeDate].bowel;
+      actionWrapper(() => { db.logs[activeDate].bowel = willBeTrue; }, event, willBeTrue);
+    }
 
-                html += `<div class="${css}" onclick="selectDate('${dateKey}')">
-                            <span class="text-sm font-bold">${d}</span>
-                            ${isPerfect && !isSelected ? '<span class="w-1 h-1 bg-white rounded-full mt-1"></span>' : ''}
-                         </div>`;
-            }
-            document.getElementById('cal-grid').innerHTML = html;
-            
-            // Stats & Reward
-            document.getElementById('cal-perfect-days').innerText = perfectCount;
-            document.getElementById('cal-streak').innerText = perfectCount > 0 ? 1 : 0;
-            
-            const progress = Math.min(perfectCount, 3);
-            const pct = (progress / 3) * 100;
-            document.getElementById('reward-count').innerText = progress;
-            document.getElementById('reward-progress').style.width = `${pct}%`;
-            
-            const rBtn = document.getElementById('reward-btn');
-            if(progress >= 3) {
-                rBtn.disabled = false;
-                rBtn.className = "mt-4 w-full py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-gold to-yellow-500 shadow-glow animate-pulse active:scale-95 transition-transform";
-                rBtn.innerHTML = '<span class="material-symbols-outlined text-[16px]">redeem</span> 點擊領取獎勵';
-                rBtn.onclick = () => alert("恭喜！您已解鎖 VIP 課程與獨家資源！");
-            } else {
-                rBtn.disabled = true;
-                rBtn.className = "mt-4 w-full py-2.5 rounded-xl text-xs font-bold text-slate-500 bg-slate-800 cursor-not-allowed";
-                rBtn.innerHTML = `<span class="flex items-center justify-center gap-1"><span class="material-symbols-outlined text-[16px]">lock</span> 尚未解鎖</span>`;
-            }
-        }
+    function toggleTask(id, event) {
+      const willBeTrue = !db.logs[activeDate].tasks[id];
+      actionWrapper(() => { db.logs[activeDate].tasks[id] = willBeTrue; }, event, willBeTrue);
+      if(willBeTrue && isPerfect(activeDate)) confettiBurst();
+    }
 
-        function changeMonth(offset) {
-            calViewDate.setMonth(calViewDate.getMonth() + offset);
-            renderCalendar();
-        }
+    function saveNote(type, val) {
+      const wasEmpty = db.logs[activeDate].notes[type].trim() === "";
+      const isEmpty = val.trim() === "";
+      actionWrapper(() => { db.logs[activeDate].notes[type] = val; }, null, !isEmpty);
+      
+      if (wasEmpty && !isEmpty) toast("Note Saved +XP");
+      else if (!wasEmpty && isEmpty) toast("Note Cleared");
+      else toast("Saved");
+    }
 
-        function selectDate(dateKey) {
-            selectedDateKey = dateKey;
-            if (!appState[dateKey]) {
-                appState[dateKey] = { water: 0, bowel: false, tasks: { 1: false, 2: false, 3: false }, readingDone: false, growthNote: "", brandNote: "", scripture: "", spiritNote: "", isPerfect: false };
-            }
-            renderCalendar();
-            showDetail(dateKey);
-        }
+    // --- TARGETED UI REFRESH (ZERO FLICKER) ---
+    function updateEl(id, val) { const el = document.getElementById(id); if(el) el.innerText = val; }
+    function updateStyle(id, prop, val) { const el = document.getElementById(id); if(el) el.style[prop] = val; }
 
-        function showDetail(dateKey) {
-            const entry = appState[dateKey];
-            const [y, m, d] = dateKey.split('-');
-            
-            document.getElementById('detail-date').innerText = `${m}月 ${d}日 完整紀錄`;
-            document.getElementById('detail-water').innerText = `${entry.water} ml`;
-            document.getElementById('detail-bowel').innerText = entry.bowel ? '正常' : '無';
-            document.getElementById('detail-bowel').className = entry.bowel ? 'font-bold text-green-400' : 'font-bold text-slate-500';
-            
-            let taskHtml = '';
-            taskHtml += `<div class="flex justify-between text-slate-300"><span>深蹲</span><span class="${entry.tasks[1]?'text-primary':'text-slate-600'}">${entry.tasks[1]?'完成':'未完成'}</span></div>`;
-            taskHtml += `<div class="flex justify-between text-slate-300"><span>阻力</span><span class="${entry.tasks[2]?'text-primary':'text-slate-600'}">${entry.tasks[2]?'完成':'未完成'}</span></div>`;
-            taskHtml += `<div class="flex justify-between text-slate-300"><span>早餐</span><span class="${entry.tasks[3]?'text-primary':'text-slate-600'}">${entry.tasks[3]?'完成':'未完成'}</span></div>`;
-            document.getElementById('detail-task-list').innerHTML = taskHtml;
-            
-            // Mind & Spirit Text
-            document.getElementById('detail-reading').innerText = entry.readingDone ? '完成' : '未完成';
-            document.getElementById('detail-reading').className = entry.readingDone ? 'text-primary' : 'text-slate-600';
-            
-            document.getElementById('detail-growth').innerText = entry.growthNote || "(無)";
-            document.getElementById('detail-brand').innerText = entry.brandNote || "(無)";
-            document.getElementById('detail-scripture').innerText = entry.scripture || "(無)";
-            document.getElementById('detail-spirit').innerText = entry.spiritNote || "(無)";
-            
-            const card = document.getElementById('detail-overlay');
-            card.classList.remove('border-white/10');
-            card.classList.add('border-primary');
-            setTimeout(() => { card.classList.remove('border-primary'); card.classList.add('border-white/10'); }, 300);
-        }
+    function refreshUI() {
+      const data = db.logs[activeDate];
+      const xp = calcTotalXP();
+      const level = Math.floor(xp / 500) + 1;
+      const xpPct = ((xp % 500) / 500) * 100;
+      const currentStreak = calcStreak();
+      const perfCount = Object.keys(db.logs).filter(k => isPerfect(k)).length;
 
-        // --- 6. GLOBAL UPDATE ---
-        function updateUI() {
-            const k = getActiveDateKey();
-            const d = appState[k];
-            if(!d) return;
+      // Update Hub
+      updateEl('hub-level', level);
+      updateEl('hub-xp-text', `${xp} / ${level*500} XP`);
+      updateStyle('hub-xp-bar', 'width', `${xpPct}%`);
+      updateEl('hub-streak', currentStreak);
+      updateEl('hub-perf-count', perfCount);
+      
+      const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
+      const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
+      const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
+      updateEl('hub-body-score', `${bScore}%`);
+      updateStyle('hub-body-bar', 'width', `${bScore}%`);
 
-            // Body
-            const waterVal = document.getElementById('water-val');
-            const waterProg = document.getElementById('water-progress');
-            const bowelTog = document.getElementById('bowel-toggle');
-            
-            if(waterVal) waterVal.innerText = d.water;
-            if(waterProg) {
-                const wPct = Math.min((d.water / WATER_TARGET) * 100, 100);
-                waterProg.style.width = `${wPct}%`;
-            }
-            if(bowelTog) bowelTog.checked = d.bowel;
-            
-            // Mind
-            const readBtn = document.getElementById('read-check-btn');
-            if(readBtn) readBtn.className = d.readingDone ? "h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center transition-colors shadow-glow" : "h-8 w-8 rounded-full border border-slate-600 flex items-center justify-center transition-colors text-slate-600";
-            
-            if(document.getElementById('growth-input')) document.getElementById('growth-input').value = d.growthNote || "";
-            if(document.getElementById('brand-input')) document.getElementById('brand-input').value = d.brandNote || "";
-            if(document.getElementById('scripture-input')) document.getElementById('scripture-input').value = d.scripture || "";
-            if(document.getElementById('spirit-input')) document.getElementById('spirit-input').value = d.spiritNote || "";
+      // Update Body
+      updateEl('water-val', data.water);
+      updateStyle('water-progress', 'width', `${wScore}%`);
+      const bowelToggle = document.getElementById('bowel-toggle');
+      if(bowelToggle) bowelToggle.className = `switch ${data.bowel ? 'on' : ''}`;
 
-            renderTasks();
+      // Update Task Widgets Dynamically
+      ['squat', 'resist', 'breakfast', 'read', 'devotion'].forEach(id => {
+         const tWrap = document.getElementById(`task-wrap-${id}`);
+         if (tWrap) {
+             tWrap.className = `widget ${data.tasks[id] ? 'active' : ''}`;
+             tWrap.innerHTML = buildWidgetInner(id);
+         }
+      });
 
-            // Hub
-            const tCount = (d.tasks[1]?1:0) + (d.tasks[2]?1:0) + (d.tasks[3]?1:0);
-            const totalScore = Math.round(((d.water/WATER_TARGET)*0.4 + (tCount/3)*0.6) * 100);
-            const hubScore = document.getElementById('hub-body-score');
-            const hubBar = document.getElementById('hub-body-bar');
-            if(hubScore) hubScore.innerText = `${Math.min(totalScore, 100)}%`;
-            if(hubBar) hubBar.style.width = `${Math.min(totalScore, 100)}%`;
-            
-            // Calendar
-            if (document.getElementById('view-calendar').classList.contains('active')) {
-                renderCalendar();
-                showDetail(k);
-            }
-        }
+      // Update Calendar (Safe to re-render grid as it has no inputs)
+      if (currentView === 'cal') renderCalendarGrid();
+    }
 
-        // Init
-        updateUI();
-        navTo('hub');
+    function stag(n) { return isNavigating ? `stagger-${n}` : ''; }
 
-    </script>
+    // --- ROUTER & RENDER ---
+    function router(view) {
+      currentView = view;
+      isNavigating = true;
+      document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+      document.getElementById(`nav-${view}`).classList.add('active');
+      renderView();
+      isNavigating = false;
+    }
+
+    function renderView() {
+      const main = document.getElementById('main-view');
+      initDB();
+      initDate(activeDate);
+      const data = db.logs[activeDate];
+      const xp = calcTotalXP();
+      const level = Math.floor(xp / 500) + 1;
+      const nextXP = level * 500;
+      const xpPct = ((xp % 500) / 500) * 100;
+      const currentStreak = calcStreak();
+      const perfCount = Object.keys(db.logs).filter(k => isPerfect(k)).length;
+
+      let html = '';
+
+      if (currentView === 'hub') {
+        const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
+        const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
+        const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
+
+        html = `
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="top-bar ${stag(1)}">
+              <div>
+                <h1 class="greeting">Welcome, <br><span class="editable-name" contenteditable="true" onblur="updateName(this.innerText)" onkeydown="if(event.key==='Enter'){event.preventDefault();this.blur();}">${db.settings.userName}</span></h1>
+                <div class="date-sub">${new Date().toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric'})}</div>
+              </div>
+              <div class="top-avatar" onclick="resetAll()" title="Reset DB">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0">
+              </div>
+            </div>
+
+            <div class="bento-card col-span-2 press-card ${stag(2)}" onclick="router('body')" style="background: linear-gradient(145deg, rgba(249, 115, 22, 0.12) 0%, rgba(30, 33, 45, 0.6) 100%);">
+              <span class="c-label" style="color:var(--primary-glow)">System Energy</span>
+              <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                <div><div class="c-val" id="hub-body-score">${bScore}%</div><div class="c-sub">Today's Body Metrics</div></div>
+                <span class="material-symbols-outlined" style="color:var(--primary); font-size:36px; font-variation-settings: 'FILL' 1; line-height:1;">bolt</span>
+              </div>
+              <div class="prog-bar-bg"><div class="prog-bar-fill" id="hub-body-bar" style="width: ${bScore}%"></div></div>
+            </div>
+
+            <div class="grid-bento ${stag(3)}">
+              <div class="bento-card">
+                <span class="c-label">Level</span>
+                <div class="c-val" style="font-size:36px; margin-bottom:0;" id="hub-level">${level}</div>
+                <div class="c-sub" style="margin-top:8px" id="hub-xp-text">${xp} / ${nextXP} XP</div>
+                <div class="prog-bar-bg" style="height:4px; margin-top:8px;"><div class="prog-bar-fill prog-bar-cyan" id="hub-xp-bar" style="width: ${xpPct}%"></div></div>
+              </div>
+              <div class="bento-card press-card" onclick="router('cal')">
+                <span class="c-label">Streak</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="color:var(--gold); font-size:32px; font-variation-settings: 'FILL' 1; line-height:1;">local_fire_department</span>
+                  <div class="c-val" style="font-size:36px; margin-bottom:0;" id="hub-streak">${currentStreak}</div>
+                </div>
+                <div class="c-sub" style="margin-top:8px"><span id="hub-perf-count">${perfCount}</span> Perfect Days</div>
+              </div>
+            </div>
+
+            <div class="bento-card col-span-2 press-card ${stag(4)}" onclick="router('mind')" style="flex-direction:row; align-items:center;">
+              <div><div class="c-val" style="font-size:18px">Mind & Spirit</div><div class="c-sub">Log today's strategy & thoughts</div></div>
+              <div class="w-btn" style="background:var(--card-solid)"><span class="material-symbols-outlined" style="line-height:1;">arrow_forward</span></div>
+            </div>
+
+            <div class="bento-card col-span-2 ${stag(4)}" style="border-color: rgba(45, 212, 191, 0.2);">
+              <span class="c-label" style="color:var(--accent)">DAILY JOURNAL</span>
+              <div class="c-sub" style="margin-bottom:12px;">寫下今天的一句話，總結你的進化。</div>
+              <textarea class="input-glass" style="min-height:80px;" placeholder="Today I am grateful for..." onblur="saveNote('journal', this.value)">${data.notes.journal || ''}</textarea>
+            </div>
+          </div>
+        `;
+      } 
+      
+      else if (currentView === 'body') {
+        const wPct = Math.min(data.water / WATER_TARGET * 100, 100);
+        html = `
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="top-bar ${stag(1)}">
+              <div><h1 class="greeting">Body</h1><div class="date-sub">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</div></div>
+            </div>
+
+            <div class="bento-card col-span-2 ${stag(2)}">
+              <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div><span class="c-label">Hydration</span><div class="val-huge" id="water-val">${data.water}</div></div>
+                <span class="pill-tag cyan"><span class="material-symbols-outlined" style="font-size:14px; line-height:1;">flag</span> ${WATER_TARGET} ML</span>
+              </div>
+              <div class="prog-bar-bg" style="height:12px; margin: 16px 0;"><div class="prog-bar-fill prog-bar-cyan" id="water-progress" style="width: ${wPct}%"></div></div>
+              <div style="display:flex; gap:12px;">
+                <button class="btn-solid" style="flex:1" onclick="modWater(250, event)">+ 250</button>
+                <button class="btn-solid accent" style="flex:1" onclick="modWater(500, event)">+ 500</button>
+                <button class="btn-solid" style="width:52px; padding:0; background:rgba(239, 68, 68, 0.15); color:var(--danger);" onclick="modWater(-250, event)"><span class="material-symbols-outlined" style="line-height:1;">remove</span></button>
+              </div>
+            </div>
+
+            <div class="${stag(3)}">
+              <h3 style="margin-bottom:12px;">Training</h3>
+              <div class="grid-bento">
+                <div class="widget ${data.tasks.squat ? 'active' : ''}" id="task-wrap-squat">${buildWidgetInner('squat')}</div>
+                <div class="widget ${data.tasks.resist ? 'active' : ''}" id="task-wrap-resist">${buildWidgetInner('resist')}</div>
+              </div>
+              <div class="grid-bento" style="margin-top:16px;">
+                <div class="widget ${data.tasks.breakfast ? 'active' : ''}" id="task-wrap-breakfast">${buildWidgetInner('breakfast')}</div>
+                <div class="widget ${data.bowel ? 'active' : ''}">
+                  <div class="w-top">
+                    <div class="w-icon"><span class="material-symbols-outlined" style="line-height:1;">gastroenterology</span></div>
+                    <div class="switch ${data.bowel ? 'on' : ''}" id="bowel-toggle" onclick="toggleBowel(event)"></div>
+                  </div>
+                  <div><div class="w-title">Bowel Check</div><div class="w-meta">Daily Health</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      else if (currentView === 'mind') {
+        html = `
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="top-bar ${stag(1)}">
+              <div><h1 class="greeting">Mind & Spirit</h1><div class="date-sub">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</div></div>
+            </div>
+
+            <div class="grid-bento ${stag(2)}">
+              <div class="widget ${data.tasks.read ? 'active' : ''}" id="task-wrap-read">${buildWidgetInner('read')}</div>
+              <div class="widget ${data.tasks.devotion ? 'active' : ''}" id="task-wrap-devotion">${buildWidgetInner('devotion')}</div>
+            </div>
+
+            <div class="${stag(3)}">
+              <h3 style="margin-bottom:12px;">Strategy Logs</h3>
+              <div class="bento-card col-span-2" style="padding:20px;">
+                <span class="c-label" style="color:var(--primary-glow)">Brand Strategy</span>
+                <textarea class="input-glass" placeholder="關於個人品牌的策略與靈感..." onblur="saveNote('brand', this.value)">${data.notes.brand}</textarea>
+              </div>
+            </div>
+
+            <div class="bento-card col-span-2 ${stag(3)}" style="padding:20px;">
+              <span class="c-label" style="color:var(--primary-glow)">Growth Reflection</span>
+              <input type="text" class="input-glass" placeholder="今天學到了什麼？" value="${data.notes.growth}" onblur="saveNote('growth', this.value)">
+            </div>
+
+            <div class="${stag(4)}">
+              <h3 style="margin-bottom:12px; color:var(--gold)">Spirit</h3>
+              <div class="bento-card col-span-2" style="padding:20px; border-color:rgba(245, 158, 11, 0.2);">
+                <span class="c-label" style="color:var(--gold)">Daily Scripture</span>
+                <input type="text" class="input-glass" placeholder="Verse (e.g. Psalm 23:1)" value="${data.notes.scripture}" onblur="saveNote('scripture', this.value)" style="margin-bottom:12px;">
+                <textarea class="input-glass" placeholder="靈修心得與領受..." onblur="saveNote('spirit', this.value)">${data.notes.spirit}</textarea>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      else if (currentView === 'cal') {
+        html = `
+          <div style="display:flex; flex-direction:column; gap:20px;">
+            <div class="top-bar ${stag(1)}">
+              <div><h1 class="greeting">History</h1><div class="date-sub">Evolution Log</div></div>
+            </div>
+            <div class="bento-card col-span-2 ${stag(2)}" id="calendar-wrapper">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        `;
+        // Delay grid render slightly to ensure wrapper exists
+        setTimeout(renderCalendarGrid, 0); 
+      }
+
+      main.innerHTML = html;
+      main.className = `scroll-area active`; 
+    }
+
+    // --- TARGETED COMPONENT RENDER ---
+    function buildWidgetInner(id) {
+      const isDone = db.logs[activeDate].tasks[id];
+      const m = META[id];
+      
+      let actionBtn = '';
+      if (m.type === 'timer') {
+        actionBtn = `
+          <div class="w-actions">
+            ${!isDone ? `<button class="w-btn" onclick="openTimer('${id}')"><span class="material-symbols-outlined" style="font-size:18px">play_arrow</span></button>` : ''}
+            <button class="w-btn" style="${isDone ? 'background:transparent; border:none; color:var(--primary);' : ''}" onclick="toggleTask('${id}', event)">
+              <span class="material-symbols-outlined" style="font-size:18px">${isDone ? 'check_circle' : 'check'}</span>
+            </button>
+          </div>
+        `;
+      } else {
+        actionBtn = `
+          <div class="w-actions">
+            <button class="w-btn" style="${isDone ? 'background:transparent; border:none; color:var(--primary);' : ''}" onclick="toggleTask('${id}', event)">
+              <span class="material-symbols-outlined" style="font-size:18px">${isDone ? 'check_circle' : 'check'}</span>
+            </button>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="w-top">
+          <div class="w-icon"><span class="material-symbols-outlined" style="line-height:1;">${m.icon}</span></div>
+          ${actionBtn}
+        </div>
+        <div>
+          <div class="w-title">${m.title}</div>
+          <div class="w-meta">${isDone ? 'Completed' : `+${m.xp} XP`}</div>
+        </div>
+      `;
+    }
+
+    let calViewDate = new Date();
+    function renderCalendarGrid() {
+      const wrap = document.getElementById('calendar-wrapper');
+      if(!wrap) return;
+
+      const year = calViewDate.getFullYear();
+      const month = calViewDate.getMonth();
+      const today = new Date();
+      
+      const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"][month];
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+
+      let gridHtml = '';
+      for(let i=0; i<firstDay; i++) gridHtml += `<div></div>`;
+      
+      for(let i=1; i<=daysInMonth; i++) {
+        const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+        const dayData = db.logs[dateKey];
+        const perfect = dayData ? isPerfect(dateKey) : false;
+        const isToday = dateKey === getTodayStr();
+        const selected = dateKey === activeDate;
+        
+        let className = 'cal-day press';
+        if (perfect) className += ' perfect';
+        else if (selected) className += ' selected';
+        else if (isToday) className += ' today';
+        
+        const hasData = dayData && (dayData.water>0 || dayData.tasks.squat || dayData.notes.growth);
+        const dot = hasData && !perfect ? `<div style="position:absolute; bottom:4px; width:4px; height:4px; background:var(--accent); border-radius:50%"></div>` : '';
+
+        gridHtml += `<div class="${className}" onclick="openDayDetail('${dateKey}')">${i}${dot}</div>`;
+      }
+
+      wrap.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <button class="btn-icon press" style="width:32px;height:32px;" onclick="changeMonth(-1)"><span class="material-symbols-outlined" style="line-height:1;">chevron_left</span></button>
+          <h2 style="margin:0; font-size:20px;">${monthName} ${year}</h2>
+          <button class="btn-icon press" style="width:32px;height:32px;" onclick="changeMonth(1)"><span class="material-symbols-outlined" style="line-height:1;">chevron_right</span></button>
+        </div>
+        <div class="cal-grid" style="color:var(--text-muted); font-size:10px; text-align:center; font-weight:800; letter-spacing:1px;">
+          <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
+        </div>
+        <div class="cal-grid">${gridHtml}</div>
+      `;
+    }
+
+    // --- ZERO-LATENCY TIMER ---
+    function openTimer(id) {
+      const dur = META[id].dur;
+      timerObj = { id, rem: dur, total: dur, running: false, interval: null };
+      document.getElementById('timer-title').innerText = META[id].title;
+      document.getElementById('timer-modal').classList.add('open');
+      updateTimerUI();
+    }
+
+    function toggleTimerState() {
+      const btn = document.getElementById('timer-toggle-btn');
+      if (timerObj.running) {
+        clearInterval(timerObj.interval); // INSTANT PAUSE
+        timerObj.interval = null;
+        timerObj.running = false;
+        btn.innerText = 'Resume';
+        btn.style.background = 'rgba(255,255,255,0.1)';
+      } else {
+        timerObj.running = true;
+        btn.innerText = 'Pause';
+        btn.style.background = 'var(--primary)';
+        if (timerObj.interval) clearInterval(timerObj.interval);
+        timerObj.interval = setInterval(() => {
+          timerObj.rem--;
+          updateTimerUI();
+          if(timerObj.rem <= 0) finishTimer();
+        }, 1000);
+      }
+    }
+
+    function updateTimerUI() {
+      const m = Math.floor(timerObj.rem / 60);
+      const s = timerObj.rem % 60;
+      document.getElementById('timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+
+    function resetTimer() {
+      clearInterval(timerObj.interval);
+      timerObj.interval = null;
+      timerObj.running = false;
+      timerObj.rem = timerObj.total;
+      document.getElementById('timer-toggle-btn').innerText = 'Start';
+      document.getElementById('timer-toggle-btn').style.background = 'var(--primary)';
+      updateTimerUI();
+    }
+
+    function finishTimer() {
+      clearInterval(timerObj.interval);
+      closeModal('timer-modal');
+      const L = db.logs[activeDate];
+      if(!L.tasks[timerObj.id]) {
+        // Trigger completion via action wrapper for XP and visual updates
+        actionWrapper(() => { L.tasks[timerObj.id] = true; }, { currentTarget: document.body }, true);
+        confettiBurst();
+      }
+    }
+
+    // --- CALENDAR MODAL (Full Alignment) ---
+    let viewingDate = null;
+
+    function openDayDetail(dateStr) {
+      viewingDate = dateStr;
+      const d = db.logs[dateStr] || { water: 0, bowel: false, tasks: {}, notes: {} };
+      document.getElementById('day-modal').classList.add('open');
+      document.getElementById('day-modal-title').innerText = dateStr;
+      
+      const t = d.tasks || {};
+      const n = d.notes || {};
+
+      const dIcon = (bool) => bool ? `<div class="d-icon ok"><span class="material-symbols-outlined" style="font-size:16px; line-height:1;">check</span></div>` : `<div class="d-icon no"><span class="material-symbols-outlined" style="font-size:16px; line-height:1;">remove</span></div>`;
+
+      const content = `
+        <div class="detail-grid">
+          <div class="d-card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="c-label" style="margin-bottom:2px">Hydration</div>
+              <div style="font-size:18px; font-weight:800">${d.water || 0} <span style="font-size:12px;color:var(--muted)">ml</span></div>
+            </div>
+            ${d.water >= WATER_TARGET ? dIcon(true) : dIcon(false)}
+          </div>
+          <div class="d-card" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="c-label" style="margin-bottom:2px">Bowel</div>
+              <div style="font-size:18px; font-weight:800; color:${d.bowel?'var(--accent)':'#fff'}">${d.bowel?'Healthy':'—'}</div>
+            </div>
+            ${dIcon(d.bowel)}
+          </div>
+        </div>
+
+        <div class="d-card-full" style="margin-bottom:12px;">
+          <div class="c-label" style="margin-bottom:12px; color:var(--primary-glow)">Training & Focus</div>
+          <div class="d-row"><span class="d-label" style="margin:0;">Squats</span> ${dIcon(t.squat)}</div>
+          <div class="d-row"><span class="d-label" style="margin:0;">Resistance</span> ${dIcon(t.resist)}</div>
+          <div class="d-row"><span class="d-label" style="margin:0;">Breakfast</span> ${dIcon(t.breakfast)}</div>
+          <div class="d-row"><span class="d-label" style="margin:0;">Deep Reading</span> ${dIcon(t.read)}</div>
+          <div class="d-row"><span class="d-label" style="margin:0;">Devotion</span> ${dIcon(t.devotion)}</div>
+        </div>
+        
+        <div class="d-card-full" style="margin-bottom:12px;">
+          <div class="c-label" style="margin-bottom:12px; color:var(--accent)">Mental Logs</div>
+          <div style="margin-bottom:16px;">
+            <span class="d-label" style="font-size:11px; margin-bottom:4px;">BRAND STRATEGY</span>
+            <div class="d-text">${escape(n.brand) || '—'}</div>
+          </div>
+          <div>
+            <span class="d-label" style="font-size:11px; margin-bottom:4px;">GROWTH REFLECTION</span>
+            <div class="d-text">${escape(n.growth) || '—'}</div>
+          </div>
+        </div>
+
+        <div class="d-card-full">
+          <div class="c-label" style="margin-bottom:12px; color:var(--gold)">Spirit & Journal</div>
+          <div style="margin-bottom:16px;">
+            <span class="d-label" style="font-size:11px; margin-bottom:4px;">SCRIPTURE</span>
+            <div class="d-text" style="color:var(--gold)">${escape(n.scripture) || '—'}</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <span class="d-label" style="font-size:11px; margin-bottom:4px;">REFLECTION</span>
+            <div class="d-text">${escape(n.spirit) || '—'}</div>
+          </div>
+          <div>
+            <span class="d-label" style="font-size:11px; margin-bottom:4px;">DAILY JOURNAL</span>
+            <div class="d-text">${escape(n.journal) || '—'}</div>
+          </div>
+        </div>
+      `;
+      document.getElementById('day-modal-content').innerHTML = content;
+    }
+
+    function changeMonth(offset) {
+      calViewDate.setMonth(calViewDate.getMonth() + offset);
+      renderCalendarGrid();
+    }
+
+    function setActiveDayFromModal() {
+      activeDate = viewingDate;
+      closeModal('day-modal');
+      router('body'); 
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+      if(id === 'timer-modal') clearInterval(timerObj.interval);
+    }
+
+    function escape(s){ return String(s || "").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+
+    // --- EFFECTS ---
+    function showFloatingXP(amount, x, y, combo) {
+      const el = document.createElement('div');
+      el.className = `xp-float ${amount > 0 ? 'xp-plus' : 'xp-minus'}`;
+      let text = amount > 0 ? `+${amount} XP` : `${amount} XP`;
+      if (amount > 0 && combo > 1) text += ` (x${combo})`;
+      el.innerText = text;
+      el.style.left = `${x}px`; el.style.top = `${y}px`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 800);
+    }
+
+    function confettiBurst() {
+      const c = document.getElementById("confetti");
+      const ctx = c.getContext("2d");
+      c.width = window.innerWidth; c.height = window.innerHeight;
+      let particles = [];
+      for(let i=0; i<40; i++) {
+        particles.push({
+          x: c.width/2, y: c.height/2,
+          vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12 - 5,
+          color: `hsl(${Math.random()*60 + 15}, 100%, 60%)`, 
+          life: 80 + Math.random()*40
+        });
+      }
+      function draw() {
+        ctx.clearRect(0,0,c.width,c.height);
+        particles.forEach((p, i) => {
+          p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--;
+          ctx.fillStyle = p.color;
+          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+          if(p.life <= 0) particles.splice(i, 1);
+        });
+        if(particles.length > 0) requestAnimationFrame(draw);
+      }
+      draw();
+    }
+
+    // Init App
+    initDB();
+    initDate(activeDate);
+    router('hub');
+
+  </script>
 </body>
 </html>
