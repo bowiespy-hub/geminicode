@@ -1,964 +1,1162 @@
-https://bowiespy-hub.github.io/geminicode/<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-Hant" class="dark">
 <head>
     <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
-    <title>ATE - SPY Evolution</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com" rel="preconnect"/>
-    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin/>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Manrope:wght@200..800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round|Material+Icons+Outlined" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="theme-color" content="#05060A"/>
+    <title>ATE Mobile V4 - Evolution</title>
 
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans+TC:wght@300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@200..700&display=swap" rel="stylesheet"/>
     
+    <!-- Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['"Manrope"', '"Noto Sans TC"', 'sans-serif'],
-                        serif: ['"Noto Serif TC"', 'serif'],
-                        display: ['"Playfair Display"', '"Noto Sans TC"', 'serif'],
-                    },
                     colors: {
-                        primary: "#D4AF37", 
-                        "primary-glow": "#F9E076",
-                        obsidian: "#0A0A0F",
-                        "obsidian-light": "#1A1A24",
-                        "indigo-deep": "#0F0F2D",
-                        "indigo-glow": "#4B0082",
-                        "background-dark": "#050508",
-                        "violet-glow": "#8B5CF6",
-                        "accent-purple": "#A894F8",
-                        "accent-blue": "#4a5cd8",
+                        ink: "#05060A",
+                        obsidian: "#0B0D14",
+                        surface: "#0F1424",
+                        panel: "#10192E",
+                        stroke: "rgba(255,255,255,0.10)",
+                        stroke2: "rgba(255,255,255,0.14)",
+                        gold: "#D4AF37",
+                        gold2: "#F4E09A",
+                        violet: "#8B5CF6",
+                        violet2: "#A78BFA",
+                        cyan: "#22D3EE",
+                        rose: "#FB7185",
+                        lime: "#A3E635",
                     },
-                    backgroundImage: {
-                        'glass-gradient': 'linear-gradient(145deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%)',
-                        'gold-gradient': 'linear-gradient(45deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C)',
-                        'bar-gradient': 'linear-gradient(90deg, #F59E0B 0%, #FCD34D 50%, #FFFBEB 100%)',
+                    fontFamily: {
+                        display: ["Manrope", "Noto Sans TC", "sans-serif"],
+                        body: ["Noto Sans TC", "Manrope", "sans-serif"],
+                        serif: ["Playfair Display", "Noto Serif TC", "serif"],
                     },
                     boxShadow: {
-                        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37)',
-                        'glow-gold': '0 0 20px rgba(212, 175, 55, 0.4)',
-                        'glow-blue': '0 0 15px rgba(59, 130, 246, 0.4)',
-                        'glow-purple': '0 0 15px rgba(168, 85, 247, 0.4)',
+                        glass: "0 14px 44px rgba(0,0,0,0.35)",
+                        glow: "0 0 18px rgba(139,92,246,0.22)",
+                        gold: "0 0 18px rgba(212,175,55,0.18)",
                     },
                     animation: {
-                        'float': 'float 6s ease-in-out infinite',
-                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                        'fadeIn': 'fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'fadeIn': 'fadeIn .18s ease-out forwards',
+                        'slideUp': 'slideUp .25s ease-out forwards',
+                        'popMove': 'popMove 1.5s ease-out forwards',
                     },
                     keyframes: {
-                        float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-                        fadeIn: { '0%': { opacity: '0', transform: 'translateY(10px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+                        fadeIn: {
+                            'from': { opacity: 0, transform: 'translateY(6px)' },
+                            'to': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: 0, transform: 'translateY(100%)' },
+                            '100%': { opacity: 1, transform: 'translateY(0)' },
+                        },
+                        popMove: {
+                            '0%': { opacity: 0, transform: 'translate(-50%, -50%) scale(.92)' },
+                            '18%': { opacity: 1, transform: 'translate(-50%, -58%) scale(1.02)' },
+                            '100%': { opacity: 0, transform: 'translate(-50%, -94%) scale(1.0)' },
+                        }
                     }
-                },
-            },
-        };
+                }
+            }
+        }
     </script>
 
     <style>
-        body {
-            background-color: #050508;
-            background-image: 
-                radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-                radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-                radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
-            background-attachment: fixed;
-            color: #E2E8F0;
-            overflow-x: hidden;
-            min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
+        :root{ color-scheme: dark; }
+
+        /* V4 MOBILE SCALE */
+        html{ font-size: 17px; }               
+        @media (max-width: 390px){ html{ font-size: 16.5px; } }
+        @media (min-width: 430px){ html{ font-size: 18px; } }
+
+        body{
+            min-height: 100dvh; background: #05060A; -webkit-tap-highlight-color: transparent; overflow-x: hidden;
+            font-family: "Noto Sans TC", Manrope, sans-serif; line-height: 1.35;
+            color: #f1f5f9;
         }
 
-        .app-container { position: relative; max-width: 430px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; z-index: 10; background: rgba(0,0,0,0.2); box-shadow: 0 0 50px rgba(0,0,0,0.8); }
-        .scroll-area { flex: 1; overflow-y: auto; padding-bottom: 120px; scrollbar-width: none; }
-        .scroll-area::-webkit-scrollbar { display: none; }
+        .ms { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 420, 'GRAD' 0, 'opsz' 24; }
+        .ms.fill { font-variation-settings: 'FILL' 1, 'wght' 520, 'GRAD' 0, 'opsz' 24; }
 
-        /* Glass Utilities */
-        .glass-panel {
-            background: rgba(20, 20, 30, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
-            transition: transform 0.2s;
+        /* V4 Glassmorphism */
+        .glass {
+            background: rgba(16,25,46,0.58); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.10);
         }
-        .press:active { transform: scale(0.97); }
-        
-        .glass-modal {
-            background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.15); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+        .glass2 {
+            background: linear-gradient(145deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+            backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.10);
         }
-
-        /* Glow Text */
-        .text-glow { text-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-        .gold-text-glow { text-shadow: 0 0 15px rgba(212, 175, 55, 0.6); }
-
-        /* SVG Timer */
-        .timer-circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 6; }
-        .timer-circle-progress {
-            fill: none; stroke: url(#gradientStroke); stroke-width: 6; stroke-linecap: round;
-            stroke-dasharray: 880; stroke-dashoffset: 880; 
-            transition: stroke-dashoffset 1s linear; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
+        .glass-sheet {
+            background: rgba(20, 25, 35, 0.85); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%);
+            border-top: 1px solid rgba(255,255,255,0.2); box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
         }
 
-        /* Nav */
-        .bottom-nav {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            background: rgba(10, 10, 15, 0.95); backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 12px 16px 24px 16px; z-index: 50; display: flex; justify-content: space-around;
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* V4 UI Elements */
+        .chip {
+            display: inline-flex; align-items: center; gap: .42rem;
+            padding: .28rem .62rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.11);
+            background: rgba(255,255,255,0.045); font-size: 11px; font-weight: 900;
+            color: rgba(226,232,240,0.92); letter-spacing: .08em; text-transform: uppercase; user-select: none; white-space: nowrap;
         }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #64748b; font-size: 10px; cursor: pointer; transition: 0.3s;
+        .chip .ms { font-size: 16px; }
+
+        .popBadge {
+            padding: .30rem .58rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12);
+            background: rgba(15,20,36,0.78); font-weight: 950; letter-spacing: .08em; font-size: 13px;
         }
-        .nav-item.active { color: #D4AF37; }
-        .nav-item .material-icons-round { font-size: 24px; transition: 0.3s; }
-        .nav-item.active .material-icons-round { filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.5)); transform: translateY(-2px); }
 
-        /* Modals */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal-overlay.open { opacity: 1; pointer-events: auto; }
-        .modal-sheet { width: 100%; max-width: 430px; border-radius: 32px 32px 0 0; padding: 24px; max-height: 85vh; overflow-y: auto; transform: translateY(100%); transition: 0.4s cubic-bezier(0.16, 1, 0.3, 1); border-top: 1px solid rgba(255,255,255,0.1); }
-        .modal-overlay.open .modal-sheet { transform: translateY(0); }
+        .pb-safe { padding-bottom: calc(6.2rem + env(safe-area-inset-bottom)); }
+        .nav-safe { padding-bottom: calc(1.0rem + env(safe-area-inset-bottom)); }
 
-        /* XP FX */
-        .xp-float { position: fixed; z-index: 999; pointer-events: none; font-weight: 800; font-family: 'Playfair Display', serif; font-size: 24px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); transform: translate(-50%, -50%); opacity: 0; animation: floatUp 1s ease-out forwards; }
-        .xp-plus { color: #F9E076; }
-        .xp-minus { color: #ef4444; }
-        @keyframes floatUp { 0% { opacity: 0; transform: translate(-50%, 0) scale(0.9); } 20% { opacity: 1; transform: translate(-50%, -15px) scale(1.1); } 100% { opacity: 0; transform: translate(-50%, -50px) scale(1); } }
+        .noise {
+            opacity: 0.045;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 240 240%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.75%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E');
+        }
 
-        /* Custom Inputs */
-        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 14px; border-radius: 16px; font-family: inherit; font-size: 14px; outline: none; transition: 0.3s; }
-        input:focus, textarea:focus { border-color: #D4AF37; background: rgba(212, 175, 55, 0.05); }
+        button, a { touch-action: manipulation; }
+        .tap44 { min-height: 44px; min-width: 44px; }
 
-        .view-section { display: none; opacity: 0; animation: fadeIn 0.4s forwards; }
-        .view-section.active { display: flex; }
+        .app-container { max-width: 440px; margin: 0 auto; min-height: 100vh; position: relative; background: transparent; }
     </style>
 </head>
 <body>
+    <div id="root"></div>
 
-    <div class="app-container">
-        <!-- Hidden File Input for Avatar Upload -->
-        <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-        
-        <!-- DYNAMIC CONTENT -->
-        <div id="main-view" class="scroll-area"></div>
+    <script type="text/babel">
+        const { useState, useEffect, createContext, useContext, useRef, useMemo } = React;
+        const { MemoryRouter, Routes, Route, useNavigate, useLocation } = ReactRouterDOM;
 
-        <!-- NAVIGATION -->
-        <div class="bottom-nav">
-            <div class="nav-item active" onclick="router('hub')" id="nav-hub">
-                <span class="material-icons-round">rocket_launch</span><span>進化</span>
-            </div>
-            <div class="nav-item" onclick="router('body')" id="nav-body">
-                <span class="material-icons-round">fitness_center</span><span>身體</span>
-            </div>
-            <div class="nav-item" onclick="router('mind')" id="nav-mind">
-                <span class="material-icons-round">psychology</span><span>心智</span>
-            </div>
-            <div class="nav-item" onclick="router('cal')" id="nav-cal">
-                <span class="material-icons-round">calendar_today</span><span>日曆</span>
-            </div>
-        </div>
-    </div>
+        const AppContext = createContext();
 
-    <!-- MODAL: TIMER -->
-    <div class="modal-overlay" id="timer-modal">
-        <div class="modal-sheet glass-modal relative overflow-hidden">
-            <div class="absolute -top-20 -right-20 w-64 h-64 bg-violet-glow/20 rounded-full blur-[80px]"></div>
-            
-            <div class="flex justify-between items-center mb-8 relative z-10">
-                <div class="text-xs tracking-widest text-gray-400 uppercase font-bold" id="timer-label">FOCUS SESSION</div>
-                <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="closeModal('timer-modal')">
-                    <span class="material-icons-round text-sm">close</span>
-                </button>
-            </div>
-            
-            <h2 id="timer-title" class="text-center text-2xl font-display text-white mb-8 relative z-10">Task</h2>
-            
-            <div class="relative w-64 h-64 mx-auto mb-10 flex items-center justify-center relative z-10">
-                <div class="absolute inset-0 rounded-full border border-violet-500/10 shadow-[0_0_40px_rgba(139,92,246,0.1)]"></div>
-                <svg class="w-full h-full transform -rotate-90" viewBox="0 0 300 300">
-                    <defs>
-                        <linearGradient id="gradientStroke" x1="0%" x2="100%" y1="0%" y2="0%">
-                            <stop offset="0%" style="stop-color:#8B5CF6; stop-opacity:1"></stop>
-                            <stop offset="50%" style="stop-color:#D4AF37; stop-opacity:1"></stop>
-                            <stop offset="100%" style="stop-color:#8B5CF6; stop-opacity:1"></stop>
-                        </linearGradient>
-                    </defs>
-                    <circle class="timer-circle-bg" cx="150" cy="150" r="140"></circle>
-                    <circle id="timer-svg-prog" class="timer-circle-progress" cx="150" cy="150" r="140"></circle>
-                </svg>
-                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <div class="text-6xl font-light text-white font-display tracking-tighter tabular-nums drop-shadow-lg" id="timer-display">00:00</div>
-                </div>
-            </div>
-            
-            <div class="flex gap-4 relative z-10">
-                <button class="flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2" id="timer-toggle-btn" onclick="toggleTimerState()">
-                    <span class="material-icons-round" id="timer-icon">play_arrow</span>
-                    <span id="timer-text">開始</span>
-                </button>
-                <button class="w-16 bg-white/10 text-white rounded-2xl flex items-center justify-center press" onclick="resetTimer()">
-                    <span class="material-icons-round">refresh</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: DAY DETAIL -->
-    <div class="modal-overlay" id="day-modal">
-        <div class="modal-sheet glass-modal">
-            <div class="flex justify-between items-center mb-6">
-                <h2 id="day-modal-title" class="text-2xl font-display text-primary gold-text-glow">Date</h2>
-                <button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="closeModal('day-modal')">
-                    <span class="material-icons-round text-sm">close</span>
-                </button>
-            </div>
-            <div id="day-modal-content" class="space-y-4"></div>
-            <button class="w-full mt-6 py-4 rounded-xl border border-primary/50 text-primary font-bold tracking-wide press bg-primary/5 hover:bg-primary/10 transition-colors" onclick="setActiveDayFromModal()">
-                編輯此日紀錄 (補登)
-            </button>
-        </div>
-    </div>
-
-    <script>
-        /* =========================================
-           ATE V16+ - DAILY SCRIPTURE & AVATAR UPLOAD
-        ========================================= */
-        const DB_KEY = 'ATE_OBSIDIAN_V16';
-        const WATER_TARGET = 1900;
-        
-        const META = {
-            squat: { title: "大師深蹲 (15m)", xp: 60, icon: "fitness_center", type: "timer", dur: 15*60 },
-            resist: { title: "阻力訓練 (30m)", xp: 80, icon: "exercise", type: "timer", dur: 30*60 },
-            breakfast: { title: "DIAAS 早餐", xp: 30, icon: "restaurant", type: "check" },
-            read: { title: "深度閱讀 (20m)", xp: 70, icon: "menu_book", type: "timer", dur: 20*60 },
-            devotion: { title: "靜默靈修 (10m)", xp: 60, icon: "spa", type: "timer", dur: 10*60 },
-            bowel: { xp: 20 },
-            notes: { growth: 40, brand: 40, scripture: 30, spirit: 50, journal: 30 },
-            waterGoal: 100 
-        };
-
-        // Hand-picked verses for Daily Manna
-        const VERSES = [
-            { text: "I can do all things through him who strengthens me.", ref: "Philippians 4:13" },
-            { text: "For God gave us a spirit not of fear but of power and love and self-control.", ref: "2 Timothy 1:7" },
-            { text: "Commit your work to the Lord, and your plans will be established.", ref: "Proverbs 16:3" },
-            { text: "Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go.", ref: "Joshua 1:9" },
-            { text: "But they who wait for the Lord shall renew their strength; they shall mount up with wings like eagles...", ref: "Isaiah 40:31" },
-            { text: "Let all that you do be done in love.", ref: "1 Corinthians 16:14" },
-            { text: "Trust in the Lord with all your heart, and do not lean on your own understanding.", ref: "Proverbs 3:5" },
-            { text: "The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning.", ref: "Lamentations 3:22-23" },
-            { text: "Peace I leave with you; my peace I give to you. Not as the world gives do I give to you. Let not your hearts be troubled.", ref: "John 14:27" },
-            { text: "And let us not grow weary of doing good, for in due season we will reap, if we do not give up.", ref: "Galatians 6:9" }
+        const LEVELS = [
+            { level: 1, title: '覺醒者 (Awakened)', minXp: 0 },
+            { level: 2, title: '探索者 (Seeker)', minXp: 500 },
+            { level: 3, title: '進化者 (Evolver)', minXp: 1200 },
+            { level: 4, title: '超凡者 (Transcendent)', minXp: 2500 },
+            { level: 5, title: '星辰領航員 (Stellar Navigator)', minXp: 5000 },
         ];
 
-        let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
-        let activeDate = getTodayStr(); 
-        let timerObj = { id: null, rem: 0, total: 0, interval: null, running: false };
+        const TASKS = {
+            water: { category: 'body', xp: 10 }, 
+            squats: { category: 'body', xp: 50, duration: 10 * 60 },
+            stretch: { category: 'body', xp: 50, duration: 10 * 60 },
+            muscle: { category: 'body', xp: 150, duration: 30 * 60 },
+            poop: { category: 'body', xp: 30 },
+            reading: { category: 'mind', xp: 100, duration: 20 * 60 },
+            skill: { category: 'mind', xp: 80, duration: 15 * 60 },
+            review: { category: 'mind', xp: 60 },
+            strategy: { category: 'mind', xp: 60 }, // 補回策略筆記
+            gratitude: { category: 'mind', xp: 50 },
+            devotion: { category: 'spirit', xp: 50, duration: 10 * 60 },
+            verse: { category: 'spirit', xp: 40 },
+            healing: { category: 'spirit', xp: 40 }
+        };
 
-        function getTodayStr() {
+        const TASK_NAMES = {
+            water: '水分', squats: '深蹲', stretch: '拉筋', muscle: '肌肉訓練', poop: '排便',
+            reading: '閱讀', skill: '技能', review: '復盤', strategy: '策略', gratitude: '感恩',
+            devotion: '靈修', verse: '經文', healing: '修復'
+        };
+
+        const VERSES = [
+            { text: "For God has not given us a spirit of fear, but of power and of love and of a sound mind.", ref: "2 Timothy 1:7" },
+            { text: "I can do all things through Christ who strengthens me.", ref: "Philippians 4:13" },
+            { text: "Be strong and courageous. Do not be afraid; do not be discouraged, for the Lord your God will be with you wherever you go.", ref: "Joshua 1:9" },
+            { text: "But the fruit of the Spirit is love, joy, peace, forbearance, kindness, goodness, faithfulness, gentleness and self-control.", ref: "Galatians 5:22-23" },
+            { text: "Let all that you do be done in love.", ref: "1 Corinthians 16:14" },
+            { text: "Trust in the Lord with all your heart and lean not on your own understanding.", ref: "Proverbs 3:5" },
+            { text: "Come to me, all you who are weary and burdened, and I will give you rest.", ref: "Matthew 11:28" }
+        ];
+
+        const getTodayString = () => {
             const d = new Date();
             return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        }
+        };
 
-        function initDB() {
-            if (!db.settings) db.settings = { userName: "覺醒女神", avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0" };
-            if (!db.gamify) db.gamify = { combo: 1, lastActive: 0 };
-            if (!db.logs) db.logs = {};
-        }
+        const getVerseForDate = (dateStr) => {
+            const sum = dateStr.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
+            return VERSES[sum % VERSES.length];
+        };
 
-        function initDate(dateStr) {
-            if (!db.logs[dateStr]) {
-                db.logs[dateStr] = {
-                    water: 0, bowel: false,
-                    tasks: { squat: false, resist: false, read: false, breakfast: false, devotion: false },
-                    notes: { growth: "", brand: "", scripture: "", spirit: "", journal: "" }
-                };
-                saveDB();
-            }
-        }
+        const AppProvider = ({ children }) => {
+            const [profile, setProfile] = useState({ name: 'Aether', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=D4AF37' });
+            const [xp, setXp] = useState(0); 
+            const [streak, setStreak] = useState(0);
+            const [logs, setLogs] = useState({});
+            const [toasts, setToasts] = useState([]);
+            const [activeDate, setActiveDate] = useState(getTodayString());
+            const [sttLang, setSttLang] = useState('AUTO'); 
+            const [surpriseQuest, setSurpriseQuest] = useState(null);
 
-        function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
-
-        function resetAll() {
-            if(confirm("【系統重置警告】確定要清除所有數據並從 0 開始嗎？")) {
-                localStorage.removeItem(DB_KEY); location.reload();
-            }
-        }
-
-        // Handle Image Upload & Compression (Avoid LocalStorage bloat)
-        function handleAvatarUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    const ctx = canvas.getContext('2d');
-                    
-                    // Resize to max 300px width/height for localstorage safety
-                    const MAX_SIZE = 300;
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > MAX_SIZE) {
-                            height *= MAX_SIZE / width;
-                            width = MAX_SIZE;
+            useEffect(() => {
+                if (!logs[activeDate]) {
+                    setLogs(prev => ({
+                        ...prev,
+                        [activeDate]: {
+                            water: 0, squats: false, stretch: false, muscle: false, poop: null,
+                            reading: false, readLog: '', skill: false, review: '', strategy: '', gratitude: '',
+                            devotion: false, verse: '', healing: ''
                         }
-                    } else {
-                        if (height > MAX_SIZE) {
-                            width *= MAX_SIZE / height;
-                            height = MAX_SIZE;
-                        }
+                    }));
+                }
+            }, [activeDate, logs]);
+
+            const levelInfo = useMemo(() => {
+                let current = LEVELS[0];
+                let next = LEVELS[1];
+                for (let i = 0; i < LEVELS.length; i++) {
+                    if (xp >= LEVELS[i].minXp) {
+                        current = LEVELS[i];
+                        next = LEVELS[i + 1] || LEVELS[i];
                     }
-                    canvas.width = width;
-                    canvas.height = height;
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    db.settings.avatarUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    saveDB();
-                    renderView(); // Refresh to show new avatar
-                };
-                img.src = e.target.result;
+                }
+                const progress = next.minXp > current.minXp ? ((xp - current.minXp) / (next.minXp - current.minXp)) * 100 : 100;
+                return { ...current, next, progress, currentXpInLevel: xp - current.minXp, totalXpForNext: next.minXp - current.minXp };
+            }, [xp]);
+
+            const triggerToast = (amount, text) => {
+                const id = Date.now() + Math.random();
+                setToasts(prev => [...prev, { id, amount, text }]);
+                setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 1500);
             };
-            reader.readAsDataURL(file);
-        }
 
-        function triggerAvatarUpload() {
-            document.getElementById('avatarUpload').click();
-        }
+            const updateTask = (date, taskKey, value) => {
+                setLogs(prevLogs => {
+                    const dayLog = prevLogs[date] || {};
+                    const oldValue = dayLog[taskKey];
+                    let xpChange = 0;
 
-        function isPerfect(dateStr) {
-            const d = db.logs[dateStr];
-            if(!d || !d.tasks) return false;
-            return (d.water >= WATER_TARGET) && d.tasks.squat && d.tasks.resist && d.tasks.breakfast;
-        }
+                    if (typeof value === 'boolean') {
+                        if (value && !oldValue) xpChange = TASKS[taskKey].xp;
+                        else if (!value && oldValue) xpChange = -TASKS[taskKey].xp;
+                    } else if (taskKey === 'water') {
+                        const diff = value - (oldValue || 0);
+                        xpChange = (diff / 250) * TASKS.water.xp;
+                    } else if (typeof value === 'string') {
+                        const isNowValid = value && value.trim() !== '';
+                        const wasValid = oldValue && oldValue.trim() !== '';
+                        if (isNowValid && !wasValid) xpChange = TASKS[taskKey].xp;
+                        else if (!isNowValid && wasValid) xpChange = -TASKS[taskKey].xp;
+                    } else if (taskKey === 'poop') {
+                        if (value && !oldValue) xpChange = TASKS.poop.xp;
+                        else if (!value && oldValue) xpChange = -TASKS.poop.xp;
+                    }
 
-        // --- XP & STREAK ---
-        function calcStreak() {
-            let streak = 0;
-            const today = new Date();
-            for (let i=0; i<365; i++) {
-                const checkDate = new Date(today);
-                checkDate.setDate(today.getDate() - i);
-                const dateStr = `${checkDate.getFullYear()}-${String(checkDate.getMonth()+1).padStart(2,'0')}-${String(checkDate.getDate()).padStart(2,'0')}`;
-                
-                const d = db.logs[dateStr];
-                let isActive = false;
-                if (d) {
-                    const tasksDone = Object.values(d.tasks).some(v => v);
-                    const notesWritten = Object.values(d.notes).some(v => v.trim() !== "");
-                    isActive = (d.water > 0) || tasksDone || notesWritten || d.bowel;
-                }
-                if (isActive) streak++;
-                else if (i > 0) break;
-            }
-            return streak;
-        }
+                    if (xpChange !== 0) {
+                        setXp(currentXp => Math.max(0, currentXp + xpChange));
+                        const actionText = xpChange > 0 ? '獲得' : '扣除';
+                        triggerToast(xpChange, `${actionText} ${TASK_NAMES[taskKey]}`);
+                    }
 
-        function calcTotalXP() {
-            let total = 0;
-            Object.keys(db.logs).forEach(date => {
-                const d = db.logs[date];
-                if(!d || !d.tasks) return; 
-                
-                if(d.tasks.squat) total += META.squat.xp;
-                if(d.tasks.resist) total += META.resist.xp;
-                if(d.tasks.read) total += META.read.xp;
-                if(d.tasks.breakfast) total += META.breakfast.xp;
-                if(d.tasks.devotion) total += META.devotion.xp;
-                if(d.bowel) total += META.bowel.xp;
-                
-                if(d.notes.growth?.trim()) total += META.notes.growth;
-                if(d.notes.brand?.trim()) total += META.notes.brand;
-                if(d.notes.scripture?.trim()) total += META.notes.scripture;
-                if(d.notes.spirit?.trim()) total += META.notes.spirit;
-                if(d.notes.journal?.trim()) total += META.notes.journal;
-                
-                if(d.water >= WATER_TARGET) total += META.waterGoal;
-                total += Math.floor(d.water / 500) * 10; 
-            });
-            return total;
-        }
-
-        function updateName(newName) {
-            if(newName.trim() !== "") {
-                db.settings.userName = newName.trim();
-                saveDB();
-            }
-        }
-
-        // --- ACTIONS (Stateless) ---
-        function actionWrapper(fn, event, isPositiveAction) {
-            const oldXP = calcTotalXP();
-            const now = Date.now();
-            
-            if (isPositiveAction) {
-                if (now - db.gamify.lastActive <= 5 * 60 * 1000) db.gamify.combo = Math.min(db.gamify.combo + 1, 5); 
-                else db.gamify.combo = 1;
-                db.gamify.lastActive = now;
-            }
-
-            fn();
-            saveDB();
-            
-            const newXP = calcTotalXP();
-            const diff = newXP - oldXP;
-            
-            if(diff !== 0 && event && event.currentTarget) {
-                const rect = event.currentTarget.getBoundingClientRect();
-                showFloatingXP(diff, rect.left + rect.width / 2, rect.top, db.gamify.combo);
-            }
-            refreshUI(); 
-        }
-
-        function modWater(amount, event) {
-            if (db.logs[activeDate].water + amount < 0) return;
-            actionWrapper(() => { db.logs[activeDate].water += amount; }, event, amount > 0);
-        }
-
-        function toggleBowel(event) {
-            const willBeTrue = !db.logs[activeDate].bowel;
-            actionWrapper(() => { db.logs[activeDate].bowel = willBeTrue; }, event, willBeTrue);
-        }
-
-        function toggleTask(id, event) {
-            const willBeTrue = !db.logs[activeDate].tasks[id];
-            actionWrapper(() => { db.logs[activeDate].tasks[id] = willBeTrue; }, event, willBeTrue);
-        }
-
-        function saveNote(type, val) {
-            const wasEmpty = db.logs[activeDate].notes[type].trim() === "";
-            const isEmpty = val.trim() === "";
-            actionWrapper(() => { db.logs[activeDate].notes[type] = val; }, null, !isEmpty);
-        }
-
-        // --- TARGETED UI REFRESH (Zero Flicker) ---
-        function updateEl(id, val) { const el = document.getElementById(id); if(el) el.innerHTML = val; }
-        function updateStyle(id, prop, val) { const el = document.getElementById(id); if(el) el.style[prop] = val; }
-
-        function refreshUI() {
-            const data = db.logs[activeDate];
-            const xp = calcTotalXP();
-            const level = Math.floor(xp / 500) + 1;
-            const xpPct = ((xp % 500) / 500) * 100;
-            const currentStreak = calcStreak();
-            
-            const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
-            const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
-            const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
-
-            // View: Hub
-            updateEl('hub-bscore', `${bScore}%`);
-            updateStyle('hub-bbar', 'width', `${bScore}%`);
-            updateEl('hub-level', level);
-            updateEl('hub-xp-text', `${xp} / ${level*500} XP`);
-            updateStyle('hub-xp-bar', 'width', `${xpPct}%`);
-            updateEl('hub-streak', currentStreak);
-
-            // View: Body
-            if(document.getElementById('water-val')) {
-                updateEl('water-val', data.water);
-                updateStyle('water-bar', 'height', `${wScore}%`); 
-                
-                ['squat', 'resist', 'breakfast'].forEach(id => {
-                    updateEl(`task-${id}`, buildTaskInner(id));
+                    return { ...prevLogs, [date]: { ...dayLog, [taskKey]: value } };
                 });
+            };
+
+            const getProgress = (date) => {
+                const log = logs[date] || {};
+                const checkString = (val) => val && val.trim() !== '';
                 
-                const bTog = document.getElementById('bowel-toggle');
-                if(bTog) {
-                    bTog.className = `w-14 h-8 rounded-full relative transition-colors duration-300 border border-white/10 ${data.bowel ? 'bg-primary' : 'bg-gray-700/50'}`;
-                    bTog.children[0].style.transform = data.bowel ? 'translateX(24px)' : 'translateX(0)';
+                let bodyCount = 0;
+                if (log.water >= 2000) bodyCount++;
+                if (log.squats) bodyCount++;
+                if (log.stretch) bodyCount++;
+                if (log.muscle) bodyCount++;
+                if (log.poop) bodyCount++;
+                
+                let mindCount = 0;
+                if (log.reading) mindCount++;
+                if (log.skill) mindCount++;
+                if (checkString(log.review)) mindCount++;
+                if (checkString(log.strategy)) mindCount++; // 策略筆記計入進度
+                if (checkString(log.gratitude)) mindCount++;
+
+                let spiritCount = 0;
+                if (log.devotion) spiritCount++;
+                if (checkString(log.verse)) spiritCount++;
+                if (checkString(log.healing)) spiritCount++;
+
+                const totalCompleted = bodyCount + mindCount + spiritCount;
+                
+                return {
+                    body: Math.round((bodyCount / 5) * 100),
+                    mind: Math.round((mindCount / 5) * 100), // 更新分母為5
+                    spirit: Math.round((spiritCount / 3) * 100),
+                    overall: Math.round((totalCompleted / 13) * 100) // 更新分母為13
+                };
+            };
+
+            useEffect(() => {
+                if (Math.random() < 0.15 && !surpriseQuest) {
+                    setTimeout(() => {
+                        setSurpriseQuest({
+                            title: '隱藏的恩典 (Secret Grace)',
+                            desc: '此刻放下雜念，深呼吸 1 分鐘，領受雙倍祝福！',
+                            xp: 150
+                        });
+                    }, 3500);
                 }
-            }
+            }, []);
 
-            // View: Mind
-            if(document.getElementById('task-read')) {
-                updateEl('task-read', buildTaskInner('read', true));
-                updateEl('task-devotion', buildTaskInner('devotion', true));
-            }
-
-            // View: Calendar
-            if (currentView === 'cal') renderCalendarGrid();
-        }
-
-        // --- ROUTER & RENDER ---
-        let currentView = 'hub';
-        
-        function router(view) {
-            currentView = view;
-            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-            document.getElementById(`nav-${view}`).classList.add('active');
-            renderView();
-        }
-
-        function renderView() {
-            const main = document.getElementById('main-view');
-            initDB(); initDate(activeDate);
-            const data = db.logs[activeDate];
-            const xp = calcTotalXP();
-            const level = Math.floor(xp / 500) + 1;
-            const nextXP = level * 500;
-            const xpPct = ((xp % 500) / 500) * 100;
-            const currentStreak = calcStreak();
-            
-            const bTasks = (data.tasks.squat?1:0) + (data.tasks.resist?1:0) + (data.tasks.breakfast?1:0);
-            const wScore = Math.min(data.water/WATER_TARGET, 1) * 100;
-            const bScore = Math.round((wScore * 0.4) + ((bTasks/3)*100 * 0.6));
-            
-            let html = '';
-
-            if (currentView === 'hub') {
-                // Get Daily Verse
-                const todayNum = new Date(activeDate).getDate();
-                const verse = VERSES[todayNum % VERSES.length];
-
-                html = `
-                    <header class="px-2 py-4 flex justify-between items-center relative z-10 mb-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="material-icons-round text-primary/80 text-lg">nightlight_round</span>
-                            <span class="text-sm tracking-widest uppercase text-gray-400 font-light">EVOLUTION</span>
-                            <span class="material-icons-round text-gray-600 text-[14px] ml-1 cursor-pointer hover:text-red-400 transition-colors" onclick="resetAll()" title="Reset Database">refresh</span>
+            return (
+                <AppContext.Provider value={{ 
+                    profile, setProfile, xp, setXp, levelInfo, streak, 
+                    logs, activeDate, setActiveDate, updateTask, getProgress, getTodayString,
+                    sttLang, setSttLang, getVerseForDate
+                }}>
+                    <div className="app-container">
+                        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                            <div className="absolute -top-[18%] left-[12%] w-[95%] h-[55%] bg-violet/18 rounded-full blur-[130px]"></div>
+                            <div className="absolute -bottom-[18%] right-[-12%] w-[70%] h-[45%] bg-cyan/10 rounded-full blur-[120px]"></div>
+                            <div className="absolute inset-0 noise"></div>
                         </div>
-                        <div class="w-11 h-11 rounded-xl border border-white/20 flex items-center justify-center overflow-hidden press shadow-glow cursor-pointer" onclick="triggerAvatarUpload()" title="更換頭像">
-                            <img alt="Profile" class="w-full h-full object-cover" src="${db.settings.avatarUrl}"/>
-                        </div>
-                    </header>
 
-                    <div class="text-center space-y-1 mb-8 mt-2">
-                        <h1 class="text-3xl font-serif tracking-wide text-white text-glow">
-                            Welcome, <span class="editable-name" contenteditable="true" onblur="updateName(this.innerText)">${db.settings.userName}</span>
-                        </h1>
-                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">Evolution Checkpoint</p>
-                    </div>
-
-                    <!-- Daily Manna (Verse) -->
-                    <div class="glass-panel rounded-[24px] p-5 mb-6 relative overflow-hidden" style="border-color: rgba(212, 175, 55, 0.2);">
-                        <div class="absolute -right-2 -top-6 text-[100px] opacity-5 font-serif text-gold leading-none pointer-events-none">"</div>
-                        <div class="text-[10px] text-gold uppercase tracking-widest mb-3 flex items-center gap-1.5"><span class="material-icons-round text-[14px]">auto_stories</span> Daily Manna</div>
-                        <p class="font-serif text-[15px] leading-relaxed text-gray-200 italic relative z-10">"${verse.text}"</p>
-                        <div class="text-right mt-3 text-[11px] text-primary/80 font-bold tracking-widest uppercase">— ${verse.ref}</div>
-                    </div>
-
-                    <div class="glass-panel rounded-[32px] p-6 mb-6 relative overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-[50px]"></div>
-                        <div class="text-center space-y-1 relative z-10 mb-6">
-                            <h2 class="text-gray-300 text-sm font-medium tracking-wider">Evolution Level</h2>
-                            <h1 class="text-5xl font-display text-transparent bg-clip-text bg-gradient-to-b from-amber-100 to-amber-500 gold-text-glow" id="hub-level">${level}</h1>
-                        </div>
-                        <div class="w-full space-y-2 relative z-10">
-                            <div class="h-3 w-full bg-black/40 rounded-full overflow-hidden border border-white/5 shadow-inner">
-                                <div id="hub-xp-bar" class="h-full bg-bar-gradient shadow-glow-gold rounded-full relative" style="width:${xpPct}%"></div>
-                            </div>
-                            <div class="flex justify-between text-[11px] text-gray-400 font-medium px-1 uppercase tracking-wider">
-                                <span id="hub-xp-text">${xp} / ${nextXP} XP</span>
-                                <span>Combo x${db.gamify.combo}</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div class="glass-panel rounded-[24px] p-5 press cursor-pointer" onclick="router('body')">
-                            <span class="material-icons-round text-blue-400 mb-2 block">vital_signs</span>
-                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Body Score</div>
-                            <div class="text-2xl font-bold text-white mb-2" id="hub-bscore">${bScore}%</div>
-                            <div class="h-1.5 w-full bg-black/40 rounded-full overflow-hidden"><div id="hub-bbar" class="h-full bg-blue-500 rounded-full" style="width:${bScore}%"></div></div>
-                        </div>
-                        <div class="glass-panel rounded-[24px] p-5 press cursor-pointer" onclick="router('cal')">
-                            <span class="material-icons-round text-primary mb-2 block">local_fire_department</span>
-                            <div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Current Streak</div>
-                            <div class="text-2xl font-bold text-primary gold-text-glow" id="hub-streak">${currentStreak}</div>
-                            <div class="text-[10px] text-gray-500 mt-2">Active Days</div>
-                        </div>
-                    </div>
-
-                    <div class="glass-panel rounded-[24px] p-5 mb-6">
-                        <div class="flex items-center gap-2 mb-3">
-                            <span class="material-icons-round text-primary text-sm">edit</span>
-                            <span class="text-xs font-bold text-gray-300 uppercase tracking-widest">Daily Journal</span>
-                        </div>
-                        <textarea class="w-full bg-black/20 border border-white/5 rounded-xl p-4 text-sm text-gray-200 resize-none h-24 focus:border-primary/50 outline-none transition-colors" placeholder="寫下今天的一句話，總結你的進化..." onblur="saveNote('journal', this.value)">${data.notes.journal}</textarea>
-                    </div>
-                `;
-            } 
-            
-            else if (currentView === 'body') {
-                html = `
-                    <header class="px-2 py-4 mb-2">
-                        <h1 class="text-3xl font-serif text-white text-glow mb-1">身體進化</h1>
-                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</p>
-                    </header>
-
-                    <!-- Beaker Water UI -->
-                    <div class="glass-panel rounded-[32px] p-6 mb-6">
-                        <div class="flex justify-between items-start mb-6">
-                            <div><div class="text-xs text-gray-400 uppercase tracking-widest mb-1">Hydration</div><div class="text-3xl font-display text-white" id="water-val">${data.water}</div></div>
-                            <div class="px-3 py-1 bg-blue-500/20 border border-blue-500/30 rounded-full text-blue-300 text-[10px] font-bold tracking-wider">${WATER_TARGET} ML</div>
-                        </div>
+                        {children}
                         
-                        <div class="relative w-[120px] h-[180px] mx-auto bg-white/5 rounded-[10px_10px_30px_30px] border-2 border-white/20 border-t-0 overflow-hidden mb-6 shadow-glow-blue">
-                            <div class="absolute -top-[5px] -left-[2px] -right-[2px] h-[15px] border-2 border-white/30 rounded-full z-10"></div>
-                            <div id="water-bar" class="absolute bottom-0 left-0 right-0 w-full bg-gradient-to-t from-blue-600 to-blue-400 opacity-80 transition-all duration-500" style="height:${wScore}%"></div>
-                        </div>
+                        {/* XP Toasts */}
+                        {toasts.map(toast => (
+                            <div key={toast.id} className="fixed left-1/2 top-[44%] z-[9999] pointer-events-none flex flex-col items-center justify-center animate-popMove font-display drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]">
+                                <div className={`text-[36px] font-black ${toast.amount > 0 ? 'text-lime' : 'text-rose'}`}>
+                                    {toast.amount > 0 ? '+' : ''}{toast.amount}
+                                </div>
+                                <div className="mt-1 popBadge text-white whitespace-nowrap">
+                                    {toast.text}
+                                </div>
+                            </div>
+                        ))}
 
-                        <div class="flex gap-3">
-                            <button class="flex-1 py-3 glass-panel rounded-xl text-blue-300 border border-blue-500/30 font-bold text-sm press flex justify-center items-center gap-1" onclick="modWater(250, event)"><span class="material-icons-round text-base">add</span>250</button>
-                            <button class="flex-1 py-3 bg-blue-600 text-white rounded-xl shadow-glow-blue font-bold text-sm press flex justify-center items-center gap-1" onclick="modWater(500, event)"><span class="material-icons-round text-base">add</span>500</button>
-                            <button class="w-12 py-3 bg-red-500/20 text-red-400 border border-red-500/30 rounded-xl font-bold press flex justify-center items-center" onclick="modWater(-250, event)"><span class="material-icons-round text-base">remove</span></button>
-                        </div>
+                        {/* Surprise Quest Modal */}
+                        {surpriseQuest && (
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn">
+                                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSurpriseQuest(null)}></div>
+                                <div className="relative glass rounded-2xl p-6 text-center shadow-glass max-w-sm w-full border border-gold/40 z-10">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold via-gold2 to-gold"></div>
+                                    <span className="ms fill text-5xl text-gold mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]">auto_awesome</span>
+                                    <h3 className="text-[18px] font-display font-black text-white mb-2 tracking-wide">{surpriseQuest.title}</h3>
+                                    <p className="text-slate-300 text-[13px] mb-6 leading-relaxed">{surpriseQuest.desc}</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button onClick={() => setSurpriseQuest(null)} className="tap44 glass2 border border-white/10 rounded-xl text-[13px] font-black text-white active:scale-95 transition-transform">稍後再說</button>
+                                        <button onClick={() => {
+                                            setXp(x => x + surpriseQuest.xp);
+                                            triggerToast(surpriseQuest.xp, "完成挑戰");
+                                            setSurpriseQuest(null);
+                                        }} className="tap44 rounded-xl text-[13px] font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform">接受</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
+                </AppContext.Provider>
+            );
+        };
 
-                    <h3 class="text-xs text-gray-400 uppercase tracking-widest mb-3 pl-2">Training & Health</h3>
-                    <div class="space-y-3 mb-6">
-                        <div id="task-squat">${buildTaskInner('squat')}</div>
-                        <div id="task-resist">${buildTaskInner('resist')}</div>
-                        <div id="task-breakfast">${buildTaskInner('breakfast')}</div>
-                    </div>
+        const useAppContext = () => useContext(AppContext);
 
-                    <div class="glass-panel rounded-2xl p-5 flex items-center justify-between">
-                        <div class="flex items-center gap-4">
-                            <div class="w-10 h-10 rounded-full bg-purple-500/20 text-purple-300 flex items-center justify-center"><span class="material-icons-round">gastroenterology</span></div>
-                            <div><h4 class="font-bold text-white text-sm">排便確認</h4><p class="text-xs text-gray-500">Daily Health</p></div>
-                        </div>
-                        <div id="bowel-toggle" class="w-14 h-8 rounded-full relative transition-colors duration-300 cursor-pointer border border-white/10 ${data.bowel ? 'bg-primary' : 'bg-gray-700/50'}" onclick="toggleBowel(event)">
-                            <div class="absolute top-1 left-1 w-6 h-6 bg-white rounded-full transition-transform duration-300 shadow-md" style="transform: ${data.bowel ? 'translateX(24px)' : 'translateX(0)'}"></div>
-                        </div>
-                    </div>
-                `;
-            }
+        // --- UI Components ---
+        const TopDateBar = () => {
+            const { activeDate, setActiveDate, getTodayString } = useAppContext();
+            const todayStr = getTodayString();
+            const isToday = activeDate === todayStr;
 
-            else if (currentView === 'mind') {
-                html = `
-                    <header class="px-2 py-4 mb-2">
-                        <h1 class="text-3xl font-serif text-white text-glow mb-1">心智與靈魂</h1>
-                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">${activeDate === getTodayStr() ? 'TODAY' : activeDate}</p>
-                    </header>
-
-                    <div class="grid grid-cols-2 gap-4 mb-6">
-                        <div id="task-read">${buildTaskInner('read', true)}</div>
-                        <div id="task-devotion">${buildTaskInner('devotion', true)}</div>
-                    </div>
-
-                    <div class="glass-panel rounded-3xl p-5 mb-4">
-                        <h3 class="text-xs text-primary-glow uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">diamond</span> Brand Strategy</h3>
-                        <textarea class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white resize-none h-24 focus:border-primary/50 outline-none" placeholder="今日品牌策略與靈感..." onblur="saveNote('brand', this.value)">${data.notes.brand}</textarea>
-                    </div>
-
-                    <div class="glass-panel rounded-3xl p-5 mb-6">
-                        <h3 class="text-xs text-primary-glow uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">psychology</span> Growth Reflection</h3>
-                        <input type="text" class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white focus:border-primary/50 outline-none" placeholder="今天學到了什麼？" value="${data.notes.growth}" onblur="saveNote('growth', this.value)">
-                    </div>
-
-                    <div class="glass-panel rounded-3xl p-5 border-t border-gold/30">
-                        <h3 class="text-xs text-gold uppercase tracking-widest mb-3 flex items-center gap-2"><span class="material-icons-round text-sm">auto_stories</span> Spirit & Scripture</h3>
-                        <input type="text" class="w-full bg-black/30 border border-white/10 rounded-xl p-3 text-sm text-white focus:border-gold/50 outline-none mb-3" placeholder="Verse (e.g. 詩篇 23:1)" value="${data.notes.scripture}" onblur="saveNote('scripture', this.value)">
-                        <textarea class="w-full bg-black/30 border border-white/10 rounded-xl p-4 text-sm text-white resize-none h-24 focus:border-gold/50 outline-none" placeholder="靈修心得與領受..." onblur="saveNote('spirit', this.value)">${data.notes.spirit}</textarea>
-                    </div>
-                `;
-            }
-
-            else if (currentView === 'cal') {
+            const shiftDay = (days) => {
                 const d = new Date(activeDate);
-                const year = d.getFullYear(), month = d.getMonth();
-                const monthName = ["January","February","March","April","May","June","July","August","September","October","November","December"][month];
-                const daysInMonth = new Date(year, month + 1, 0).getDate();
-                const firstDay = new Date(year, month, 1).getDay();
+                d.setDate(d.getDate() + days);
+                setActiveDate(d.toISOString().split('T')[0]);
+            };
 
-                let gridHtml = '';
-                for(let i=0; i<firstDay; i++) gridHtml += `<div></div>`;
-                
-                for(let i=1; i<=daysInMonth; i++) {
-                    const dateKey = `${year}-${String(month+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-                    const dayData = db.logs[dateKey];
-                    const perfect = dayData ? isPerfect(dateKey) : false;
-                    const today = dateKey === getTodayStr();
-                    const selected = dateKey === activeDate;
-                    
-                    let className = 'aspect-square rounded-xl flex items-center justify-center font-bold text-sm relative cursor-pointer press transition-colors ';
-                    if (perfect) className += 'bg-gradient-to-br from-primary to-orange-500 text-white shadow-glow-gold border-none';
-                    else if (selected) className += 'border-2 border-white bg-white/10 text-white';
-                    else if (today) className += 'border border-primary text-primary';
-                    else className += 'bg-white/5 border border-white/5 text-gray-400 hover:bg-white/10';
-                    
-                    const hasData = dayData && (dayData.water>0 || dayData.tasks.squat || dayData.notes.growth);
-                    const dot = hasData && !perfect ? `<div class="absolute bottom-1.5 w-1 h-1 bg-accent-blue rounded-full"></div>` : '';
+            const displayDate = activeDate.replace(/-/g, ' / ');
 
-                    gridHtml += `<div class="${className}" onclick="openDayDetail('${dateKey}')">${i}${dot}</div>`;
+            return (
+                <header className="pt-9 px-4 pb-3 relative z-10">
+                    <div className="glass rounded-2xl px-3.5 py-2.5 shadow-glass">
+                        <div className="flex items-center justify-between gap-2">
+                            <button onClick={() => shiftDay(-1)} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
+                                <span className="ms text-[20px]">chevron_left</span>
+                            </button>
+                            <div className="min-w-0 flex-1 text-center" onClick={() => !isToday && setActiveDate(todayStr)}>
+                                <div className="text-[11px] tracking-[0.22em] uppercase text-slate-400 font-extrabold">{isToday ? 'ACTIVE DATE' : 'HISTORY'}</div>
+                                <div className={`mt-1 inline-flex items-center justify-center gap-2 transition-transform ${!isToday ? 'cursor-pointer hover:scale-[0.99]' : ''}`}>
+                                    <span className={`text-[15px] font-black ${isToday ? 'text-white' : 'text-gold'}`}>{displayDate}</span>
+                                    {isToday ? <span className="chip"><span className="ms fill text-gold">today</span>Today</span> : <span className="chip"><span className="ms fill text-gold">replay</span>返回</span>}
+                                </div>
+                            </div>
+                            <button onClick={() => shiftDay(1)} disabled={isToday} className={`tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center transition-transform ${isToday ? 'opacity-30' : 'active:scale-95 text-slate-300 hover:text-white'}`}>
+                                <span className="ms text-[20px]">chevron_right</span>
+                            </button>
+                        </div>
+                    </div>
+                </header>
+            );
+        };
+
+        const BottomNav = () => {
+            const navigate = useNavigate();
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+            
+            const navItems = [
+                { path: '/', icon: 'dashboard', label: 'Hub' },
+                { path: '/body', icon: 'fitness_center', label: 'Body' },
+                { path: '/mind', icon: 'auto_stories', label: 'Mind' },
+                { path: '/calendar', icon: 'calendar_month', label: 'Evo' },
+            ];
+
+            return (
+                <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center nav-safe">
+                    <div className="glass mx-auto w-[92%] max-w-[390px] rounded-full flex justify-between items-center py-3.5 px-6 shadow-glass bg-obsidian/80">
+                        {navItems.map((item) => (
+                            <button key={item.path} onClick={() => navigate(item.path)}
+                                className={`flex flex-col items-center gap-1 w-14 transition-all duration-300 ${isActive(item.path) ? 'text-violet2 scale-105' : 'text-slate-500 hover:text-slate-300 opacity-70'}`}>
+                                <span className={`ms text-[24px] ${isActive(item.path) ? 'fill drop-shadow-glow' : ''}`}>{item.icon}</span>
+                                <span className={`text-[11px] ${isActive(item.path) ? 'font-black' : 'font-extrabold'}`}>{item.label}</span>
+                            </button>
+                        ))}
+                    </div>
+                </nav>
+            );
+        };
+
+        const InlineTaskCard = ({ icon, title, taskKey, themeColor = 'violet2' }) => {
+            const { activeDate, logs, updateTask } = useAppContext();
+            const log = logs[activeDate] || {};
+            const isDone = !!log[taskKey];
+            const taskConfig = TASKS[taskKey] || { duration: 60 };
+
+            const [timeLeft, setTimeLeft] = useState(taskConfig.duration);
+            const [isRunning, setIsRunning] = useState(false);
+
+            useEffect(() => {
+                let interval;
+                if (isRunning && timeLeft > 0) {
+                    interval = setInterval(() => setTimeLeft(prev => prev - 1), 1000);
+                } else if (timeLeft === 0 && !isDone && isRunning) {
+                    setIsRunning(false);
+                    updateTask(activeDate, taskKey, true);
+                    setTimeLeft(taskConfig.duration);
+                }
+                return () => clearInterval(interval);
+            }, [isRunning, timeLeft, isDone, activeDate, taskKey]);
+
+            const toggleTimer = (e) => { e.stopPropagation(); setIsRunning(!isRunning); };
+            const resetTimer = (e) => { e.stopPropagation(); setIsRunning(false); setTimeLeft(taskConfig.duration); };
+            const toggleComplete = () => { 
+                setIsRunning(false); 
+                setTimeLeft(taskConfig.duration);
+                updateTask(activeDate, taskKey, !isDone); 
+            };
+
+            const formatTime = (sec) => {
+                const m = Math.floor(sec / 60);
+                const s = sec % 60;
+                return `${m}:${s.toString().padStart(2, '0')}`;
+            };
+
+            const colorClasses = {
+                rose: { text: 'text-rose', border: 'border-rose/40', bg: 'bg-rose/10', grad: 'from-rose via-violet2 to-cyan' },
+                violet2: { text: 'text-violet2', border: 'border-violet2/40', bg: 'bg-violet2/10', grad: 'from-violet via-violet2 to-cyan' },
+                cyan: { text: 'text-cyan', border: 'border-cyan/40', bg: 'bg-cyan/10', grad: 'from-cyan via-violet2 to-violet' }
+            };
+            const theme = colorClasses[themeColor] || colorClasses.violet2;
+
+            return (
+                <div className={`glass rounded-2xl p-4 shadow-glass transition-all duration-300 relative overflow-hidden flex items-center justify-between gap-2 ${isDone ? `${theme.bg} ${theme.border}` : ''}`}>
+                    {isRunning && <div className="absolute inset-y-0 left-0 bg-white/5 transition-all ease-linear" style={{width: `${100 - (timeLeft/taskConfig.duration)*100}%`}}></div>}
+                    
+                    <div className="min-w-0 flex-1 flex items-center gap-2 cursor-pointer relative z-10 active:scale-[0.98] transition-transform" onClick={toggleComplete}>
+                        <span className={`ms text-[20px] transition-colors ${isDone ? `fill ${theme.text}` : `fill ${theme.text}`}`}>
+                            {isDone ? 'check_circle' : icon}
+                        </span>
+                        <div>
+                            <div className={`text-[14px] font-black ${isDone ? theme.text : 'text-white'}`}>{title}</div>
+                            <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
+                                {isDone ? `已完成 +${taskConfig.xp}` : isRunning ? <span className={`${theme.text} font-mono animate-pulse text-[18px] tracking-tighter`}>{formatTime(timeLeft)}</span> : `目標 ${taskConfig.duration / 60} 分鐘 · 點擊直完`}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="shrink-0 flex items-center gap-2.5 relative z-10">
+                        {!isDone && (
+                            <div className="flex items-center gap-2">
+                                {timeLeft < taskConfig.duration && (
+                                    <button onClick={resetTimer} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
+                                        <span className="ms text-[20px]">refresh</span>
+                                    </button>
+                                )}
+                                <button onClick={toggleTimer} className={`tap44 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform border border-white/10 ${isRunning ? 'bg-white/10 text-white' : `bg-gradient-to-r ${theme.grad} text-white`}`}>
+                                    <span className="ms fill text-[22px]">{isRunning ? 'pause' : 'play_arrow'}</span>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        const VoiceTextarea = ({ value, onChange, placeholder, title, isDone, taskKey }) => {
+            const { sttLang, setSttLang } = useAppContext();
+            const [isRecording, setIsRecording] = useState(false);
+            const [isLangSheetOpen, setIsLangSheetOpen] = useState(false);
+            
+            // 使用 ref 來避免 closure 陷阱，防止每次輸入導致辨識器重置
+            const recognitionRef = useRef(null);
+            const valueRef = useRef(value);
+
+            useEffect(() => {
+                valueRef.current = value;
+            }, [value]);
+
+            useEffect(() => {
+                if ('webkitSpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    const recognition = new SpeechRecognition();
+                    recognition.continuous = true;
+                    recognition.interimResults = true;
+                    
+                    const langMap = { 'AUTO': 'zh-HK', 'EN': 'en-US', 'ZH': 'zh-TW', 'YUE': 'yue-Hant-HK' };
+                    recognition.lang = langMap[sttLang] || 'zh-HK';
+
+                    recognition.onresult = (event) => {
+                        let finalTranscript = '';
+                        for (let i = event.resultIndex; i < event.results.length; ++i) {
+                            if (event.results[i].isFinal) {
+                                finalTranscript += event.results[i][0].transcript;
+                            }
+                        }
+                        if (finalTranscript) {
+                            const currentVal = valueRef.current || '';
+                            onChange((currentVal ? currentVal + ' ' : '') + finalTranscript.trim());
+                        }
+                    };
+                    
+                    recognition.onend = () => setIsRecording(false);
+                    recognition.onerror = () => setIsRecording(false);
+
+                    recognitionRef.current = recognition;
                 }
 
-                html = `
-                    <header class="px-2 py-4 mb-2 text-center">
-                        <h1 class="text-3xl font-serif text-white text-glow mb-1">進化歷程</h1>
-                        <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">Evolution Log</p>
-                    </header>
-                    
-                    <div class="glass-panel rounded-[32px] p-6 mb-6">
-                        <div class="flex justify-between items-center mb-6">
-                            <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center press hover:bg-white/10" onclick="changeMonth(-1)"><span class="material-icons-round text-white">chevron_left</span></button>
-                            <h2 class="text-xl font-display text-white tracking-widest">${monthName} ${year}</h2>
-                            <button class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center press hover:bg-white/10" onclick="changeMonth(1)"><span class="material-icons-round text-white">chevron_right</span></button>
-                        </div>
-                        <div class="grid grid-cols-7 gap-2 text-center text-[10px] text-gray-500 font-bold mb-4">
-                            <div>SUN</div><div>MON</div><div>TUE</div><div>WED</div><div>THU</div><div>FRI</div><div>SAT</div>
-                        </div>
-                        <div class="grid grid-cols-7 gap-2" id="cal-grid">${gridHtml}</div>
-                        <div class="text-center text-xs text-gray-500 mt-6">點擊日期查看詳細紀錄或補登</div>
-                    </div>
-                `;
-            }
+                return () => {
+                    if (recognitionRef.current) recognitionRef.current.stop();
+                };
+            }, [sttLang, onChange]); 
 
-            main.innerHTML = html;
-            main.className = `scroll-area active`; 
-        }
+            const toggleRecord = () => {
+                if (!recognitionRef.current) {
+                    alert("您的瀏覽器不支援語音辨識功能，請使用 Chrome 或 Edge。");
+                    return;
+                }
+                if (isRecording) {
+                    recognitionRef.current.stop();
+                    setIsRecording(false);
+                } else {
+                    try {
+                        recognitionRef.current.start();
+                        setIsRecording(true);
+                    } catch(e) {
+                        console.error("Speech API start error:", e);
+                        setIsRecording(false);
+                    }
+                }
+            };
 
-        // --- UI BUILDERS ---
-        function buildTaskInner(id, isGrid = false) {
-            const isDone = db.logs[activeDate].tasks[id];
-            const m = META[id];
-            
-            if (isGrid) {
-                return `
-                <div class="glass-panel rounded-3xl p-5 flex flex-col h-36 relative overflow-hidden transition-all duration-300 ${isDone ? 'border-primary/50 shadow-glow-gold' : ''}">
-                    ${isDone ? '<div class="absolute inset-0 bg-primary/10"></div>' : ''}
-                    <div class="relative z-10 flex justify-between items-start mb-auto">
-                        <div class="w-10 h-10 rounded-full ${isDone ? 'bg-primary text-background-dark' : 'bg-white/5 text-gray-400'} flex items-center justify-center transition-colors"><span class="material-icons-round text-xl">${m.icon}</span></div>
-                        ${m.type === 'timer' && !isDone ? `<button class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center press" onclick="openTimer('${id}')"><span class="material-icons-round text-sm">play_arrow</span></button>` : ''}
-                    </div>
-                    <div class="relative z-10 flex items-end justify-between">
-                        <div><h4 class="font-bold text-white text-sm">${m.title.split(' ')[0]}</h4><p class="text-[10px] text-gray-400">${isDone ? 'Completed' : `+${m.xp} XP`}</p></div>
-                        <button class="w-8 h-8 rounded-full border flex items-center justify-center press transition-colors ${isDone ? 'bg-transparent border-primary text-primary' : 'border-white/20 text-gray-400 hover:bg-white/10'}" onclick="toggleTask('${id}', event)"><span class="material-icons-round text-sm">${isDone ? 'check' : 'check'}</span></button>
-                    </div>
-                </div>`;
-            }
-
-            return `
-            <div class="glass-panel rounded-2xl p-4 flex items-center justify-between transition-all duration-300 ${isDone ? 'border-primary/50 shadow-[0_0_15px_rgba(212,175,55,0.15)] bg-gradient-to-r from-primary/10 to-transparent' : ''}">
-                <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-full flex items-center justify-center transition-colors ${isDone ? 'bg-primary text-background-dark shadow-glow-gold' : 'bg-white/5 text-gray-400'}"><span class="material-icons-round">${m.icon}</span></div>
-                    <div><h4 class="font-bold text-white text-sm ${isDone ? 'line-through opacity-70' : ''}">${m.title}</h4><p class="text-xs ${isDone ? 'text-primary' : 'text-gray-500'}">${isDone ? 'Completed' : `+${m.xp} XP`}</p></div>
-                </div>
-                <div class="flex gap-2">
-                    ${m.type === 'timer' && !isDone ? `<button class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white press hover:bg-white/20" onclick="openTimer('${id}')"><span class="material-icons-round">play_arrow</span></button>` : ''}
-                    <button class="w-10 h-10 rounded-full border flex items-center justify-center press transition-colors ${isDone ? 'bg-transparent border-primary text-primary' : 'border-white/20 text-gray-400 hover:bg-white/10'}" onclick="toggleTask('${id}', event)"><span class="material-icons-round">${isDone ? 'undo' : 'check'}</span></button>
-                </div>
-            </div>`;
-        }
-
-        // --- TIMER ---
-        function openTimer(id) {
-            const dur = META[id].dur;
-            timerObj = { id, rem: dur, total: dur, running: false, interval: null };
-            document.getElementById('timer-title').innerText = META[id].title;
-            document.getElementById('timer-modal').classList.add('open');
-            updateTimerUI();
-        }
-
-        function toggleTimerState() {
-            const btn = document.getElementById('timer-toggle-btn');
-            const icon = document.getElementById('timer-icon');
-            const text = document.getElementById('timer-text');
-            
-            if (timerObj.running) {
-                clearInterval(timerObj.interval); 
-                timerObj.running = false;
-                icon.innerText = 'play_arrow'; text.innerText = '繼續';
-                btn.className = "flex-1 bg-white/10 text-white font-bold py-4 rounded-2xl press flex items-center justify-center gap-2";
-            } else {
-                timerObj.running = true;
-                icon.innerText = 'pause'; text.innerText = '暫停';
-                btn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2";
-                
-                timerObj.interval = setInterval(() => {
-                    timerObj.rem--;
-                    updateTimerUI();
-                    if(timerObj.rem <= 0) finishTimer();
-                }, 1000);
-            }
-        }
-
-        function updateTimerUI() {
-            const m = Math.floor(timerObj.rem / 60);
-            const s = timerObj.rem % 60;
-            document.getElementById('timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-            
-            const pct = timerObj.rem / timerObj.total;
-            const offset = 880 - (880 * pct); 
-            document.getElementById('timer-svg-prog').style.strokeDashoffset = offset;
-        }
-
-        function resetTimer() {
-            clearInterval(timerObj.interval);
-            timerObj.running = false;
-            timerObj.rem = timerObj.total;
-            const btn = document.getElementById('timer-toggle-btn');
-            const icon = document.getElementById('timer-icon');
-            const text = document.getElementById('timer-text');
-            icon.innerText = 'play_arrow'; text.innerText = '開始';
-            btn.className = "flex-1 bg-gradient-to-r from-[#D4AF37] to-[#F2D06B] text-black font-bold py-4 rounded-2xl shadow-glow-gold press flex items-center justify-center gap-2";
-            updateTimerUI();
-        }
-
-        function finishTimer() {
-            clearInterval(timerObj.interval);
-            closeModal('timer-modal');
-            const L = db.logs[activeDate];
-            if(!L.tasks[timerObj.id]) {
-                actionWrapper(() => { L.tasks[timerObj.id] = true; }, { currentTarget: document.body }, true);
-                confettiBurst();
-            }
-        }
-
-        // --- CALENDAR MODAL ---
-        let viewingDate = null;
-
-        function openDayDetail(dateStr) {
-            viewingDate = dateStr;
-            const d = db.logs[dateStr] || { water: 0, bowel: false, tasks: {}, notes: {} };
-            document.getElementById('day-modal').classList.add('open');
-            
-            const [y, m, day] = dateStr.split('-');
-            document.getElementById('day-modal-title').innerText = `${m}月${day}日`;
-            
-            const t = d.tasks || {};
-            const n = d.notes || {};
-
-            const row = (label, isDone) => `
-                <div class="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
-                    <span class="text-sm text-gray-400">${label}</span>
-                    <span class="material-icons-round text-sm ${isDone ? 'text-primary' : 'text-gray-700'}">${isDone ? 'check_circle' : 'remove'}</span>
-                </div>
-            `;
-            
-            const quote = (text, placeholder) => `
-                <div class="relative bg-white/5 rounded-xl p-4 mt-2">
-                    <span class="material-icons-round text-primary/20 absolute top-2 left-2 text-3xl">format_quote</span>
-                    <p class="text-sm text-gray-200 leading-relaxed relative z-10 pl-6 italic">${escape(text) || `<span class="text-gray-600 not-italic">${placeholder}</span>`}</p>
-                </div>
-            `;
-
-            const content = `
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Hydration</div>
-                        <div class="text-2xl font-display text-white">${d.water || 0}<span class="text-xs ml-1 text-gray-400">ml</span></div>
-                    </div>
-                    <div class="bg-white/5 rounded-2xl p-4 border border-white/5">
-                        <div class="text-[10px] text-gray-500 uppercase tracking-widest mb-1">Bowel</div>
-                        <div class="text-2xl font-bold ${d.bowel?'text-accent-blue':'text-gray-600'}">${d.bowel?'Healthy':'—'}</div>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Training & Focus</h4>
-                    <div class="bg-white/5 rounded-2xl px-4 py-1 border border-white/5">
-                        ${row('大師深蹲', t.squat)}
-                        ${row('阻力訓練', t.resist)}
-                        ${row('DIAAS 早餐', t.breakfast)}
-                        ${row('深度閱讀', t.read)}
-                        ${row('靜默靈修', t.devotion)}
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Mental Logs</h4>
-                    <div class="mb-4">
-                        <span class="text-xs text-gray-400 pl-1">Brand Strategy</span>
-                        ${quote(n.brand, '無策略紀錄')}
-                    </div>
-                    <div>
-                        <span class="text-xs text-gray-400 pl-1">Growth Reflection</span>
-                        ${quote(n.growth, '無成長紀錄')}
-                    </div>
-                </div>
-
+            return (
                 <div>
-                    <h4 class="text-xs font-bold text-primary tracking-widest uppercase mb-2">Spirit & Journal</h4>
-                    <div class="mb-4">
-                        <span class="text-xs text-gold pl-1">${escape(n.scripture) || 'Scripture'}</span>
-                        ${quote(n.spirit, '無靈修心得')}
-                    </div>
-                    <div>
-                        <span class="text-xs text-gray-400 pl-1">Daily Journal</span>
-                        ${quote(n.journal, '無每日總結')}
-                    </div>
+                    <section className={`glass rounded-2xl p-4 shadow-glass transition-colors ${isDone ? 'border-gold/40 bg-gold/5' : ''}`}>
+                        <div className="flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <span className={`ms text-[20px] fill ${isDone ? 'text-gold' : 'text-gold'}`}>{isDone ? 'check_circle' : 'rate_review'}</span>
+                                <div>
+                                    <div className={`text-[14px] font-black ${isDone ? 'text-gold' : 'text-white'}`}>{title}</div>
+                                    <div className="text-[11px] text-slate-400 font-semibold">{isDone ? `已紀錄 +${TASKS[taskKey].xp}` : '填寫即可得分'}</div>
+                                </div>
+                            </div>
+                            <button onClick={toggleRecord} className={`tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-all ${isRecording ? 'bg-rose border-rose text-white shadow-[0_0_15px_rgba(251,113,133,0.6)] animate-pulse' : 'text-cyan'}`}>
+                                <span className="ms fill text-[22px]">{isRecording ? 'mic' : 'mic_none'}</span>
+                            </button>
+                        </div>
+                        <textarea 
+                            value={value} onChange={e => onChange(e.target.value)}
+                            className="mt-3 w-full h-24 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-violet/40 resize-none text-[14px]"
+                            placeholder={placeholder}></textarea>
+                        
+                        <div className="mt-3 flex items-center justify-between">
+                            <div className="text-[11px] text-slate-500 font-semibold">※ 若不支援語音，請用鍵盤手寫</div>
+                            <button onClick={() => setIsLangSheetOpen(true)} className="chip"><span className="ms fill text-violet2">language</span><span>{sttLang}</span></button>
+                        </div>
+                    </section>
+
+                    {/* Language Bottom Sheet */}
+                    {isLangSheetOpen && (
+                        <div className="fixed inset-0 z-[300]">
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-fadeIn" onClick={() => setIsLangSheetOpen(false)}></div>
+                            <div className="absolute bottom-0 left-0 right-0 animate-slideUp max-w-md mx-auto">
+                                <div className="glass-sheet rounded-t-[32px] p-6 pb-12 w-full">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <div>
+                                            <div className="text-[11px] tracking-widest uppercase text-slate-400 font-extrabold">Speech</div>
+                                            <div className="mt-1 text-[16px] font-black text-white">語音辨識語言</div>
+                                        </div>
+                                        <button onClick={() => setIsLangSheetOpen(false)} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 text-slate-300">
+                                            <span className="ms text-[20px]">close</span>
+                                        </button>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-3 mt-4">
+                                        {['AUTO', 'EN', 'ZH', 'YUE'].map(lang => (
+                                            <button key={lang} onClick={() => { setSttLang(lang); setIsLangSheetOpen(false); }} className={`tap44 glass2 border border-white/10 rounded-xl py-3 text-[13px] font-black active:scale-95 transition-transform ${sttLang === lang ? 'bg-white/20 text-white border-white/40' : 'text-slate-300'}`}>
+                                                {lang === 'AUTO' ? 'AUTO (中英粵混雜)' : lang === 'ZH' ? '中文' : lang === 'YUE' ? '廣東話' : lang}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
-            `;
-            document.getElementById('day-modal-content').innerHTML = content;
-        }
+            );
+        };
 
-        function changeMonth(offset) {
-            const d = new Date(activeDate);
-            d.setMonth(d.getMonth() + offset);
-            activeDate = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-            renderView();
-        }
+        const SimpleTextarea = ({ value, onChange, placeholder, icon, title, isDone, themeColor = 'violet2', taskKey }) => {
+            const colorClass = themeColor === 'cyan' ? 'text-cyan border-cyan/40 bg-cyan/5' : 'text-violet2 border-violet2/40 bg-violet2/5';
+            const iconColor = themeColor === 'cyan' ? 'text-cyan' : 'text-violet2';
 
-        function setActiveDayFromModal() {
-            activeDate = viewingDate;
-            closeModal('day-modal');
-            router('body'); 
-        }
+            return (
+                <section className={`glass rounded-2xl p-4 shadow-glass transition-colors ${isDone ? colorClass : ''}`}>
+                    <div className="flex items-center gap-2">
+                        <span className={`ms fill text-[20px] ${isDone ? iconColor : iconColor}`}>{isDone ? 'check_circle' : icon}</span>
+                        <div>
+                            <div className={`text-[14px] font-black ${isDone ? iconColor : 'text-white'}`}>{title}</div>
+                            <div className="text-[11px] text-slate-400 font-semibold">{isDone ? `已紀錄 +${TASKS[taskKey].xp}` : '填寫即可得分'}</div>
+                        </div>
+                    </div>
+                    <textarea 
+                        value={value} onChange={e => onChange(e.target.value)}
+                        className="mt-3 w-full h-24 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-slate-500 px-3.5 py-3 focus:outline-none focus:ring-2 focus:ring-violet/40 resize-none text-[14px]"
+                        placeholder={placeholder}></textarea>
+                </section>
+            );
+        };
 
-        function closeModal(id) {
-            document.getElementById(id).classList.remove('open');
-            if(id === 'timer-modal') clearInterval(timerObj.interval);
-        }
 
-        function escape(s){ return String(s || "").replaceAll("<","&lt;").replaceAll(">","&gt;"); }
+        // --- Pages ---
 
-        // --- EFFECTS ---
-        function showFloatingXP(amount, x, y, combo) {
-            const el = document.createElement('div');
-            el.className = `xp-float ${amount > 0 ? 'xp-plus' : 'xp-minus'}`;
-            let text = amount > 0 ? `+${amount} XP` : `${amount} XP`;
-            if (amount > 0 && combo > 1) text += ` (Combo x${combo})`;
-            el.innerText = text;
-            el.style.left = `${x}px`; el.style.top = `${y}px`;
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 1000);
-        }
+        const DashboardPage = () => {
+            const { profile, setProfile, levelInfo, streak, activeDate, getProgress, setXp, getVerseForDate } = useAppContext();
+            const prog = getProgress(activeDate);
+            const [isProfileOpen, setIsProfileOpen] = useState(false);
+            const fileInputRef = useRef(null);
+            
+            const [tempName, setTempName] = useState(profile.name);
+            const [tempAvatar, setTempAvatar] = useState(profile.avatar);
 
-        function confettiBurst() {
-            const c = document.getElementById("confetti");
-            const ctx = c.getContext("2d");
-            c.width = window.innerWidth; c.height = window.innerHeight;
-            let particles = [];
-            for(let i=0; i<50; i++) {
-                particles.push({
-                    x: c.width/2, y: c.height/2,
-                    vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15 - 5,
-                    color: `hsl(${Math.random()*40 + 30}, 100%, 60%)`, 
-                    life: 80 + Math.random()*40
-                });
+            const handleImageUpload = (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onloadend = () => { setTempAvatar(reader.result); };
+                    reader.readAsDataURL(file);
+                }
+            };
+
+            const currentVerse = useMemo(() => getVerseForDate(activeDate), [activeDate, getVerseForDate]);
+
+            return (
+                <div className="flex flex-col flex-1 animate-fadeIn">
+                    <TopDateBar />
+                    <section className="px-4 pb-4 relative z-10">
+                        {/* Profile Block */}
+                        <div className="glass rounded-2xl p-4 shadow-glass relative overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-br from-violet/10 to-transparent pointer-events-none"></div>
+                            <div className="flex items-center gap-3.5 relative z-10">
+                                <button onClick={() => { setTempName(profile.name); setTempAvatar(profile.avatar); setIsProfileOpen(true); }} className="shrink-0 tap44 group" title="設定">
+                                    <div className="h-12 w-12 rounded-full overflow-hidden border border-white/15 bg-surface relative">
+                                        <img src={profile.avatar} alt="avatar" className="h-full w-full object-cover"/>
+                                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <span className="ms text-white text-[16px]">edit</span>
+                                        </div>
+                                    </div>
+                                </button>
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                        <div className="text-[16px] font-extrabold text-white truncate">{profile.name}</div>
+                                        <span className="chip"><span className="ms fill text-gold">workspace_premium</span><span>LV {levelInfo.level}</span></span>
+                                    </div>
+                                    <div className="mt-1 flex flex-wrap gap-2.5">
+                                        <span className="chip"><span className="ms fill text-violet2">percent</span><span>{prog.overall}%</span></span>
+                                        <span className="chip"><span className="ms fill text-gold">bolt</span><span>{streak} Days</span></span>
+                                    </div>
+                                </div>
+                                <button onClick={() => { setTempName(profile.name); setTempAvatar(profile.avatar); setIsProfileOpen(true); }} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform" title="設定">
+                                    <span className="ms text-[20px]">tune</span>
+                                </button>
+                            </div>
+
+                            <div className="mt-4 relative z-10">
+                                <div className="flex items-center justify-between text-[12px] text-slate-300 font-semibold">
+                                    <span className="tracking-widest uppercase text-slate-400">LEVEL PROGRESS</span>
+                                    <span className="text-violet2 font-extrabold">{Math.floor(levelInfo.currentXpInLevel)} / {levelInfo.totalXpForNext}</span>
+                                </div>
+                                <div className="mt-2 h-3 w-full rounded-full bg-white/5 border border-white/10 overflow-hidden shadow-inner relative">
+                                    <div className="h-full bg-gradient-to-r from-violet via-violet2 to-cyan rounded-full transition-all duration-1000 shadow-glow" style={{width: `${levelInfo.progress}%`}}></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Daily Verse EN */}
+                        <div className="mt-4 glass2 rounded-2xl px-4 py-3.5 border border-white/10 shadow-glass">
+                            <div className="flex items-center justify-between">
+                                <div className="text-[11px] tracking-[0.22em] uppercase text-slate-400 font-extrabold">Daily Verse</div>
+                                <div className="text-[11px] text-gold font-extrabold tracking-widest">EN</div>
+                            </div>
+                            <div className="mt-2.5 text-[14px] leading-relaxed text-white font-semibold font-serif italic">
+                                "{currentVerse.text}"
+                            </div>
+                            <div className="mt-2 text-[12px] text-slate-400 font-semibold">— {currentVerse.ref}</div>
+                        </div>
+                    </section>
+
+                    <main className="px-4 pb-safe flex-1 space-y-4 relative z-10">
+                        {/* Sectioned Progress Blocks */}
+                        <div className="grid grid-cols-3 gap-3">
+                            <div className="glass2 rounded-2xl p-4 border border-white/10 shadow-glass text-center">
+                                <div className="flex items-center justify-center gap-1 mb-2">
+                                    <span className="ms fill text-[16px] text-rose">fitness_center</span>
+                                    <div className="text-[11px] font-black text-white">身體</div>
+                                </div>
+                                <div className="mt-2 text-[16px] font-display font-black text-white">{prog.body}%</div>
+                            </div>
+                            <div className="glass2 rounded-2xl p-4 border border-white/10 shadow-glass text-center">
+                                <div className="flex items-center justify-center gap-1 mb-2">
+                                    <span className="ms fill text-[16px] text-violet2">auto_stories</span>
+                                    <div className="text-[11px] font-black text-white">心智</div>
+                                </div>
+                                <div className="mt-2 text-[16px] font-display font-black text-white">{prog.mind}%</div>
+                            </div>
+                            <div className="glass2 rounded-2xl p-4 border border-white/10 shadow-glass text-center">
+                                <div className="flex items-center justify-center gap-1 mb-2">
+                                    <span className="ms fill text-[16px] text-cyan">spa</span>
+                                    <div className="text-[11px] font-black text-white">靈修</div>
+                                </div>
+                                <div className="mt-2 text-[16px] font-display font-black text-white">{prog.spirit}%</div>
+                            </div>
+                        </div>
+
+                        {/* Overall Progress */}
+                        <section className="glass rounded-2xl p-4 shadow-glass">
+                            <div className="flex items-center justify-between">
+                                <div className="text-[15px] font-extrabold text-white">今日進度（總）</div>
+                                <div className="chip"><span className="ms fill text-gold">stars</span><span>{prog.overall >= 70 ? '達標' : '進行中'}</span></div>
+                            </div>
+                            <div className="mt-3 h-3 w-full rounded-full bg-white/5 border border-white/10 overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-violet via-violet2 to-cyan rounded-full transition-all duration-500" style={{width: `${prog.overall}%`}}></div>
+                            </div>
+                            <div className="mt-3 text-[12px] text-slate-400 font-semibold leading-relaxed">
+                                {prog.overall >= 70 ? '恭喜！您已達標今日進化最低門檻，將延續連續紀錄。' : '完成度達 70% 即可延續連續進化紀錄，繼續加油！'}
+                            </div>
+                        </section>
+                    </main>
+
+                    {/* Centered Profile Edit Modal (Fixed Position) */}
+                    {isProfileOpen && (
+                        <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn">
+                            <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsProfileOpen(false)}></div>
+                            <div className="relative glass rounded-2xl p-5 shadow-glass max-w-sm w-full border border-white/20 z-10">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="text-[16px] font-black text-white tracking-widest">設定個人資料</h3>
+                                    <button onClick={() => setIsProfileOpen(false)} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 text-slate-300">
+                                        <span className="ms text-[20px]">close</span>
+                                    </button>
+                                </div>
+                                
+                                <div className="space-y-4 mt-2">
+                                    <div className="flex flex-col items-center">
+                                        <button onClick={() => fileInputRef.current.click()} className="w-[80px] h-[80px] rounded-full glass p-1 mb-4 shadow-glass relative group active:scale-95 transition-transform">
+                                            <img src={tempAvatar} className="w-full h-full rounded-full object-cover" alt="Preview" />
+                                            <div className="absolute inset-0 bg-black/50 rounded-full flex flex-col items-center justify-center">
+                                                <span className="ms text-white text-[20px]">photo_camera</span>
+                                            </div>
+                                        </button>
+                                        <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                                        <div className="text-[11px] text-slate-400 mb-2 font-semibold">點擊相機圖示更換照片，或選擇預設頭像</div>
+                                        <div className="flex gap-2.5 justify-center w-full">
+                                            {['Felix', 'Aneka', 'Bottts', 'Adventurer'].map(seed => (
+                                                <div key={seed} onClick={() => setTempAvatar(`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=D4AF37`)} className="w-10 h-10 rounded-full border border-white/10 cursor-pointer overflow-hidden hover:border-gold transition-colors bg-white/5">
+                                                    <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}&backgroundColor=D4AF37`} alt={seed} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label className="text-[11px] text-slate-400 font-extrabold mb-1 block">顯示名稱</label>
+                                        <input type="text" value={tempName} onChange={e => setTempName(e.target.value)} className="w-full rounded-xl bg-white/5 border border-white/10 text-white px-4 py-3 focus:outline-none focus:ring-2 focus:ring-violet/40 text-[14px] font-bold"/>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-3 mt-2">
+                                        <button onClick={() => { setProfile({ name: tempName, avatar: tempAvatar }); setIsProfileOpen(false); }} className="tap44 rounded-xl font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform text-[14px]">保存</button>
+                                        <button onClick={() => { setXp(0); alert("XP 數據已歸零"); setIsProfileOpen(false); }} className="tap44 glass2 border border-rose/30 rounded-xl font-black text-rose active:scale-95 transition-transform text-[14px] bg-rose/10">重置 XP</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const BodyPage = () => {
+            const { activeDate, logs, updateTask, getProgress } = useAppContext();
+            const log = logs[activeDate] || {};
+            const prog = getProgress(activeDate);
+            const waterCurrent = log.water || 0;
+            const waterPercent = Math.min(100, (waterCurrent / 2000) * 100);
+
+            return (
+                <div className="flex flex-col flex-1 animate-fadeIn">
+                    <TopDateBar />
+                    <header className="px-4 pb-3 relative z-10">
+                        <div className="flex items-center justify-between">
+                            <span className="chip bg-rose/10 border-rose/30 text-rose"><span className="ms fill">fitness_center</span><span>BODY</span></span>
+                            <span className="chip"><span className="ms fill text-violet2">percent</span><span>{prog.body}%</span></span>
+                        </div>
+                    </header>
+
+                    <main className="px-4 pb-safe flex-1 space-y-3 relative z-10 overflow-y-auto no-scrollbar">
+                        <section className="glass rounded-2xl p-4 shadow-glass">
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="ms fill text-cyan text-[20px]">water_drop</span>
+                                        <div className="text-[14px] font-black text-white">水分</div>
+                                    </div>
+                                    <div className="mt-2 text-[12px] text-slate-400 font-semibold">目標 2000ml · 最高 +80</div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="text-2xl font-extrabold text-white">{waterCurrent}<span className="text-[12px] text-slate-400 font-semibold ml-1">ml</span></div>
+                                </div>
+                            </div>
+
+                            <div className="mt-3 h-3 w-full rounded-full bg-white/5 border border-white/10 overflow-hidden">
+                                <div className="h-full bg-gradient-to-r from-cyan via-violet2 to-gold rounded-full transition-all duration-500" style={{width: `${waterPercent}%`}}></div>
+                            </div>
+
+                            <div className="mt-3 grid grid-cols-4 gap-2.5">
+                                <button onClick={() => updateTask(activeDate, 'water', Math.max(0, waterCurrent - 250))} className="tap44 glass2 border border-white/10 rounded-xl py-2.5 text-[13px] font-extrabold text-slate-200 active:scale-95 transition-transform">-250</button>
+                                <button onClick={() => updateTask(activeDate, 'water', waterCurrent + 250)} className="tap44 glass2 border border-white/10 rounded-xl py-2.5 text-[13px] font-extrabold text-white active:scale-95 transition-transform">+250</button>
+                                <button onClick={() => updateTask(activeDate, 'water', waterCurrent + 500)} className="tap44 glass2 border border-white/10 rounded-xl py-2.5 text-[13px] font-extrabold text-white active:scale-95 transition-transform">+500</button>
+                                <button onClick={() => updateTask(activeDate, 'water', waterCurrent + 1000)} className="tap44 rounded-xl py-2.5 text-[13px] font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform">+1L</button>
+                            </div>
+                        </section>
+
+                        <div className="flex items-center justify-between mt-1">
+                            <div className="text-[14px] font-extrabold text-white">任務</div>
+                            <div className="text-[11px] text-slate-400 font-extrabold tracking-widest">TAP</div>
+                        </div>
+
+                        <InlineTaskCard taskKey="squats" title="每日深蹲" icon="fitness_center" themeColor="rose" />
+                        <InlineTaskCard taskKey="stretch" title="每日拉筋" icon="accessibility" themeColor="rose" />
+                        <InlineTaskCard taskKey="muscle" title="肌肉訓練" icon="sports_gymnastics" themeColor="rose" />
+
+                        <section className="glass rounded-2xl p-4 shadow-glass flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                                <span className="ms fill text-lime text-[20px]">health_and_safety</span>
+                                <div>
+                                    <div className="text-[14px] font-black text-white">排便</div>
+                                    <div className="text-[11px] text-slate-400 font-semibold">正常才 +30</div>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                {['便秘', '正常', '腹瀉'].map(type => {
+                                    const isActive = log.poop === type;
+                                    return (
+                                        <button key={type} 
+                                            onClick={() => updateTask(activeDate, 'poop', isActive ? null : type)}
+                                            className={`tap44 px-3 py-2 rounded-xl text-[12px] font-black transition-all active:scale-95 ${isActive ? 'bg-lime text-black shadow-glow' : 'glass2 border border-white/10 text-white'}`}>
+                                            {type}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            );
+        };
+
+        const MindPage = () => {
+            const { activeDate, logs, updateTask, getProgress } = useAppContext();
+            const log = logs[activeDate] || {};
+            const prog = getProgress(activeDate);
+            const [tab, setTab] = useState('mind'); 
+
+            return (
+                <div className="flex flex-col flex-1 animate-fadeIn">
+                    <TopDateBar />
+                    <header className="px-4 pb-3 relative z-10">
+                        <div className="flex items-center justify-between mb-3">
+                            <span className={`chip ${tab==='mind' ? 'bg-violet2/10 border-violet2/30 text-violet2' : 'bg-cyan/10 border-cyan/30 text-cyan'}`}>
+                                <span className="ms fill">{tab === 'mind' ? 'psychology' : 'spa'}</span><span>{tab === 'mind' ? 'MIND' : 'SPIRIT'}</span>
+                            </span>
+                            <span className="chip"><span className="ms fill text-violet2">percent</span><span>{tab==='mind' ? prog.mind : prog.spirit}%</span></span>
+                        </div>
+
+                        {/* Combined Mind & Spirit Tab Slider */}
+                        <div className="glass2 rounded-full p-1 border border-white/10 flex relative shadow-glass">
+                            <div className="absolute top-1 bottom-1 w-[calc(50%-4px)] bg-gradient-to-r from-violet via-violet2 to-cyan rounded-full shadow-glow transition-all duration-300 ease-out" 
+                                 style={{ left: tab === 'mind' ? '4px' : 'calc(50%)' }}></div>
+                            <button onClick={() => setTab('mind')} className={`flex-1 relative z-10 py-2.5 text-[13px] font-black text-center rounded-full transition-colors ${tab==='mind' ? 'text-white' : 'text-slate-400'}`}>心智</button>
+                            <button onClick={() => setTab('spirit')} className={`flex-1 relative z-10 py-2.5 text-[13px] font-black text-center rounded-full transition-colors ${tab==='spirit' ? 'text-white' : 'text-slate-400'}`}>靈修</button>
+                        </div>
+                    </header>
+
+                    <main className="px-4 pb-safe flex-1 relative z-10 overflow-y-auto no-scrollbar">
+                        {tab === 'mind' ? (
+                            <div className="space-y-3 animate-fadeIn">
+                                <InlineTaskCard taskKey="reading" title="深度閱讀" icon="menu_book" themeColor="violet2" />
+                                <InlineTaskCard taskKey="skill" title="新技能學習" icon="lightbulb" themeColor="violet2" />
+                                
+                                <VoiceTextarea 
+                                    taskKey="review"
+                                    value={log.review || ''} onChange={(val) => updateTask(activeDate, 'review', val)}
+                                    title="今日復盤" activeDate={activeDate}
+                                    placeholder="學到了什麼？有什麼可以改善？(可語音混講)" 
+                                    isDone={!!(log.review && log.review.trim())} />
+
+                                <VoiceTextarea 
+                                    taskKey="strategy"
+                                    value={log.strategy || ''} onChange={(val) => updateTask(activeDate, 'strategy', val)}
+                                    title="策略筆記" activeDate={activeDate}
+                                    placeholder="記下一個重點思路！(可語音混講)" 
+                                    isDone={!!(log.strategy && log.strategy.trim())} />
+
+                                <SimpleTextarea 
+                                    taskKey="gratitude"
+                                    value={log.gratitude || ''} onChange={(val) => updateTask(activeDate, 'gratitude', val)}
+                                    title="感恩日記" icon="favorite" themeColor="violet2"
+                                    placeholder="寫下一件值得感恩的小事..." 
+                                    isDone={!!(log.gratitude && log.gratitude.trim())} />
+                            </div>
+                        ) : (
+                            <div className="space-y-3 animate-fadeIn">
+                                <InlineTaskCard taskKey="devotion" title="靜心靈修" icon="self_improvement" themeColor="cyan" />
+
+                                <SimpleTextarea 
+                                    taskKey="verse"
+                                    value={log.verse || ''} onChange={(val) => updateTask(activeDate, 'verse', val)}
+                                    title="經文與領受" icon="auto_stories" themeColor="cyan"
+                                    placeholder="紀錄感動的經節與靈感..." 
+                                    isDone={!!(log.verse && log.verse.trim())} />
+                                    
+                                <SimpleTextarea 
+                                    taskKey="healing"
+                                    value={log.healing || ''} onChange={(val) => updateTask(activeDate, 'healing', val)}
+                                    title="自我啟發與修復" icon="flare" themeColor="cyan"
+                                    placeholder="釋放重擔，給自己一句鼓勵的話..." 
+                                    isDone={!!(log.healing && log.healing.trim())} />
+                            </div>
+                        )}
+                    </main>
+                </div>
+            );
+        };
+
+        const CalendarPage = () => {
+            const { getTodayString, activeDate, setActiveDate, getProgress, logs, updateTask } = useAppContext();
+            const navigate = useNavigate();
+            const todayStr = getTodayString();
+            
+            const [viewDate, setViewDate] = useState(todayStr); 
+            const displayDateObj = new Date(viewDate);
+            
+            const [currentMonthDate, setCurrentMonthDate] = useState(new Date(displayDateObj.getFullYear(), displayDateObj.getMonth(), 1));
+            const year = currentMonthDate.getFullYear();
+            const month = currentMonthDate.getMonth();
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const days = [];
+            for(let i=0; i<firstDay; i++) days.push(null);
+            for(let i=1; i<=daysInMonth; i++) {
+                const dateStr = `${year}-${String(month+1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                days.push({ day: i, dateStr });
             }
-            function draw() {
-                ctx.clearRect(0,0,c.width,c.height);
-                particles.forEach((p, i) => {
-                    p.x += p.vx; p.y += p.vy; p.vy += 0.2; p.life--;
-                    ctx.fillStyle = p.color;
-                    ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
-                    if(p.life <= 0) particles.splice(i, 1);
-                });
-                if(particles.length > 0) requestAnimationFrame(draw);
-            }
-            draw();
+
+            const prevMonth = () => setCurrentMonthDate(new Date(year, month - 1, 1));
+            const nextMonth = () => setCurrentMonthDate(new Date(year, month + 1, 1));
+
+            const log = logs[viewDate] || {};
+            const prog = getProgress(viewDate);
+
+            // Sectioned Tasks mapping
+            const bodyTasks = ['water', 'squats', 'stretch', 'muscle', 'poop'];
+            const mindTasks = ['reading', 'skill', 'review', 'strategy', 'gratitude'];
+            const spiritTasks = ['devotion', 'verse', 'healing'];
+
+            const renderTaskGroup = (title, taskKeys, progressPercent, colorTheme) => {
+                const colorMap = {
+                    rose: 'text-rose border-rose/30 bg-rose/10',
+                    violet: 'text-violet2 border-violet2/30 bg-violet2/10',
+                    cyan: 'text-cyan border-cyan/30 bg-cyan/10'
+                };
+                const baseColor = colorMap[colorTheme];
+
+                return (
+                    <div className="mb-5 last:mb-0">
+                        <div className="flex items-center justify-between mb-2.5 px-1 border-b border-white/10 pb-2">
+                            <div className="text-[12px] font-black tracking-widest text-white">{title}</div>
+                            <div className={`text-[12px] font-mono font-black ${colorTheme === 'rose' ? 'text-rose' : colorTheme === 'violet' ? 'text-violet2' : 'text-cyan'}`}>{progressPercent}%</div>
+                        </div>
+                        <div className="space-y-2">
+                            {taskKeys.map(key => {
+                                const isDone = key === 'water' ? (log[key] || 0) >= 2000 : (typeof log[key] === 'string' ? (log[key] && log[key].trim() !== '') : !!log[key]);
+                                
+                                const handleToggle = () => {
+                                    if (key === 'water') updateTask(viewDate, 'water', isDone ? 0 : 2000);
+                                    else if (typeof log[key] === 'string') updateTask(viewDate, key, isDone ? '' : '已於日曆快速補登');
+                                    else updateTask(viewDate, key, !isDone);
+                                };
+
+                                return (
+                                    <div key={key} onClick={handleToggle}
+                                         className={`flex items-center justify-between p-3 rounded-xl border transition-colors cursor-pointer active:scale-[0.98] ${isDone ? baseColor : 'bg-white/5 border-white/10 text-slate-300 hover:bg-white/10'}`}>
+                                        <div className="flex items-center gap-2">
+                                            <span className={`ms text-[18px] ${isDone ? 'fill' : 'opacity-40'}`}>{isDone ? 'check_circle' : 'radio_button_unchecked'}</span>
+                                            <span className={`text-[13px] font-bold ${isDone ? '' : 'text-slate-200'}`}>{TASK_NAMES[key]}</span>
+                                        </div>
+                                        {key === 'water' ? (
+                                            <span className="text-[11px] font-mono">{log.water || 0} / 2000</span>
+                                        ) : (
+                                            <span className="text-[11px] font-semibold">{isDone ? '完成' : '補登'}</span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="flex flex-col flex-1 animate-fadeIn">
+                    <TopDateBar />
+                    <main className="px-4 pb-safe flex-1 relative z-10 overflow-y-auto no-scrollbar">
+                        
+                        {/* Calendar Block */}
+                        <div className="glass rounded-2xl p-4 shadow-glass">
+                            <div className="flex items-center justify-between mb-4">
+                                <button onClick={prevMonth} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 text-slate-300">
+                                    <span className="ms text-[18px]">chevron_left</span>
+                                </button>
+                                <div className="text-[15px] font-black text-white tracking-widest">{year} / {String(month + 1).padStart(2, '0')}</div>
+                                <button onClick={nextMonth} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 text-slate-300">
+                                    <span className="ms text-[18px]">chevron_right</span>
+                                </button>
+                            </div>
+
+                            <div className="grid grid-cols-7 gap-1.5 text-center mb-2">
+                                {['日','一','二','三','四','五','六'].map((d,i) => (
+                                    <div key={i} className="text-[11px] text-slate-400 font-extrabold py-1">{d}</div>
+                                ))}
+                                
+                                {days.map((d, i) => {
+                                    if (!d) return <div key={`empty-${i}`}></div>;
+                                    
+                                    const dProg = getProgress(d.dateStr).overall;
+                                    const isFuture = d.dateStr > todayStr;
+                                    const isSelected = d.dateStr === viewDate;
+                                    const isCurrentToday = d.dateStr === todayStr;
+                                    
+                                    let bgClass = "bg-transparent text-slate-300 hover:bg-white/5 border border-transparent";
+                                    if (isSelected) bgClass = "bg-gradient-to-br from-violet via-violet2 to-cyan text-white font-black shadow-glow border-white/20";
+                                    else if (dProg >= 70) bgClass = "bg-white/10 text-lime border-lime/30 font-bold";
+                                    else if (dProg > 0) bgClass = "bg-white/5 text-gold border-gold/20 font-bold";
+                                    else if (isFuture) bgClass = "opacity-20 pointer-events-none text-slate-600";
+
+                                    return (
+                                        <div key={i} onClick={() => !isFuture && setViewDate(d.dateStr)}
+                                             className={`aspect-square rounded-full flex flex-col items-center justify-center relative cursor-pointer transition-all active:scale-90 ${bgClass} ${isCurrentToday && !isSelected ? 'ring-2 ring-cyan/50 ring-offset-1 ring-offset-ink' : ''}`}>
+                                            <span className="text-[13px]">{d.day}</span>
+                                        </div>
+                                    )
+                                })}
+                            </div>
+                            
+                            <div className="mt-4 flex items-center justify-center gap-4 text-[10px] text-slate-400 font-extrabold uppercase tracking-widest">
+                                <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-lime border border-lime/50"></span> 70%+</div>
+                                <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-gold border border-gold/50"></span> 部分</div>
+                            </div>
+                        </div>
+
+                        {/* Direct Summary / Quick Actions (Sectioned) */}
+                        <div className="mt-4 glass2 rounded-2xl p-5 border border-white/10 shadow-glass animate-slideUp">
+                            <div className="flex justify-between items-end mb-6">
+                                <div>
+                                    <div className="text-[11px] tracking-widest uppercase text-slate-400 font-extrabold">Summary</div>
+                                    <div className="text-[15px] font-black text-white mt-0.5">{viewDate} <span className="text-[12px] text-slate-400 font-semibold ml-1">補登區</span></div>
+                                </div>
+                                <span className="chip"><span className="ms fill text-gold">stars</span><span>總達成 {prog.overall}%</span></span>
+                            </div>
+
+                            {/* Sectioned Task Groups */}
+                            {renderTaskGroup('身體 Body', bodyTasks, prog.body, 'rose')}
+                            {renderTaskGroup('心智 Mind', mindTasks, prog.mind, 'violet')}
+                            {renderTaskGroup('靈修 Spirit', spiritTasks, prog.spirit, 'cyan')}
+
+                            {viewDate !== todayStr && activeDate !== viewDate && (
+                                <button onClick={() => { setActiveDate(viewDate); navigate('/'); }} className="mt-6 w-full tap44 rounded-xl font-black text-white bg-gradient-to-r from-violet via-violet2 to-cyan shadow-glow active:scale-95 transition-transform text-[14px]">
+                                    進入 {viewDate} 完整視圖
+                                </button>
+                            )}
+                        </div>
+
+                    </main>
+                </div>
+            );
+        };
+
+        // --- App Wrapper ---
+        const App = () => {
+            return (
+                <AppProvider>
+                    <MemoryRouter>
+                        <Routes>
+                            <Route path="/" element={<DashboardPage />} />
+                            <Route path="/body" element={<BodyPage />} />
+                            <Route path="/mind" element={<MindPage />} />
+                            <Route path="/calendar" element={<CalendarPage />} />
+                        </Routes>
+                        <BottomNav />
+                    </MemoryRouter>
+                </AppProvider>
+            );
+        };
+
+        const rootElement = document.getElementById('root');
+        if (ReactDOM.createRoot) {
+            const root = ReactDOM.createRoot(rootElement);
+            root.render(<App />);
+        } else {
+            ReactDOM.render(<App />, rootElement);
         }
-
-        // Init App
-        initDB();
-        initDate(activeDate);
-        router('hub');
-
     </script>
 </body>
 </html>
