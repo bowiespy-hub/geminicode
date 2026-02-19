@@ -21,19 +21,6 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 
-    <!-- Firebase SDK (ES Module Setup) -->
-    <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-
-        window.FirebaseModule = { 
-            initializeApp, getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, 
-            getFirestore, doc, setDoc, getDoc, onSnapshot 
-        };
-        window.dispatchEvent(new Event('firebase-module-loaded'));
-    </script>
-
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -69,6 +56,7 @@
                         'fadeIn': 'fadeIn .18s ease-out forwards',
                         'slideUp': 'slideUp .25s ease-out forwards',
                         'popMove': 'popMove 1.5s ease-out forwards',
+                        'toastIn': 'toastIn .18s ease-out forwards',
                     },
                     keyframes: {
                         fadeIn: {
@@ -83,6 +71,10 @@
                             '0%': { opacity: 0, transform: 'translate(-50%, -50%) scale(.92)' },
                             '18%': { opacity: 1, transform: 'translate(-50%, -58%) scale(1.02)' },
                             '100%': { opacity: 0, transform: 'translate(-50%, -94%) scale(1.0)' },
+                        },
+                        toastIn: {
+                            'from': { opacity: 0, transform: 'translateX(-50%) translateY(8px)' },
+                            'to': { opacity: 1, transform: 'translateX(-50%) translateY(0)' },
                         }
                     }
                 }
@@ -93,21 +85,18 @@
     <style>
         :root{ color-scheme: dark; }
 
-        /* V4 MOBILE SCALE */
         html{ font-size: 17px; }               
         @media (max-width: 390px){ html{ font-size: 16.5px; } }
         @media (min-width: 430px){ html{ font-size: 18px; } }
 
         body{
             min-height: 100dvh; background: #05060A; -webkit-tap-highlight-color: transparent; overflow-x: hidden;
-            font-family: "Noto Sans TC", Manrope, sans-serif; line-height: 1.35;
-            color: #f1f5f9;
+            font-family: Manrope, "Noto Sans TC", sans-serif; line-height: 1.35; color: #f1f5f9;
         }
 
         .ms { font-family: 'Material Symbols Outlined'; font-variation-settings: 'FILL' 0, 'wght' 420, 'GRAD' 0, 'opsz' 24; }
         .ms.fill { font-variation-settings: 'FILL' 1, 'wght' 520, 'GRAD' 0, 'opsz' 24; }
 
-        /* V4 Glassmorphism */
         .glass {
             background: rgba(16,25,46,0.58); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255,255,255,0.10);
@@ -117,15 +106,10 @@
             backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
             border: 1px solid rgba(255,255,255,0.10);
         }
-        .glass-sheet {
-            background: rgba(20, 25, 35, 0.85); backdrop-filter: blur(40px) saturate(200%); -webkit-backdrop-filter: blur(40px) saturate(200%);
-            border-top: 1px solid rgba(255,255,255,0.2); box-shadow: 0 -10px 40px rgba(0,0,0,0.6);
-        }
 
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* V4 UI Elements */
         .chip {
             display: inline-flex; align-items: center; gap: .42rem;
             padding: .28rem .62rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.11);
@@ -149,8 +133,10 @@
 
         button, a { touch-action: manipulation; }
         .tap44 { min-height: 44px; min-width: 44px; }
-
         .app-container { max-width: 440px; margin: 0 auto; min-height: 100vh; position: relative; background: transparent; }
+        
+        .sheet { position: fixed; left: 0; right: 0; bottom: 0; z-index: 310; transform: translateY(110%); transition: transform .22s ease-out; }
+        .sheet.show { transform: translateY(0); }
     </style>
 </head>
 <body>
@@ -213,114 +199,34 @@
         };
 
         const AppProvider = ({ children }) => {
-            const [fbReady, setFbReady] = useState(!!window.FirebaseModule);
-            const [isLoaded, setIsLoaded] = useState(false);
-            const [user, setUser] = useState(null);
-            const [db, setDb] = useState(null);
+            const STORAGE_KEY = 'ATE_APP_DATA_V5';
+
+            // 1. 本地儲存核心：確保重開機、滑掉 App 資料絕對保留
+            const loadInitialState = () => {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    return data ? JSON.parse(data) : {};
+                } catch (e) {
+                    console.warn("無法讀取 Local Storage", e);
+                    return {};
+                }
+            };
+
+            const savedState = loadInitialState();
+
+            const [profile, setProfile] = useState(savedState.profile || { name: 'Aether', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=D4AF37' });
+            const [xp, setXp] = useState(savedState.xp || 0); 
+            const [streak, setStreak] = useState(savedState.streak || 0);
+            const [logs, setLogs] = useState(savedState.logs || {});
             
-            const [profile, setProfile] = useState({ name: 'Aether', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=D4AF37' });
-            const [xp, setXp] = useState(0); 
-            const [streak, setStreak] = useState(0);
-            const [logs, setLogs] = useState({});
             const [toasts, setToasts] = useState([]);
             const [activeDate, setActiveDate] = useState(getTodayString());
             const [sttLang, setSttLang] = useState('AUTO'); 
             const [surpriseQuest, setSurpriseQuest] = useState(null);
 
-            // Firebase Script Loader Listener
+            // 確保當天有紀錄結構
             useEffect(() => {
-                if (!fbReady) {
-                    const handleReady = () => setFbReady(true);
-                    window.addEventListener('firebase-module-loaded', handleReady);
-                    return () => window.removeEventListener('firebase-module-loaded', handleReady);
-                }
-            }, [fbReady]);
-
-            // Initialize Firebase & Auth
-            useEffect(() => {
-                if (!fbReady) return;
-                try {
-                    const FB = window.FirebaseModule;
-                    const configRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
-                    if (!configRaw) throw new Error("No config injected");
-                    
-                    const firebaseConfig = JSON.parse(configRaw);
-                    const app = FB.initializeApp(firebaseConfig);
-                    const auth = FB.getAuth(app);
-                    const firestore = FB.getFirestore(app);
-                    setDb(firestore);
-
-                    const initAuth = async () => {
-                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                            await FB.signInWithCustomToken(auth, __initial_auth_token);
-                        } else {
-                            await FB.signInAnonymously(auth);
-                        }
-                    };
-                    initAuth();
-
-                    const unsubscribe = FB.onAuthStateChanged(auth, (u) => setUser(u));
-                    return () => unsubscribe();
-                } catch(e) {
-                    console.warn("Local Mode Active (Cloud Sync Disabled):", e.message);
-                    setIsLoaded(true); 
-                }
-            }, [fbReady]);
-
-            // Fetch Initial Data
-            useEffect(() => {
-                if (!user || !db) return;
-                const FB = window.FirebaseModule;
-                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                const docRef = FB.doc(db, 'artifacts', appId, 'users', user.uid, 'ate_state', 'main');
-                
-                const unsubscribe = FB.onSnapshot(docRef, (docSnap) => {
-                    if (docSnap.exists()) {
-                        const data = docSnap.data();
-                        if (data.profile) setProfile(data.profile);
-                        if (data.xp !== undefined) setXp(data.xp);
-                        if (data.streak !== undefined) setStreak(data.streak);
-                        if (data.logs) setLogs(data.logs);
-                    }
-                    setIsLoaded(true);
-                }, (err) => {
-                    console.error("Sync Error:", err);
-                    setIsLoaded(true);
-                });
-                
-                return () => unsubscribe();
-            }, [user, db]);
-
-            // Auto Save to Firebase
-            const firstLoadRef = useRef(true);
-            useEffect(() => {
-                if (!isLoaded || !user || !db) return;
-                if (firstLoadRef.current) {
-                    firstLoadRef.current = false;
-                    return; 
-                }
-                
-                const timer = setTimeout(async () => {
-                    try {
-                        const FB = window.FirebaseModule;
-                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-                        const docRef = FB.doc(db, 'artifacts', appId, 'users', user.uid, 'ate_state', 'main');
-                        await FB.setDoc(docRef, { profile, xp, streak, logs }, { merge: true });
-                    } catch(e) { console.error("Cloud Save Failed", e); }
-                }, 1500); 
-
-                return () => clearTimeout(timer);
-            }, [profile, xp, streak, logs, isLoaded, user, db]);
-
-            // Fallback unblock if Firebase takes too long
-            useEffect(() => {
-                const t = setTimeout(() => setIsLoaded(true), 4000);
-                return () => clearTimeout(t);
-            }, []);
-
-            // Assure active date exists
-            useEffect(() => {
-                if (isLoaded && !logs[activeDate]) {
+                if (!logs[activeDate]) {
                     setLogs(prev => ({
                         ...prev,
                         [activeDate]: {
@@ -330,7 +236,17 @@
                         }
                     }));
                 }
-            }, [activeDate, logs, isLoaded]);
+            }, [activeDate, logs]);
+
+            // 當任何核心資料變動時，立刻存入手機 LocalStorage
+            useEffect(() => {
+                try {
+                    const stateToSave = { profile, xp, streak, logs };
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+                } catch (e) {
+                    console.error("Local Storage 儲存失敗", e);
+                }
+            }, [profile, xp, streak, logs]);
 
             const levelInfo = useMemo(() => {
                 let current = LEVELS[0];
@@ -416,19 +332,22 @@
                 };
             }, [logs]);
 
-            // Loading State UI
-            if (!isLoaded) {
-                return (
-                    <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-ink">
-                        <span className="ms text-gold text-5xl animate-pulse mb-4">auto_awesome</span>
-                        <div className="text-white text-xs font-bold tracking-widest uppercase">Syncing Evolution Data...</div>
-                    </div>
-                );
-            }
+            // Surprise Quest Logic
+            useEffect(() => {
+                if (Math.random() < 0.15 && !surpriseQuest) {
+                    setTimeout(() => {
+                        setSurpriseQuest({
+                            title: '隱藏的恩典 (Secret Grace)',
+                            desc: '此刻放下手機，深呼吸 1 分鐘，領受雙倍祝福！',
+                            xp: 150
+                        });
+                    }, 3500);
+                }
+            }, []);
 
             return (
                 <AppContext.Provider value={{ 
-                    profile, setProfile, xp, setXp, levelInfo, streak, 
+                    profile, setProfile, xp, setXp, levelInfo, streak, setStreak,
                     logs, activeDate, setActiveDate, updateTask, getProgress, getTodayString,
                     sttLang, setSttLang, getVerseForDate
                 }}>
@@ -441,8 +360,9 @@
 
                         {children}
                         
+                        {/* XP Toasts */}
                         {toasts.map(toast => (
-                            <div key={toast.id} className="fixed left-1/2 top-[44%] z-[9999] pointer-events-none flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 animate-popMove font-display drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]">
+                            <div key={toast.id} className="fixed left-1/2 top-[44%] z-[9999] pointer-events-none flex flex-col items-center justify-center animate-popMove font-display drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]">
                                 <div className={`text-[36px] font-black ${toast.amount > 0 ? 'text-lime' : 'text-rose'}`}>
                                     {toast.amount > 0 ? '+' : ''}{toast.amount}
                                 </div>
@@ -451,6 +371,27 @@
                                 </div>
                             </div>
                         ))}
+
+                        {/* Surprise Quest Modal */}
+                        {surpriseQuest && (
+                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn">
+                                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSurpriseQuest(null)}></div>
+                                <div className="relative glass rounded-2xl p-6 text-center shadow-glass max-w-sm w-full border border-gold/40 z-10">
+                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold via-gold2 to-gold"></div>
+                                    <span className="ms fill text-5xl text-gold mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]">auto_awesome</span>
+                                    <h3 className="text-[18px] font-display font-black text-white mb-2 tracking-wide">{surpriseQuest.title}</h3>
+                                    <p className="text-slate-300 text-[13px] mb-6 leading-relaxed">{surpriseQuest.desc}</p>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        <button onClick={() => setSurpriseQuest(null)} className="tap44 glass2 border border-white/10 rounded-xl text-[13px] font-black text-white active:scale-95 transition-transform">稍後再說</button>
+                                        <button onClick={() => {
+                                            setXp(x => x + surpriseQuest.xp);
+                                            triggerToast(surpriseQuest.xp, "完成挑戰");
+                                            setSurpriseQuest(null);
+                                        }} className="tap44 rounded-xl text-[13px] font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform">接受</button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </AppContext.Provider>
             );
@@ -480,6 +421,7 @@
                             <button onClick={() => shiftDay(-1)} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
                                 <span className="ms text-[20px]">chevron_left</span>
                             </button>
+
                             <div className="min-w-0 flex-1 text-center" onClick={() => !isToday && setActiveDate(todayStr)}>
                                 <div className="text-[11px] tracking-[0.22em] uppercase text-slate-400 font-extrabold">{isToday ? 'ACTIVE DATE' : 'HISTORY'}</div>
                                 <div className={`mt-1 inline-flex items-center justify-center gap-2 transition-transform ${!isToday ? 'cursor-pointer hover:scale-[0.99]' : ''}`}>
@@ -487,6 +429,7 @@
                                     {isToday ? <span className="chip"><span className="ms fill text-gold">today</span>Today</span> : <span className="chip bg-gold/10 border-gold/30"><span className="ms fill text-gold">replay</span>返回</span>}
                                 </div>
                             </div>
+
                             <button onClick={() => shiftDay(1)} disabled={isToday} className={`tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center transition-transform ${isToday ? 'opacity-30' : 'active:scale-95 text-slate-300 hover:text-white'}`}>
                                 <span className="ms text-[20px]">chevron_right</span>
                             </button>
@@ -509,8 +452,8 @@
             ];
 
             return (
-                <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center nav-safe">
-                    <div className="glass mx-auto w-[92%] max-w-[390px] rounded-full flex justify-between items-center py-3.5 px-6 shadow-glass bg-obsidian/80">
+                <nav className="fixed bottom-0 left-0 right-0 z-50 flex justify-center nav-safe pointer-events-none">
+                    <div className="glass mx-auto w-[92%] max-w-[390px] rounded-full flex justify-between items-center py-3.5 px-6 shadow-glass bg-obsidian/80 border border-white/10 pointer-events-auto">
                         {navItems.map((item) => (
                             <button key={item.path} onClick={() => navigate(item.path)}
                                 className={`flex flex-col items-center gap-1 w-14 transition-all duration-300 ${isActive(item.path) ? 'text-violet2 scale-105' : 'text-slate-500 hover:text-slate-300 opacity-70'}`}>
@@ -523,6 +466,7 @@
             );
         };
 
+        // --- V4 Inline Task Card (Click Left to Done, Right for Timer) ---
         const InlineTaskCard = ({ icon, title, taskKey, themeColor = 'violet2' }) => {
             const { activeDate, logs, updateTask } = useAppContext();
             const log = logs[activeDate] || {};
@@ -569,27 +513,32 @@
                 <div className={`glass rounded-2xl p-4 shadow-glass transition-all duration-300 relative overflow-hidden flex items-center justify-between gap-2 ${isDone ? `${theme.bg} ${theme.border}` : ''}`}>
                     {isRunning && <div className="absolute inset-y-0 left-0 bg-white/5 transition-all ease-linear" style={{width: `${100 - (timeLeft/taskConfig.duration)*100}%`}}></div>}
                     
-                    <div className="min-w-0 flex-1 flex items-center gap-2 cursor-pointer relative z-10 active:scale-[0.98] transition-transform" onClick={toggleComplete}>
-                        <span className={`ms text-[20px] transition-colors ${isDone ? `fill ${theme.text}` : `fill ${theme.text}`}`}>
-                            {isDone ? 'check_circle' : icon}
-                        </span>
-                        <div>
+                    <div className="min-w-0 flex-1 cursor-pointer relative z-10 active:scale-[0.98] transition-transform" onClick={toggleComplete}>
+                        <div className="flex items-center gap-2">
+                            <span className={`ms text-[20px] transition-colors ${isDone ? `fill ${theme.text}` : `fill ${theme.text}`}`}>
+                                {isDone ? 'check_circle' : icon}
+                            </span>
                             <div className={`text-[14px] font-black ${isDone ? theme.text : 'text-white'}`}>{title}</div>
                             <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1">
-                                {isDone ? `已完成 +${taskConfig.xp}` : isRunning ? <span className={`${theme.text} font-mono animate-pulse text-[18px] tracking-tighter`}>{formatTime(timeLeft)}</span> : `目標 ${taskConfig.duration / 60} 分鐘 · 點擊直完`}
+                                {isDone ? `已紀錄 +${taskConfig.xp}` : ''}
                             </div>
                         </div>
+                        {!isDone && (
+                            <div className={`mt-2 text-[38px] font-light tracking-tighter tabular-nums ${isRunning ? theme.text + ' animate-pulse' : 'text-white'}`}>
+                                {formatTime(timeLeft)}
+                            </div>
+                        )}
                     </div>
 
                     <div className="shrink-0 flex items-center gap-2.5 relative z-10">
                         {!isDone ? (
                             <div className="flex items-center gap-2">
                                 {timeLeft < taskConfig.duration ? (
-                                    <button onClick={resetTimer} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
+                                    <button onClick={resetTimer} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
                                         <span className="ms text-[20px]">refresh</span>
                                     </button>
                                 ) : null}
-                                <button onClick={toggleTimer} className={`tap44 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform border border-white/10 ${isRunning ? 'bg-white/10 text-white' : `bg-gradient-to-r ${theme.grad} text-white`}`}>
+                                <button onClick={toggleTimer} className={`tap44 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform border border-white/10 shadow-glow ${isRunning ? 'bg-white/10 text-white' : `bg-gradient-to-r ${theme.grad} text-white`}`}>
                                     <span className="ms fill text-[22px]">{isRunning ? 'pause' : 'play_arrow'}</span>
                                 </button>
                             </div>
@@ -599,7 +548,7 @@
             );
         };
 
-        const VoiceTextarea = ({ value, onChange, placeholder, title, isDone, taskKey }) => {
+        const VoiceTextarea = ({ value, onChange, placeholder, title, icon, isDone, taskKey }) => {
             const { sttLang, setSttLang } = useAppContext();
             const [isRecording, setIsRecording] = useState(false);
             const [isLangSheetOpen, setIsLangSheetOpen] = useState(false);
@@ -646,7 +595,7 @@
                         try { recognitionRef.current.stop(); } catch(e){}
                     }
                 };
-            }, [sttLang]); // ONLY reset when language changes!
+            }, [sttLang]); 
 
             const toggleRecord = () => {
                 if (!recognitionRef.current) {
@@ -672,7 +621,7 @@
                     <section className={`glass rounded-2xl p-4 shadow-glass transition-colors ${isDone ? 'border-gold/40 bg-gold/5' : ''}`}>
                         <div className="flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                                <span className={`ms text-[20px] fill ${isDone ? 'text-gold' : 'text-gold'}`}>{isDone ? 'check_circle' : 'rate_review'}</span>
+                                <span className={`ms text-[20px] fill ${isDone ? 'text-gold' : 'text-gold'}`}>{isDone ? 'check_circle' : icon}</span>
                                 <div>
                                     <div className={`text-[14px] font-black ${isDone ? 'text-gold' : 'text-white'}`}>{title}</div>
                                     <div className="text-[11px] text-slate-400 font-semibold">{isDone ? `已紀錄 +${TASKS[taskKey].xp}` : '填寫或語音即可得分'}</div>
@@ -748,7 +697,7 @@
         // --- Pages ---
 
         const DashboardPage = () => {
-            const { profile, setProfile, levelInfo, streak, activeDate, getProgress, setXp, getVerseForDate } = useAppContext();
+            const { profile, setProfile, levelInfo, streak, setStreak, activeDate, getProgress, setXp, getVerseForDate } = useAppContext();
             const prog = getProgress(activeDate);
             const [isProfileOpen, setIsProfileOpen] = useState(false);
             const fileInputRef = useRef(null);
@@ -790,7 +739,7 @@
                                     </div>
                                     <div className="mt-1 flex flex-wrap gap-2.5">
                                         <span className="chip"><span className="ms fill text-violet2">percent</span><span>{prog.overall}%</span></span>
-                                        <span className="chip"><span className="ms fill text-gold">bolt</span><span>{streak} Days</span></span>
+                                        <span className="chip" onClick={() => setStreak(s => s+1)}><span className="ms fill text-gold">bolt</span><span>{streak} Days</span></span>
                                     </div>
                                 </div>
                                 <button onClick={() => { setTempName(profile.name); setTempAvatar(profile.avatar); setIsProfileOpen(true); }} className="tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform" title="設定">
@@ -901,7 +850,12 @@
                                     
                                     <div className="grid grid-cols-2 gap-3 mt-2">
                                         <button onClick={() => { setProfile({ name: tempName, avatar: tempAvatar }); setIsProfileOpen(false); }} className="tap44 rounded-xl font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform text-[14px]">保存</button>
-                                        <button onClick={() => { setXp(0); alert("XP 數據已歸零"); setIsProfileOpen(false); }} className="tap44 glass2 border border-rose/30 rounded-xl font-black text-rose active:scale-95 transition-transform text-[14px] bg-rose/10">重置 XP</button>
+                                        <button onClick={() => { 
+                                            if(window.confirm('確定要將所有數據歸零嗎？此動作無法復原。')) {
+                                                localStorage.removeItem('ATE_APP_DATA_V5');
+                                                window.location.reload();
+                                            }
+                                        }} className="tap44 glass2 border border-rose/30 rounded-xl font-black text-rose active:scale-95 transition-transform text-[14px] bg-rose/10">重置數據</button>
                                     </div>
                                 </div>
                             </div>
@@ -1023,14 +977,14 @@
                                 <InlineTaskCard taskKey="skill" title="新技能學習" icon="lightbulb" themeColor="violet2" />
                                 
                                 <VoiceTextarea 
-                                    taskKey="review"
+                                    taskKey="review" icon="rate_review"
                                     value={log.review || ''} onChange={(val) => updateTask(activeDate, 'review', val)}
                                     title="今日復盤" activeDate={activeDate}
                                     placeholder="學到了什麼？有什麼可以改善？(可語音混講)" 
                                     isDone={!!(log.review && log.review.trim())} />
 
                                 <VoiceTextarea 
-                                    taskKey="strategy"
+                                    taskKey="strategy" icon="note_alt"
                                     value={log.strategy || ''} onChange={(val) => updateTask(activeDate, 'strategy', val)}
                                     title="策略筆記" activeDate={activeDate}
                                     placeholder="記下一個重點思路！(可語音混講)" 
