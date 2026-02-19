@@ -102,7 +102,7 @@
         .timer-circle-bg { fill: none; stroke: rgba(255,255,255,0.05); stroke-width: 6; }
         .timer-circle-progress {
             fill: none; stroke: url(#gradientStroke); stroke-width: 6; stroke-linecap: round;
-            stroke-dasharray: 880; stroke-dashoffset: 880; /* Will be set by JS */
+            stroke-dasharray: 880; stroke-dashoffset: 880; 
             transition: stroke-dashoffset 1s linear; filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.6));
         }
 
@@ -144,6 +144,9 @@
 <body>
 
     <div class="app-container">
+        <!-- Hidden File Input for Avatar Upload -->
+        <input type="file" id="avatarUpload" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
+        
         <!-- DYNAMIC CONTENT -->
         <div id="main-view" class="scroll-area"></div>
 
@@ -226,10 +229,7 @@
 
     <script>
         /* =========================================
-           ATE V16 - OBSIDIAN ULTIMATE ENGINE
-           - Seamless Vanilla JS
-           - Stateless XP & Combo
-           - Premium UI Mappings
+           ATE V16+ - DAILY SCRIPTURE & AVATAR UPLOAD
         ========================================= */
         const DB_KEY = 'ATE_OBSIDIAN_V16';
         const WATER_TARGET = 1900;
@@ -245,6 +245,20 @@
             waterGoal: 100 
         };
 
+        // Hand-picked verses for Daily Manna
+        const VERSES = [
+            { text: "I can do all things through him who strengthens me.", ref: "Philippians 4:13" },
+            { text: "For God gave us a spirit not of fear but of power and love and self-control.", ref: "2 Timothy 1:7" },
+            { text: "Commit your work to the Lord, and your plans will be established.", ref: "Proverbs 16:3" },
+            { text: "Be strong and courageous. Do not be frightened, and do not be dismayed, for the Lord your God is with you wherever you go.", ref: "Joshua 1:9" },
+            { text: "But they who wait for the Lord shall renew their strength; they shall mount up with wings like eagles...", ref: "Isaiah 40:31" },
+            { text: "Let all that you do be done in love.", ref: "1 Corinthians 16:14" },
+            { text: "Trust in the Lord with all your heart, and do not lean on your own understanding.", ref: "Proverbs 3:5" },
+            { text: "The steadfast love of the Lord never ceases; his mercies never come to an end; they are new every morning.", ref: "Lamentations 3:22-23" },
+            { text: "Peace I leave with you; my peace I give to you. Not as the world gives do I give to you. Let not your hearts be troubled.", ref: "John 14:27" },
+            { text: "And let us not grow weary of doing good, for in due season we will reap, if we do not give up.", ref: "Galatians 6:9" }
+        ];
+
         let db = JSON.parse(localStorage.getItem(DB_KEY)) || {};
         let activeDate = getTodayStr(); 
         let timerObj = { id: null, rem: 0, total: 0, interval: null, running: false };
@@ -255,7 +269,7 @@
         }
 
         function initDB() {
-            if (!db.settings) db.settings = { userName: "覺醒女神" };
+            if (!db.settings) db.settings = { userName: "覺醒女神", avatarUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0" };
             if (!db.gamify) db.gamify = { combo: 1, lastActive: 0 };
             if (!db.logs) db.logs = {};
         }
@@ -274,9 +288,54 @@
         function saveDB() { localStorage.setItem(DB_KEY, JSON.stringify(db)); }
 
         function resetAll() {
-            if(confirm("【系統重置】確定要清除所有紀錄並從 0 開始嗎？")) {
+            if(confirm("【系統重置警告】確定要清除所有數據並從 0 開始嗎？")) {
                 localStorage.removeItem(DB_KEY); location.reload();
             }
+        }
+
+        // Handle Image Upload & Compression (Avoid LocalStorage bloat)
+        function handleAvatarUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    // Resize to max 300px width/height for localstorage safety
+                    const MAX_SIZE = 300;
+                    let width = img.width;
+                    let height = img.height;
+
+                    if (width > height) {
+                        if (width > MAX_SIZE) {
+                            height *= MAX_SIZE / width;
+                            width = MAX_SIZE;
+                        }
+                    } else {
+                        if (height > MAX_SIZE) {
+                            width *= MAX_SIZE / height;
+                            height = MAX_SIZE;
+                        }
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    ctx.drawImage(img, 0, 0, width, height);
+                    
+                    db.settings.avatarUrl = canvas.toDataURL('image/jpeg', 0.8);
+                    saveDB();
+                    renderView(); // Refresh to show new avatar
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function triggerAvatarUpload() {
+            document.getElementById('avatarUpload').click();
         }
 
         function isPerfect(dateStr) {
@@ -410,7 +469,7 @@
             // View: Body
             if(document.getElementById('water-val')) {
                 updateEl('water-val', data.water);
-                updateStyle('water-bar', 'height', `${wScore}%`); // Beaker UI
+                updateStyle('water-bar', 'height', `${wScore}%`); 
                 
                 ['squat', 'resist', 'breakfast'].forEach(id => {
                     updateEl(`task-${id}`, buildTaskInner(id));
@@ -425,8 +484,8 @@
 
             // View: Mind
             if(document.getElementById('task-read')) {
-                updateEl('task-read', buildTaskInner('read'));
-                updateEl('task-devotion', buildTaskInner('devotion'));
+                updateEl('task-read', buildTaskInner('read', true));
+                updateEl('task-devotion', buildTaskInner('devotion', true));
             }
 
             // View: Calendar
@@ -460,22 +519,35 @@
             let html = '';
 
             if (currentView === 'hub') {
+                // Get Daily Verse
+                const todayNum = new Date(activeDate).getDate();
+                const verse = VERSES[todayNum % VERSES.length];
+
                 html = `
                     <header class="px-2 py-4 flex justify-between items-center relative z-10 mb-2">
                         <div class="flex items-center space-x-2">
-                            <span class="material-icons-round text-primary/80">nightlight_round</span>
+                            <span class="material-icons-round text-primary/80 text-lg">nightlight_round</span>
                             <span class="text-sm tracking-widest uppercase text-gray-400 font-light">ATE SYSTEM</span>
+                            <span class="material-icons-round text-gray-600 text-[14px] ml-1 cursor-pointer hover:text-red-400 transition-colors" onclick="resetAll()" title="Reset Database">refresh</span>
                         </div>
-                        <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center overflow-hidden press" onclick="resetAll()">
-                            <img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAYOzNGEzdDG66QmmNGCUlkdnwk7zJo0-6al0p4StVVrRy7UvwIFfnSbzk1yro93SGmClDJXzHkeK0f3pOKlJ7_0wH9VzNbQ3ATQRP2P4Msi2j3L88v-cPqgWfProkys6HXeVgnOq9poVFtfNyxvn9pqj2xho4IOb0kutPRkMrNn2qgl6IG3CfgZJFN6h_2N_KyQQzgP3uX0T6tGAkUnEDgaVjHUIXMZVxocw3H1i2okCF0BovjWGbicSrh5A42xuvBTiOpnUCuI0"/>
+                        <div class="w-11 h-11 rounded-xl border border-white/20 flex items-center justify-center overflow-hidden press shadow-glow cursor-pointer" onclick="triggerAvatarUpload()" title="更換頭像">
+                            <img alt="Profile" class="w-full h-full object-cover" src="${db.settings.avatarUrl}"/>
                         </div>
                     </header>
 
-                    <div class="text-center space-y-1 mb-8">
+                    <div class="text-center space-y-1 mb-8 mt-2">
                         <h1 class="text-3xl font-serif tracking-wide text-white text-glow">
                             Welcome, <span class="editable-name" contenteditable="true" onblur="updateName(this.innerText)">${db.settings.userName}</span>
                         </h1>
                         <p class="text-xs text-primary font-light tracking-[0.2em] uppercase opacity-80">Evolution Checkpoint</p>
+                    </div>
+
+                    <!-- Daily Manna (Verse) -->
+                    <div class="glass-panel rounded-[24px] p-5 mb-6 relative overflow-hidden" style="border-color: rgba(212, 175, 55, 0.2);">
+                        <div class="absolute -right-2 -top-6 text-[100px] opacity-5 font-serif text-gold leading-none pointer-events-none">"</div>
+                        <div class="text-[10px] text-gold uppercase tracking-widest mb-3 flex items-center gap-1.5"><span class="material-icons-round text-[14px]">auto_stories</span> Daily Manna</div>
+                        <p class="font-serif text-[15px] leading-relaxed text-gray-200 italic relative z-10">"${verse.text}"</p>
+                        <div class="text-right mt-3 text-[11px] text-primary/80 font-bold tracking-widest uppercase">— ${verse.ref}</div>
                     </div>
 
                     <div class="glass-panel rounded-[32px] p-6 mb-6 relative overflow-hidden">
@@ -655,7 +727,6 @@
             const m = META[id];
             
             if (isGrid) {
-                // Square format for Mind
                 return `
                 <div class="glass-panel rounded-3xl p-5 flex flex-col h-36 relative overflow-hidden transition-all duration-300 ${isDone ? 'border-primary/50 shadow-glow-gold' : ''}">
                     ${isDone ? '<div class="absolute inset-0 bg-primary/10"></div>' : ''}
@@ -670,7 +741,6 @@
                 </div>`;
             }
 
-            // Row format for Body
             return `
             <div class="glass-panel rounded-2xl p-4 flex items-center justify-between transition-all duration-300 ${isDone ? 'border-primary/50 shadow-[0_0_15px_rgba(212,175,55,0.15)] bg-gradient-to-r from-primary/10 to-transparent' : ''}">
                 <div class="flex items-center gap-4">
@@ -699,7 +769,7 @@
             const text = document.getElementById('timer-text');
             
             if (timerObj.running) {
-                clearInterval(timerObj.interval); // Zero latency
+                clearInterval(timerObj.interval); 
                 timerObj.running = false;
                 icon.innerText = 'play_arrow'; text.innerText = '繼續';
                 btn.className = "flex-1 bg-white/10 text-white font-bold py-4 rounded-2xl press flex items-center justify-center gap-2";
@@ -721,9 +791,8 @@
             const s = timerObj.rem % 60;
             document.getElementById('timer-display').innerText = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
             
-            // Update SVG Ring
             const pct = timerObj.rem / timerObj.total;
-            const offset = 880 - (880 * pct); // 880 is dasharray
+            const offset = 880 - (880 * pct); 
             document.getElementById('timer-svg-prog').style.strokeDashoffset = offset;
         }
 
@@ -749,7 +818,7 @@
             }
         }
 
-        // --- CALENDAR MODAL (Magazine Style) ---
+        // --- CALENDAR MODAL ---
         let viewingDate = null;
 
         function openDayDetail(dateStr) {
@@ -868,7 +937,7 @@
                 particles.push({
                     x: c.width/2, y: c.height/2,
                     vx: (Math.random()-0.5)*15, vy: (Math.random()-0.5)*15 - 5,
-                    color: `hsl(${Math.random()*40 + 30}, 100%, 60%)`, // Gold/Orange hues
+                    color: `hsl(${Math.random()*40 + 30}, 100%, 60%)`, 
                     life: 80 + Math.random()*40
                 });
             }
