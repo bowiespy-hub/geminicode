@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html class="dark" lang="zh-Hant">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
     <title>ATE - Aether Trinity Evolution</title>
     
-    <link href="https://fonts.googleapis.com" rel="preconnect" />
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
     
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -20,15 +20,15 @@
                     colors: {
                         "primary": "#5b13ec",
                         "primary-glow": "#7c42ff",
-                        "primary-light": "#7c42f2",
                         "primary-dark": "#3e0ca6",
+                        "primary-light": "#7c42f2",
                         "secondary": "#06b6d4",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#020617",
+                        "surface-dark": "#0f172a",
+                        "surface-highlight": "#1e293b",
                         "gold": "#D4AF37",
                         "gold-light": "#F9E58A",
-                        "background-light": "#f6f6f8",
-                        "background-dark": "#0a0a0c", 
-                        "surface-dark": "#16161a",
-                        "surface-highlight": "#23232a",
                     },
                     fontFamily: {
                         "display": ["Manrope", "Noto Sans TC", "sans-serif"],
@@ -38,13 +38,11 @@
                         "DEFAULT": "1rem", "lg": "1.5rem", "xl": "2rem", "2xl": "2.5rem", "3xl": "3rem", "full": "9999px"
                     },
                     backgroundImage: {
-                        'aurora': 'radial-gradient(circle at 50% 0%, rgba(91, 19, 236, 0.15) 0%, rgba(6, 182, 212, 0.05) 40%, rgba(10, 10, 12, 0) 70%)',
-                        'glass-gradient': 'linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%)',
+                        'aurora': 'radial-gradient(circle at 50% 0%, rgba(91, 19, 236, 0.15) 0%, rgba(6, 182, 212, 0.05) 40%, rgba(2, 6, 23, 0) 70%)',
                     },
                     boxShadow: {
                         "glow": "0 0 20px rgba(91, 19, 236, 0.3)",
                         "gold-glow": "0 0 15px -3px rgba(255, 215, 0, 0.4)",
-                        "glass": "0 8px 32px 0 rgba(0, 0, 0, 0.37)"
                     }
                 },
             },
@@ -52,455 +50,829 @@
     </script>
     
     <style>
-        body { min-height: max(884px, 100dvh); -webkit-tap-highlight-color: transparent; }
-        .glass-panel { background: rgba(22, 22, 26, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
-        .glass-card { background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); transition: transform 0.2s ease, border-color 0.2s ease; }
-        .glass-card:active { transform: scale(0.98); border-color: rgba(91, 19, 236, 0.3); }
-        .text-glow { text-shadow: 0 0 20px rgba(91, 19, 236, 0.5); }
-        .text-gradient-gold { background: linear-gradient(to right, #D4AF37, #F9E58A, #D4AF37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        body {
+            min-height: 100vh;
+            background-color: #020617;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .glass-card:active {
+            transform: scale(0.98);
+            border-color: rgba(91, 19, 236, 0.3);
+        }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes float { 0% { transform: translate(0px, 0px) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0px, 0px) scale(1); } }
-        .animate-blob { animation: float 10s infinite ease-in-out; }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .calendar-day-active { background: linear-gradient(135deg, #5b13ec 0%, #4a0db8 100%); box-shadow: 0 4px 12px rgba(91, 19, 236, 0.3); }
+        
         .material-symbols-outlined.filled { font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-        .app-view { display: none; }
-        .app-view.active { display: flex; animation: fadeIn 0.3s ease-out forwards; }
+        
+        .calendar-day-active {
+            background: linear-gradient(135deg, #5b13ec 0%, #4a0db8 100%);
+            box-shadow: 0 4px 12px rgba(91, 19, 236, 0.3);
+        }
+        
+        .gacha-orb {
+            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.9) 0%, rgba(91,19,236,0.6) 20%, rgba(91,19,236,1) 50%, #1a054a 100%);
+            box-shadow: 0 0 30px rgba(91, 19, 236, 0.6), inset 0 0 20px rgba(255,255,255,0.2);
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(to right, #D4AF37, #F9E58A, #D4AF37);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0px, 0px) scale(1); }
+            33% { transform: translate(30px, -50px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+            100% { transform: translate(0px, 0px) scale(1); }
+        }
+        .animate-blob { animation: float 10s infinite ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
     </style>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 </head>
 
 <body class="bg-background-dark text-slate-100 font-display selection:bg-primary selection:text-white overflow-x-hidden min-h-screen relative">
-    
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute top-[-10%] left-[20%] w-[80%] h-[50%] bg-primary/20 rounded-full blur-[120px] animate-blob"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-secondary/10 rounded-full blur-[100px] animate-blob" style="animation-delay: 2s;"></div>
-        <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.65\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E');"></div>
-    </div>
+    <div id="root"></div>
 
-    <div class="relative z-10 mx-auto w-full max-w-md min-h-screen bg-black/20 shadow-2xl flex flex-col">
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
 
-        <main id="view-hub" class="app-view active flex-col flex-1 pb-24">
-            <header class="pt-14 pb-6 px-6 flex flex-col gap-6">
-                <div class="flex justify-between items-start">
-                    <div class="flex items-center gap-4">
-                        <div class="relative group" onclick="clearData()" title="點擊清除數據 (Demo用)">
-                            <div class="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
-                            <div class="relative h-16 w-16 rounded-full border-2 border-white/20 overflow-hidden bg-surface-dark cursor-pointer">
-                                <img alt="Profile" class="object-cover w-full h-full" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM1YjEzZWMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4="/>
-                            </div>
-                            <div class="absolute -bottom-1 -right-1 bg-surface-dark rounded-full p-1 border border-white/10">
-                                <span class="material-symbols-outlined text-yellow-400 text-[18px] filled">workspace_premium</span>
-                            </div>
-                        </div>
-                        <div>
-                            <h1 class="text-2xl font-bold tracking-tight text-white leading-none mb-1">覺醒女神</h1>
-                            <p class="text-slate-400 text-xs font-medium tracking-wide">LEVEL 42</p>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <section class="px-6 pb-6">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                        <span class="material-symbols-outlined text-primary text-[20px]">spa</span>
-                        三位一體概覽 (Trinity)
-                    </h2>
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
-                        <div class="absolute top-0 right-0 p-4 opacity-10"><span class="material-symbols-outlined text-6xl">accessibility_new</span></div>
-                        <div class="flex justify-between items-start mb-4 relative z-10">
-                            <div class="flex items-center gap-3">
-                                <div class="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
-                                    <span class="material-symbols-outlined text-rose-400">fitness_center</span>
-                                </div>
-                                <div><h3 class="text-base font-bold text-white">Body (身)</h3><p class="text-xs text-slate-400">今日完成度</p></div>
-                            </div>
-                            <div class="flex flex-col items-end"><span id="hub-body-pct" class="text-xl font-display font-bold text-white">0%</span></div>
-                        </div>
-                        <div class="flex items-center gap-3 relative z-10">
-                            <div class="flex-1 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
-                                <div id="hub-body-bar" class="h-full bg-rose-500 w-[0%] rounded-full shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-all duration-500"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-
-        <main id="view-body" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-4 space-y-6">
-            <header class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Aether Trinity Evolution</p>
-                    <h1 class="text-2xl font-bold text-white tracking-tight">身體進化</h1>
-                </div>
-            </header>
-
-            <section class="relative overflow-hidden rounded-2xl glass-panel p-6 shadow-glow border border-primary/20">
-                <div class="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="flex items-start justify-between mb-6">
-                    <div>
-                        <h2 class="text-lg font-bold flex items-center gap-2"><span class="material-symbols-outlined text-blue-400">water_drop</span>水分攝入</h2>
-                        <p class="text-sm text-slate-400">Target: 1900ml</p>
-                    </div>
-                    <div class="text-right">
-                        <span id="water-current" class="text-3xl font-bold text-white tracking-tight">0</span>
-                        <span class="text-sm text-slate-400 font-medium ml-1">ml</span>
-                    </div>
-                </div>
-                <div class="relative h-4 w-full bg-slate-800/50 rounded-full overflow-hidden mb-6">
-                    <div id="water-bar" class="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-primary w-[0%] rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500"></div>
-                </div>
-                <div class="flex gap-3 relative z-10">
-                    <button onclick="addWater(250)" class="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 text-white border border-primary/30 h-12 rounded-xl font-semibold text-sm backdrop-blur-sm">
-                        <span class="material-symbols-outlined text-base">add</span> 250ml
-                    </button>
-                    <button onclick="addWater(500)" class="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white shadow-glow h-12 rounded-xl font-semibold text-sm">
-                        <span class="material-symbols-outlined text-base">add</span> 500ml
-                    </button>
-                </div>
-            </section>
-
-            <section>
-                <h3 class="text-lg font-bold text-white mb-4 px-1 flex items-center gap-2">
-                    <span class="w-1 h-5 bg-primary rounded-full"></span>今日任務 (Daily Tasks)
-                </h3>
-                <div class="space-y-3">
-                    <div id="task-1" class="group flex items-center gap-4 p-4 rounded-2xl glass-panel border border-slate-800 transition-all duration-300">
-                        <div class="task-icon flex-shrink-0 h-12 w-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-transparent transition-all">
-                            <span class="material-symbols-outlined">fitness_center</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="task-title font-bold text-white text-lg transition-all">晨間伸展 (10m)</h4>
-                        </div>
-                        <button onclick="toggleTask(1)" class="task-btn h-10 w-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all z-10">
-                            <span class="material-symbols-outlined">done</span>
-                        </button>
-                    </div>
-                    <div id="task-2" class="group flex items-center gap-4 p-4 rounded-2xl glass-panel border border-slate-800 transition-all duration-300">
-                        <div class="task-icon flex-shrink-0 h-12 w-12 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center border border-transparent transition-all">
-                            <span class="material-symbols-outlined">restaurant</span>
-                        </div>
-                        <div class="flex-1">
-                            <h4 class="task-title font-bold text-white text-lg transition-all">DIAAS 酸奶早餐</h4>
-                        </div>
-                        <button onclick="toggleTask(2)" class="task-btn h-10 w-10 rounded-full bg-slate-700 text-white flex items-center justify-center shadow-lg active:scale-90 transition-all z-10">
-                            <span class="material-symbols-outlined">done</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-
-        <main id="view-mind" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-4">
-            <header class="flex items-center justify-between mb-6">
-                <h1 class="text-2xl font-bold tracking-wide text-white">心智與靈魂</h1>
-            </header>
-            <div class="bg-surface-dark rounded-2xl p-6 relative overflow-hidden border border-white/5 shadow-glass">
-                <p class="text-slate-400 text-sm">此頁面結構已建立，目前資料持久化主要展示於 Body 與 Calendar 模組中。</p>
-            </div>
-        </main>
-
-        <main id="view-calendar" class="app-view flex-col flex-1 pb-24 h-full overflow-y-auto no-scrollbar pt-12 px-2">
-            <header class="flex items-center justify-between px-4 pb-4">
-                <div class="flex flex-col">
-                    <h1 class="text-2xl font-bold tracking-wide text-white">進化日歷</h1>
-                    <span class="text-xs text-primary font-medium tracking-widest uppercase opacity-80">Evolution</span>
-                </div>
-            </header>
-
-            <div class="px-4 pb-2">
-                <div class="flex items-center justify-between rounded-2xl bg-surface-dark border border-white/5 p-2 shadow-glass">
-                    <button onclick="changeMonth(-1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
-                        <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                    </button>
-                    <div id="calendar-month-title" class="text-center"></div>
-                    <button onclick="changeMonth(1)" class="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5">
-                        <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="px-4 pb-6 mt-4">
-                <div class="w-full glass-panel rounded-2xl p-4">
-                    <div class="grid grid-cols-7 mb-2">
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">日</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">一</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">二</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">三</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">四</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">五</div>
-                        <div class="py-2 text-center text-xs font-medium text-slate-500">六</div>
-                    </div>
-                    <div id="calendar-grid" class="grid grid-cols-7 gap-y-2 gap-x-1 mt-2"></div>
-                </div>
-            </div>
-        </main>
-
-
-        <nav class="fixed bottom-0 left-0 w-full z-50 flex justify-center pb-6 pt-2 pointer-events-none">
-            <div class="glass-panel mx-auto w-[90%] max-w-[380px] rounded-full flex justify-between items-center py-3 px-6 shadow-2xl bg-[#0a0a0c]/80 backdrop-blur-xl border border-white/10 relative pointer-events-auto">
-                <button onclick="switchView('hub')" class="nav-btn flex flex-col items-center gap-1 group w-12" data-target="hub">
-                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
-                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-100 transition-opacity"></div>
-                        <span class="material-symbols-outlined text-[24px] text-primary-glow filled transition-colors" id="icon-hub">dashboard</span>
-                    </div>
-                    <span class="text-[10px] font-bold text-white transition-colors" id="text-hub">Hub</span>
-                </button>
-                <button onclick="switchView('body')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="body">
-                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
-                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
-                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-body">accessibility_new</span>
-                    </div>
-                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-body">Body</span>
-                </button>
-                <button onclick="switchView('body')" class="relative -top-5 bg-gradient-to-br from-primary to-primary-glow h-14 w-14 flex items-center justify-center rounded-full shadow-[0_0_20px_rgba(91,19,236,0.4)] border-4 border-[#0a0a0c] group hover:scale-105 transition-transform flex-shrink-0">
-                    <span class="material-symbols-outlined text-white text-[28px]">add</span>
-                </button>
-                <button onclick="switchView('mind')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="mind">
-                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
-                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
-                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-mind">psychology</span>
-                    </div>
-                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-mind">Mind</span>
-                </button>
-                <button onclick="switchView('calendar')" class="nav-btn flex flex-col items-center gap-1 group w-12 opacity-60 hover:opacity-100 transition-opacity" data-target="calendar">
-                    <div class="nav-icon-container relative flex items-center justify-center h-8 transition-transform group-active:scale-90">
-                        <div class="active-glow absolute inset-0 bg-primary/20 blur-md rounded-full opacity-0 transition-opacity"></div>
-                        <span class="material-symbols-outlined text-[24px] text-slate-300 transition-colors" id="icon-calendar">calendar_month</span>
-                    </div>
-                    <span class="text-[10px] font-medium text-slate-400 group-hover:text-slate-200 transition-colors" id="text-calendar">Evo</span>
-                </button>
-            </div>
-        </nav>
-    </div>
-
-    <script>
-        // --- 1. State Management (LocalStorage) ---
-        const STORAGE_KEY = 'ate_evolution_data';
-        let appState = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-        
-        // 取得今日格式化字串 (e.g., "2026-02-19")
-        function getTodayKey() {
-            const today = new Date();
-            // 注意時區偏移，確保格式固定為 YYYY-MM-DD
-            return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-        }
-
-        const todayKey = getTodayKey();
-
-        // 初始化今日資料結構
-        if (!appState[todayKey]) {
-            appState[todayKey] = {
-                water: 0,
-                tasks: { 1: false, 2: false },
-                isPerfect: false
-            };
-            saveState();
-        }
-
-        function saveState() {
-            // 檢查是否達成完美一天 (水 >= 1900 且 任務皆完成)
-            const todayData = appState[todayKey];
-            const tasksDone = todayData.tasks[1] && todayData.tasks[2];
-            todayData.isPerfect = (todayData.water >= 1900 && tasksDone);
-            
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-            updateUI();
-        }
-
-        // 清除數據 (Demo 用，綁定在 Hub 的大頭貼上)
-        function clearData() {
-            if(confirm("確定要清除所有 Demo 數據嗎？")) {
-                localStorage.removeItem(STORAGE_KEY);
-                location.reload();
-            }
-        }
-
-        // --- 2. Interaction Functions ---
+        // --- Core Configuration & Helper ---
+        const STORAGE_KEY = 'ate_user_data_v1';
         const WATER_TARGET = 1900;
+        
+        const getTodayKey = () => {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        };
 
-        function addWater(amount) {
-            appState[todayKey].water += amount;
-            saveState();
-        }
+        const defaultDayState = { water: 0, tasks: { 1: false, 2: false }, isPerfect: false };
 
-        function toggleTask(taskId) {
-            appState[todayKey].tasks[taskId] = !appState[todayKey].tasks[taskId];
-            saveState();
-        }
+        // --- Shared UI Components ---
+        const BackgroundEffects = () => (
+            <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+                <div className="absolute top-[-10%] left-[20%] w-[80%] h-[50%] bg-primary/20 rounded-full blur-[120px] animate-blob"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[60%] h-[40%] bg-secondary/10 rounded-full blur-[100px] animate-blob" style={{animationDelay: '2s'}}></div>
+                <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: "url('data:image/svg+xml,%3Csvg viewBox=\\'0 0 200 200\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cfilter id=\\'noiseFilter\\'%3E%3CfeTurbulence type=\\'fractalNoise\\' baseFrequency=\\'0.65\\' numOctaves=\\'3\\' stitchTiles=\\'stitch\\'/%3E%3C/filter%3E%3Crect width=\\'100%25\\' height=\\'100%25\\' filter=\\'url(%23noiseFilter)\\'/%3E%3C/svg%3E')"}}></div>
+            </div>
+        );
 
-        // --- 3. UI Update Logic ---
-        function updateUI() {
-            const todayData = appState[todayKey];
-            
-            // 水分 UI
-            const waterEl = document.getElementById('water-current');
-            const waterBar = document.getElementById('water-bar');
-            if(waterEl && waterBar) {
-                waterEl.innerText = todayData.water;
-                let pct = Math.min((todayData.water / WATER_TARGET) * 100, 100);
-                waterBar.style.width = `${pct}%`;
-            }
+        // --- Screen 1: Dashboard (Hub) ---
+        const Dashboard = ({ store }) => {
+            const navigate = useNavigate();
+            const { appState, todayKey, resetData } = store;
+            const todayData = appState[todayKey] || defaultDayState;
 
-            // 任務 UI
-            [1, 2].forEach(id => {
-                const taskDiv = document.getElementById(`task-${id}`);
-                if (!taskDiv) return;
-                
-                const isDone = todayData.tasks[id];
-                const iconBox = taskDiv.querySelector('.task-icon');
-                const btn = taskDiv.querySelector('.task-btn');
-                const title = taskDiv.querySelector('.task-title');
+            // Calculate overall progress
+            const taskCount = (todayData.tasks[1] ? 1 : 0) + (todayData.tasks[2] ? 1 : 0);
+            const waterPct = Math.min((todayData.water / WATER_TARGET), 1);
+            const taskPct = taskCount / 2;
+            const totalPct = Math.round(((waterPct * 0.5) + (taskPct * 0.5)) * 100);
 
-                if (isDone) {
-                    taskDiv.classList.add('border-primary/50', 'shadow-glow');
-                    iconBox.classList.replace('bg-slate-800', 'bg-primary/20');
-                    iconBox.classList.replace('text-slate-400', 'text-primary');
-                    iconBox.classList.add('border-primary/30');
-                    btn.classList.replace('bg-slate-700', 'bg-primary');
-                    btn.innerHTML = '<span class="material-symbols-outlined">check</span>';
-                    title.classList.add('text-primary');
-                } else {
-                    taskDiv.classList.remove('border-primary/50', 'shadow-glow');
-                    iconBox.classList.replace('bg-primary/20', 'bg-slate-800');
-                    iconBox.classList.replace('text-primary', 'text-slate-400');
-                    iconBox.classList.remove('border-primary/30');
-                    btn.classList.replace('bg-primary', 'bg-slate-700');
-                    btn.innerHTML = '<span class="material-symbols-outlined">done</span>';
-                    title.classList.remove('text-primary');
-                }
-            });
+            return (
+                <div className="relative min-h-screen pb-24 max-w-md mx-auto w-full shadow-2xl bg-black/20 animate-fade-in">
+                    <header className="pt-14 pb-6 px-6 flex flex-col gap-6">
+                        <div className="flex justify-between items-start">
+                            <div className="flex items-center gap-4">
+                                <div className="relative group cursor-pointer" onClick={() => { if(window.confirm('確定要將所有數據重置歸零嗎？')) resetData(); }}>
+                                    <div className="absolute -inset-0.5 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-75 animate-tilt"></div>
+                                    <div className="relative h-16 w-16 rounded-full border-2 border-white/20 overflow-hidden bg-surface-dark">
+                                        <img alt="Profile avatar" className="object-cover w-full h-full" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM1YjEzZWMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4="/>
+                                    </div>
+                                    <div className="absolute -bottom-1 -right-1 bg-surface-dark rounded-full p-1 border border-white/10">
+                                        <span className="material-symbols-outlined text-yellow-400 text-[18px] filled">workspace_premium</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h1 className="text-2xl font-bold tracking-tight text-white leading-none mb-1">覺醒女神</h1>
+                                    <p className="text-slate-400 text-xs font-medium tracking-wide">LEVEL 42</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-2 glass-panel px-3 py-1.5 rounded-full">
+                                <span className="material-symbols-outlined text-orange-500 text-[20px] filled">local_fire_department</span>
+                                <span className="text-sm font-bold text-white">12 Days</span>
+                            </div>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                            <div className="flex justify-between items-end text-xs font-medium text-slate-300">
+                                <span>Current XP</span>
+                                <span className="text-primary-glow">450 XP to Next Level</span>
+                            </div>
+                            <div className="h-3 w-full bg-slate-800/50 rounded-full overflow-hidden border border-white/5 backdrop-blur-sm">
+                                <div className="h-full bg-gradient-to-r from-primary via-purple-500 to-secondary w-[75%] rounded-full shadow-[0_0_15px_rgba(91,19,236,0.5)]"></div>
+                            </div>
+                        </div>
+                    </header>
 
-            // Hub 總結進度條
-            const hubPct = document.getElementById('hub-body-pct');
-            const hubBar = document.getElementById('hub-body-bar');
-            if (hubPct && hubBar) {
-                let totalTasks = 2;
-                let completedTasks = (todayData.tasks[1] ? 1 : 0) + (todayData.tasks[2] ? 1 : 0);
-                let waterScore = Math.min(todayData.water / WATER_TARGET, 1) * 0.5; // 水佔 50%
-                let taskScore = (completedTasks / totalTasks) * 0.5; // 任務佔 50%
-                let finalPct = Math.round((waterScore + taskScore) * 100);
-                
-                hubPct.innerText = `${finalPct}%`;
-                hubBar.style.width = `${finalPct}%`;
-            }
+                    <section className="px-6 pb-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-[20px]">spa</span>
+                                三位一體概覽 (Trinity)
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4">
+                            {/* Body Card */}
+                            <div onClick={() => navigate('/body')} className="glass-card rounded-2xl p-5 relative overflow-hidden group cursor-pointer">
+                                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                    <span className="material-symbols-outlined text-6xl">accessibility_new</span>
+                                </div>
+                                <div className="flex justify-between items-start mb-4 relative z-10">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 rounded-full bg-rose-500/20 flex items-center justify-center border border-rose-500/30">
+                                            <span className="material-symbols-outlined text-rose-400">fitness_center</span>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-base font-bold text-white">Body (身)</h3>
+                                            <p className="text-xs text-slate-400">今日完成度</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-xl font-display font-bold text-white">{totalPct}%</span>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-3 relative z-10">
+                                    <div className="flex-1 h-1.5 bg-slate-700/50 rounded-full overflow-hidden">
+                                        <div className="h-full bg-rose-500 rounded-full shadow-[0_0_10px_rgba(244,63,94,0.4)] transition-all duration-500" style={{width: `${totalPct}%`}}></div>
+                                    </div>
+                                    <span className="text-xs font-mono text-rose-300 bg-rose-500/10 px-2 py-0.5 rounded-md border border-rose-500/20">-200 kcal</span>
+                                </div>
+                            </div>
 
-            // 確保日曆視圖若開啟中，也要重繪
-            if (document.getElementById('view-calendar').classList.contains('active')) {
-                renderCalendar();
-            }
-        }
+                            <div className="grid grid-cols-2 gap-4">
+                                {/* Mind Card */}
+                                <div onClick={() => navigate('/mind')} className="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between h-[160px] cursor-pointer">
+                                    <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-cyan-500/10 rounded-full blur-xl"></div>
+                                    <div className="flex justify-between items-start">
+                                        <div className="h-10 w-10 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
+                                            <span className="material-symbols-outlined text-cyan-400">self_improvement</span>
+                                        </div>
+                                        <span className="bg-slate-800/80 text-slate-300 text-[10px] px-2 py-1 rounded-full border border-white/5">Gap: 5m</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-bold text-white mb-1">Mind (心)</h3>
+                                        <div className="flex items-end gap-1 mb-2">
+                                            <span className="text-2xl font-bold text-white leading-none">10</span>
+                                            <span className="text-xs text-slate-400 mb-0.5">mins</span>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 truncate">正念時刻</p>
+                                    </div>
+                                </div>
+                                {/* Spirit Card */}
+                                <div onClick={() => navigate('/mind')} className="glass-card rounded-2xl p-5 relative overflow-hidden flex flex-col justify-between h-[160px] cursor-pointer">
+                                    <div className="absolute -bottom-4 -right-4 w-20 h-20 bg-primary/10 rounded-full blur-xl"></div>
+                                    <div className="flex justify-between items-start">
+                                        <div className="h-10 w-10 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30">
+                                            <span className="material-symbols-outlined text-primary-glow">volunteer_activism</span>
+                                        </div>
+                                        <span className="bg-primary/20 text-primary-glow text-[10px] px-2 py-1 rounded-full border border-primary/30 animate-pulse">Pending</span>
+                                    </div>
+                                    <div>
+                                        <h3 className="text-base font-bold text-white mb-1">Spirit (靈)</h3>
+                                        <button className="w-full mt-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-[10px] py-1.5 px-2 rounded-full transition-colors flex items-center justify-center gap-1 group">
+                                            Start Now
+                                            <span className="material-symbols-outlined text-[10px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+                                        </button>
+                                        <p className="text-[10px] text-slate-400 mt-2 truncate">感恩日記</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        // --- 4. Dynamic Calendar Engine (Reading from Storage) ---
-        let currentCalDate = new Date(); 
+                    <section className="px-6 pb-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                                <span className="material-symbols-outlined text-green-400 text-[20px]">nutrition</span>
+                                營養與活力 (Vitality)
+                            </h2>
+                        </div>
+                        <div className="flex overflow-x-auto gap-4 pb-4 no-scrollbar snap-x snap-mandatory">
+                            <div className="glass-card min-w-[240px] snap-center rounded-2xl p-4 flex gap-4 items-center">
+                                <div className="relative h-16 w-16 flex-shrink-0">
+                                    <svg className="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                        <path className="text-slate-700/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="3"></path>
+                                        <path className="text-green-500 drop-shadow-[0_0_3px_rgba(34,197,94,0.5)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="50, 100" strokeWidth="3"></path>
+                                        <path className="text-rose-500 drop-shadow-[0_0_3px_rgba(244,63,94,0.5)]" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="25, 100" strokeDashoffset="-50" strokeWidth="3"></path>
+                                    </svg>
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <span className="material-symbols-outlined text-white text-lg">restaurant</span>
+                                    </div>
+                                </div>
+                                <div className="flex flex-col">
+                                    <h4 className="text-sm font-bold text-white">2-1-1 餐盤</h4>
+                                    <p className="text-xs text-slate-400 mt-1">Veg / Carb / Protein</p>
+                                    <div className="flex gap-1 mt-2">
+                                        <div className="h-1 w-8 bg-green-500 rounded-full"></div>
+                                        <div className="h-1 w-4 bg-yellow-500 rounded-full"></div>
+                                        <div className="h-1 w-4 bg-rose-500 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="glass-card min-w-[240px] snap-center rounded-2xl p-4 flex gap-4 items-center">
+                                <div className="h-16 w-16 rounded-xl bg-slate-800/50 border border-white/5 flex items-center justify-center flex-shrink-0">
+                                    <span className="text-2xl font-bold text-blue-400">98</span>
+                                </div>
+                                <div className="flex flex-col flex-1">
+                                    <div className="flex justify-between items-start">
+                                        <h4 className="text-sm font-bold text-white">DIAAS 評分</h4>
+                                        <span className="bg-blue-500/20 text-blue-300 text-[9px] px-1.5 py-0.5 rounded border border-blue-500/30">High Quality</span>
+                                    </div>
+                                    <p className="text-xs text-slate-400 mt-1">Protein Absorption</p>
+                                    <div className="w-full bg-slate-700/50 h-1.5 rounded-full mt-2">
+                                        <div className="bg-blue-500 h-1.5 rounded-full w-[90%] shadow-[0_0_8px_rgba(59,130,246,0.5)]"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
 
-        function renderCalendar() {
-            const grid = document.getElementById('calendar-grid');
-            const title = document.getElementById('calendar-month-title');
-            if (!grid || !title) return;
+                    <section className="px-6 pb-8">
+                        <div className="glass-card rounded-2xl p-6 text-center border-t-2 border-t-primary/20">
+                            <span className="material-symbols-outlined text-slate-500 mb-2">format_quote</span>
+                            <p className="text-sm text-slate-200 italic font-body leading-relaxed">"真正的力量，來自於身心靈的和諧共振。"</p>
+                            <p className="text-xs text-slate-500 mt-2">— Daily Wisdom</p>
+                        </div>
+                    </section>
+                </div>
+            );
+        };
 
-            const year = currentCalDate.getFullYear();
-            const month = currentCalDate.getMonth();
-            
+        // --- Screen 2: Body Evolution ---
+        const BodyEvolution = ({ store }) => {
+            const { appState, todayKey, updateData } = store;
+            const todayData = appState[todayKey] || defaultDayState;
+
+            const handleWater = (amount) => {
+                updateData(todayKey, { water: todayData.water + amount });
+            };
+
+            const toggleTask = (taskId) => {
+                const updatedTasks = { ...todayData.tasks, [taskId]: !todayData.tasks[taskId] };
+                updateData(todayKey, { tasks: updatedTasks });
+            };
+
+            const waterPct = Math.min((todayData.water / WATER_TARGET) * 100, 100);
+
+            return (
+                <div className="flex flex-col min-h-screen bg-background-dark max-w-md mx-auto w-full shadow-2xl animate-fade-in pb-24">
+                    <header className="sticky top-0 z-50 glass-panel border-b border-white/5 px-6 pt-12 pb-4 flex items-center justify-between">
+                        <div>
+                            <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-1">Aether Trinity Evolution</p>
+                            <h1 className="text-2xl font-bold text-white tracking-tight">身體進化</h1>
+                        </div>
+                        <div className="relative">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary to-purple-400 p-[2px]">
+                                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiM1YjEzZWMiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4=" className="h-full w-full rounded-full bg-surface-dark object-cover" />
+                            </div>
+                            <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-background-dark"></div>
+                        </div>
+                    </header>
+
+                    <main className="flex-1 overflow-y-auto px-4 space-y-6 pt-6 no-scrollbar">
+                        <section className="relative overflow-hidden rounded-2xl glass-panel p-6 shadow-glow border border-primary/20">
+                            <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl pointer-events-none"></div>
+                            <div className="flex items-start justify-between mb-6">
+                                <div>
+                                    <h2 className="text-lg font-bold flex items-center gap-2 text-white">
+                                        <span className="material-symbols-outlined text-blue-400">water_drop</span>水分攝入
+                                    </h2>
+                                    <p className="text-sm text-slate-400">目標: {WATER_TARGET}ml</p>
+                                </div>
+                                <div className="text-right">
+                                    <span className="text-3xl font-bold text-white tracking-tight">{todayData.water}</span>
+                                    <span className="text-sm text-slate-400 font-medium ml-1">ml</span>
+                                </div>
+                            </div>
+                            <div className="relative h-4 w-full bg-slate-800/50 rounded-full overflow-hidden mb-6">
+                                <div className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 to-primary rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500" style={{width: `${waterPct}%`}}></div>
+                            </div>
+                            <div className="flex gap-3 relative z-10">
+                                <button onClick={() => handleWater(250)} className="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary/20 hover:bg-primary/30 text-white border border-primary/30 h-12 rounded-xl font-semibold text-sm backdrop-blur-sm">
+                                    <span className="material-symbols-outlined text-base">add</span> 250ml
+                                </button>
+                                <button onClick={() => handleWater(500)} className="flex-1 active:scale-95 transition-transform flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white shadow-glow h-12 rounded-xl font-semibold text-sm">
+                                    <span className="material-symbols-outlined text-base">add</span> 500ml
+                                </button>
+                            </div>
+                        </section>
+
+                        <section className="grid grid-cols-2 gap-4">
+                            <div className="glass-panel rounded-2xl p-4 flex flex-col justify-between h-36 relative overflow-hidden">
+                                <div className="flex justify-between items-start z-10">
+                                    <div className="p-2 bg-slate-800/50 rounded-lg text-orange-400">
+                                        <span className="material-symbols-outlined text-xl">footprint</span>
+                                    </div>
+                                    <span className="text-xs font-medium text-slate-400">40%</span>
+                                </div>
+                                <div className="z-10">
+                                    <h3 className="text-2xl font-bold text-white">2,400</h3>
+                                    <p className="text-xs text-slate-400">步數 (6000)</p>
+                                </div>
+                                <svg className="absolute -bottom-4 -right-4 w-24 h-24 text-orange-500/20 transform rotate-[-90deg]" viewBox="0 0 36 36">
+                                    <path className="text-slate-800/30" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeWidth="4"></path>
+                                    <path className="text-current" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" strokeDasharray="40, 100" strokeWidth="4"></path>
+                                </svg>
+                            </div>
+                            <div className="glass-panel rounded-2xl p-4 flex flex-col justify-between h-36">
+                                <div className="flex justify-between items-start">
+                                    <div className="p-2 bg-slate-800/50 rounded-lg text-green-400">
+                                        <span className="material-symbols-outlined text-xl">nutrition</span>
+                                    </div>
+                                    <span className="text-xs font-medium text-slate-400">1/2</span>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold text-white mb-1">纖維任務</h3>
+                                    <div className="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-green-500 w-1/2 rounded-full"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section>
+                            <h3 className="text-lg font-bold text-white mb-4 px-1 flex items-center gap-2">
+                                <span className="w-1 h-5 bg-primary rounded-full"></span>今日任務 (Daily Tasks)
+                            </h3>
+                            <div className="space-y-3">
+                                {/* Completed Demo Task */}
+                                <div className="group flex items-center gap-4 p-4 rounded-2xl bg-surface-dark border border-slate-800 opacity-60">
+                                    <div className="flex-shrink-0 h-10 w-10 rounded-full bg-green-500/20 text-green-500 flex items-center justify-center">
+                                        <span className="material-symbols-outlined">check</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-slate-300 line-through decoration-slate-500">晨間伸展 (10m)</h4>
+                                        <p className="text-xs text-slate-500">已完成 07:30 AM</p>
+                                    </div>
+                                </div>
+                                
+                                {/* Dynamic Task 1 */}
+                                <div className={`group flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border ${todayData.tasks[1] ? 'glass-panel border-primary/50 shadow-glow' : 'bg-surface-dark border-slate-800 hover:border-slate-700'}`}>
+                                    {todayData.tasks[1] && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl"></div>}
+                                    <div className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center border transition-colors ${todayData.tasks[1] ? 'bg-primary/20 text-primary border-primary/30' : 'bg-slate-800 text-slate-400 border-transparent'}`}>
+                                        <span className="material-symbols-outlined">restaurant</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className={`font-bold text-lg transition-colors ${todayData.tasks[1] ? 'text-white' : 'text-slate-300'}`}>DIAAS 酸奶早餐</h4>
+                                        <p className={`text-xs font-medium ${todayData.tasks[1] ? 'text-primary' : 'text-slate-500'}`}>建議時間: 08:30 AM</p>
+                                    </div>
+                                    <button onClick={() => toggleTask(1)} className={`h-10 w-10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform ${todayData.tasks[1] ? 'bg-primary text-white' : 'bg-slate-700 text-white'}`}>
+                                        <span className="material-symbols-outlined">{todayData.tasks[1] ? 'check' : 'done'}</span>
+                                    </button>
+                                </div>
+
+                                {/* Dynamic Task 2 */}
+                                <div className={`group flex items-center gap-4 p-4 rounded-2xl transition-all duration-300 border ${todayData.tasks[2] ? 'glass-panel border-primary/50 shadow-glow' : 'bg-surface-dark border-slate-800 hover:border-slate-700'}`}>
+                                    {todayData.tasks[2] && <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-l-2xl"></div>}
+                                    <div className={`flex-shrink-0 h-12 w-12 rounded-full flex items-center justify-center border transition-colors ${todayData.tasks[2] ? 'bg-primary/20 text-primary border-primary/30' : 'bg-slate-800 text-slate-400 border-transparent'}`}>
+                                        <span className="material-symbols-outlined">fitness_center</span>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className={`font-bold text-lg transition-colors ${todayData.tasks[2] ? 'text-white' : 'text-slate-300'}`}>阻力訓練 (30m)</h4>
+                                        <p className={`text-xs font-medium ${todayData.tasks[2] ? 'text-primary' : 'text-slate-500'}`}>核心肌群強化</p>
+                                    </div>
+                                    <button onClick={() => toggleTask(2)} className={`h-10 w-10 rounded-full flex items-center justify-center shadow-lg active:scale-90 transition-transform ${todayData.tasks[2] ? 'bg-primary text-white' : 'bg-slate-700 text-white'}`}>
+                                        <span className="material-symbols-outlined">{todayData.tasks[2] ? 'check' : 'done'}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section className="pb-6">
+                            <div className="glass-panel rounded-2xl p-5 flex items-center justify-between border-t border-slate-700/50">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-10 w-10 rounded-full bg-purple-500/10 text-purple-400 flex items-center justify-center">
+                                        <span className="material-symbols-outlined">gastroenterology</span>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-white text-sm">排便情況 (Bowel)</h4>
+                                        <p className="text-xs text-slate-400">每日健康監測</p>
+                                    </div>
+                                </div>
+                                <label className="relative inline-flex items-center cursor-pointer">
+                                    <input className="sr-only peer" type="checkbox" />
+                                    <div className="w-14 h-8 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-slate-400 after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-primary peer-checked:after:bg-white"></div>
+                                </label>
+                            </div>
+                        </section>
+                    </main>
+                </div>
+            );
+        };
+
+        // --- Screen 3: Mind & Spirit ---
+        const MindAndSpirit = () => {
+            const [activeTab, setActiveTab] = useState('mind');
+
+            return (
+                <div className="flex flex-col min-h-screen bg-background-dark max-w-md mx-auto w-full shadow-2xl animate-fade-in">
+                    <header className="sticky top-0 z-50 bg-background-dark/80 backdrop-blur-md border-b border-white/5 pt-12 pb-4 px-4 flex items-center justify-between">
+                        <Link to="/" className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 text-slate-300 transition-colors">
+                            <span className="material-symbols-outlined">arrow_back</span>
+                        </Link>
+                        <h1 className="text-lg font-bold tracking-wide text-white">心智與靈魂</h1>
+                        <button className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-white/5 text-slate-300 transition-colors">
+                            <span className="material-symbols-outlined">more_vert</span>
+                        </button>
+                    </header>
+
+                    <div className="flex-1 px-4 space-y-6 pt-4 pb-24 overflow-y-auto no-scrollbar">
+                        <div className="p-1 bg-surface-dark rounded-full flex relative">
+                            <div className={`absolute left-1 top-1 bottom-1 w-[calc(50%-4px)] bg-primary rounded-full shadow-lg shadow-primary/30 z-0 transition-all duration-300 ${activeTab === 'spirit' ? 'translate-x-full' : ''}`}></div>
+                            <button onClick={() => setActiveTab('mind')} className={`flex-1 relative z-10 py-2.5 text-sm font-bold text-center rounded-full transition-colors ${activeTab === 'mind' ? 'text-white' : 'text-slate-400'}`}>
+                                心智 (Mind)
+                            </button>
+                            <button onClick={() => setActiveTab('spirit')} className={`flex-1 relative z-10 py-2.5 text-sm font-medium text-center rounded-full transition-colors ${activeTab === 'spirit' ? 'text-white' : 'text-slate-400'}`}>
+                                靈魂 (Spirit)
+                            </button>
+                        </div>
+
+                        {activeTab === 'mind' && (
+                            <div className="space-y-6 animate-fade-in">
+                                <div className="bg-surface-dark rounded-2xl p-6 relative overflow-hidden group">
+                                    <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 rounded-full blur-3xl"></div>
+                                    <div className="flex justify-between items-start mb-6 relative z-10">
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <span className="material-symbols-outlined text-gold text-lg">menu_book</span>
+                                                <h2 className="text-sm font-bold tracking-wider uppercase text-gradient-gold">深度閱讀</h2>
+                                            </div>
+                                            <p className="text-xs text-slate-400">Deep Reading</p>
+                                        </div>
+                                        <button className="text-slate-400 hover:text-white transition-colors">
+                                            <span className="material-symbols-outlined">settings</span>
+                                        </button>
+                                    </div>
+                                    <div className="flex flex-col items-center justify-center py-4 relative z-10">
+                                        <div className="text-6xl font-light text-white tracking-tighter tabular-nums font-display">
+                                            20<span className="text-slate-600">:</span>00
+                                        </div>
+                                        <p className="text-sm text-primary mt-2 font-medium">專注時間</p>
+                                    </div>
+                                    <div className="flex gap-3 mt-6 relative z-10">
+                                        <button className="flex-1 bg-primary hover:bg-primary-dark text-white py-3.5 rounded-full font-bold shadow-lg shadow-primary/25 flex items-center justify-center gap-2 transition-all active:scale-95">
+                                            <span className="material-symbols-outlined filled">play_arrow</span>開始
+                                        </button>
+                                        <button className="w-14 bg-surface-highlight hover:bg-white/10 text-slate-300 rounded-full flex items-center justify-center transition-colors">
+                                            <span className="material-symbols-outlined">refresh</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <label className="block text-sm font-medium text-slate-300 pl-2">今日成長反思 <span className="text-slate-500 font-normal ml-2">Growth Reflection</span></label>
+                                    <div className="relative group">
+                                        <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+                                            <span className="material-symbols-outlined text-slate-500 group-focus-within:text-primary transition-colors">edit_note</span>
+                                        </div>
+                                        <input className="w-full bg-surface-dark border border-white/5 focus:border-primary/50 text-white placeholder-slate-600 pl-12 pr-4 py-4 rounded-xl focus:ring-0 focus:outline-none transition-all shadow-sm" placeholder="寫下今天的核心洞察..." type="text"/>
+                                        <button className="absolute inset-y-0 right-2 flex items-center px-2 text-primary hover:text-primary-light">
+                                            <span className="material-symbols-outlined">arrow_forward</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'spirit' && (
+                            <div className="space-y-6 animate-fade-in">
+                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-2xl">
+                                    <img alt="Meditation bg" className="absolute inset-0 w-full h-full object-cover opacity-60" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzZTBjYTYiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiLz48L3N2Zz4="/>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/50 to-transparent"></div>
+                                    <div className="absolute inset-0 flex flex-col justify-between p-6">
+                                        <div className="flex justify-between items-start">
+                                            <div>
+                                                <h3 className="text-white font-bold text-lg">靜默冥想</h3>
+                                                <p className="text-slate-300 text-xs">Silent Meditation</p>
+                                            </div>
+                                            <span className="bg-black/30 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full border border-white/10">10 min</span>
+                                        </div>
+                                        <div className="flex items-center gap-4">
+                                            <button className="w-12 h-12 rounded-full bg-white text-primary flex items-center justify-center shadow-lg hover:scale-105 transition-transform z-10">
+                                                <span className="material-symbols-outlined fill-1">play_arrow</span>
+                                            </button>
+                                            <div className="flex-1">
+                                                <div className="w-full bg-white/20 h-1 rounded-full overflow-hidden">
+                                                    <div className="bg-white h-full w-0"></div>
+                                                </div>
+                                                <div className="flex justify-between mt-1 text-[10px] text-slate-300 font-medium">
+                                                    <span>00:00</span>
+                                                    <span>10:00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="bg-surface-dark rounded-2xl p-1 border border-white/5">
+                                    <div className="p-4 border-b border-white/5 pb-2">
+                                        <h3 className="text-gold font-bold text-base flex items-center gap-2">
+                                            <span className="material-symbols-outlined text-lg">auto_stories</span>靈修日誌
+                                        </h3>
+                                    </div>
+                                    <div className="p-4 space-y-4">
+                                        <div>
+                                            <label className="text-xs text-slate-400 block mb-1.5 ml-1">經文出處 (Verse Reference)</label>
+                                            <input className="w-full bg-surface-highlight border-none text-white placeholder-slate-600 px-4 py-3 rounded-xl focus:ring-1 focus:ring-primary/50 text-sm" placeholder="例如：詩篇 23:1" type="text"/>
+                                        </div>
+                                        <div>
+                                            <label className="text-xs text-slate-400 block mb-1.5 ml-1">心得筆記 (Reflection Notes)</label>
+                                            <textarea className="w-full bg-surface-highlight border-none text-white placeholder-slate-600 px-4 py-3 rounded-xl focus:ring-1 focus:ring-primary/50 text-sm h-32 resize-none" placeholder="記錄您的領受..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Screen 4: Calendar ---
+        const EvolutionCalendar = ({ store }) => {
+            const { appState } = store;
+            const [viewDate, setViewDate] = useState(new Date());
+
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const today = new Date();
+            const isCurrentMonth = today.getFullYear() === year && today.getMonth() === month;
+
+            const changeMonth = (offset) => {
+                setViewDate(prev => new Date(prev.getFullYear(), prev.getMonth() + offset, 1));
+            };
+
             const monthNames = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
             const engMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            
-            title.innerHTML = `
-                <h2 class="text-xl font-bold text-white">${year}年 ${monthNames[month]}</h2>
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-medium mt-1">${engMonths[month]}</p>
-            `;
 
-            const firstDay = new Date(year, month, 1).getDay(); 
-            const daysInMonth = new Date(year, month + 1, 0).getDate(); 
-            const todayDateObj = new Date();
-            const isViewingCurrentMonth = todayDateObj.getFullYear() === year && todayDateObj.getMonth() === month;
+            // Calculate overall streak/perfect days globally (Simple loop)
+            let perfectDaysCount = 0;
+            Object.values(appState).forEach(day => { if(day.isPerfect) perfectDaysCount++; });
 
-            let html = '';
-            for (let i = 0; i < firstDay; i++) {
-                html += `<div class="aspect-square"></div>`;
-            }
+            return (
+                <div className="flex flex-col min-h-screen bg-background-dark max-w-md mx-auto w-full shadow-2xl animate-fade-in">
+                    <header className="sticky top-0 z-20 flex items-center justify-between px-6 py-4 glass-panel border-b border-white/5">
+                        <Link to="/" className="flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-white/5 active:scale-95 transition-all">
+                            <span className="material-symbols-outlined">arrow_back</span>
+                        </Link>
+                        <div className="flex flex-col items-center">
+                            <h1 className="text-lg font-bold tracking-wide text-white">進化日歷</h1>
+                            <span className="text-xs text-primary font-medium tracking-widest uppercase opacity-80">Evolution</span>
+                        </div>
+                        <button className="flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-white/5 active:scale-95 transition-all relative">
+                            <span className="material-symbols-outlined">notifications</span>
+                            <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-gold shadow-gold-glow"></span>
+                        </button>
+                    </header>
 
-            for (let day = 1; day <= daysInMonth; day++) {
-                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-                const isToday = isViewingCurrentMonth && day === todayDateObj.getDate();
-                
-                // 檢查 LocalStorage 是否有這天的完美紀錄
-                const dayData = appState[dateString];
-                const isPerfect = dayData && dayData.isPerfect;
-                
-                if (isToday) {
-                    html += `
-                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl border-2 border-primary ${isPerfect ? 'bg-primary text-white shadow-glow' : 'bg-primary/10 text-white shadow-glow'}">
-                        <span class="text-sm font-bold">${day}</span>
-                        ${isPerfect ? '<span class="absolute bottom-1.5 h-1 w-1 rounded-full bg-white"></span>' : ''}
-                        <div class="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary blur-xl opacity-40 -z-10"></div>
-                    </button>`;
-                } else if (isPerfect) {
-                    html += `
-                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl calendar-day-active text-white shadow-glow">
-                        <span class="text-sm font-bold">${day}</span>
-                        <span class="absolute bottom-1.5 h-1 w-1 rounded-full bg-white/50"></span>
-                    </button>`;
-                } else {
-                    // 若這天有資料但未達標，稍微提亮
-                    const hasData = dayData && (dayData.water > 0 || dayData.tasks[1] || dayData.tasks[2]);
-                    html += `
-                    <button class="aspect-square flex flex-col items-center justify-center relative rounded-xl hover:bg-white/5 transition-colors ${hasData ? 'bg-surface-dark border border-white/5' : ''}">
-                        <span class="text-sm font-medium ${hasData ? 'text-slate-300' : 'text-slate-500'}">${day}</span>
-                    </button>`;
+                    <div className="overflow-y-auto no-scrollbar pb-24">
+                        <div className="px-6 pt-6 pb-2">
+                            <div className="flex items-center justify-between rounded-2xl bg-surface-dark border border-white/5 p-2">
+                                <button onClick={() => changeMonth(-1)} className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+                                    <span className="material-symbols-outlined text-[20px]">chevron_left</span>
+                                </button>
+                                <div className="text-center">
+                                    <h2 className="text-xl font-bold text-white">{year}年 {monthNames[month]}</h2>
+                                    <p className="text-[10px] text-slate-400 uppercase tracking-widest font-medium">{engMonths[month]}</p>
+                                </div>
+                                <button onClick={() => changeMonth(1)} className="flex h-10 w-10 items-center justify-center rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
+                                    <span className="material-symbols-outlined text-[20px]">chevron_right</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="px-6 py-4 grid grid-cols-3 gap-3">
+                            <div className="flex flex-col items-center justify-center rounded-2xl bg-surface-dark border border-white/5 p-3">
+                                <span className="text-2xl font-bold text-white">{perfectDaysCount}</span>
+                                <span className="text-[10px] text-slate-400">完美天數</span>
+                            </div>
+                            <div className="flex flex-col items-center justify-center rounded-2xl bg-surface-dark border border-white/5 p-3 relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-primary/10 group-hover:bg-primary/20 transition-colors"></div>
+                                <span className="text-2xl font-bold text-primary">100%</span>
+                                <span className="text-[10px] text-primary/80">完成率</span>
+                            </div>
+                            <div className="flex flex-col items-center justify-center rounded-2xl bg-surface-dark border border-white/5 p-3">
+                                <span className="text-2xl font-bold text-gold">{perfectDaysCount}</span>
+                                <span className="text-[10px] text-slate-400">連勝紀錄</span>
+                            </div>
+                        </div>
+
+                        <div className="px-4 pb-6">
+                            <div className="w-full">
+                                <div className="grid grid-cols-7 mb-2">
+                                    {['日','一','二','三','四','五','六'].map(d => (
+                                        <div key={d} className="flex items-center justify-center py-2 text-xs font-medium text-slate-500">{d}</div>
+                                    ))}
+                                </div>
+                                <div className="grid grid-cols-7 gap-y-2 gap-x-1">
+                                    {Array.from({length: firstDay}).map((_, i) => <div key={`empty-${i}`} className="aspect-square"></div>)}
+                                    
+                                    {Array.from({length: daysInMonth}).map((_, i) => {
+                                        const day = i + 1;
+                                        const dateString = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+                                        const dayData = appState[dateString];
+                                        const isPerfect = dayData?.isPerfect;
+                                        const hasData = dayData && (dayData.water > 0 || dayData.tasks[1] || dayData.tasks[2]);
+                                        const isToday = isCurrentMonth && day === today.getDate();
+
+                                        if (isToday) {
+                                            return (
+                                                <button key={day} className={`aspect-square flex flex-col items-center justify-center relative rounded-xl border-2 border-primary ${isPerfect ? 'bg-primary text-white shadow-glow' : 'bg-primary/10 text-white shadow-glow'}`}>
+                                                    <span className="text-sm font-bold">{day}</span>
+                                                    {isPerfect && <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-white"></span>}
+                                                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-primary blur-xl opacity-40 -z-10"></div>
+                                                </button>
+                                            );
+                                        }
+
+                                        if (isPerfect) {
+                                            return (
+                                                <button key={day} className="aspect-square flex flex-col items-center justify-center relative rounded-xl calendar-day-active text-white shadow-glow">
+                                                    <span className="text-sm font-bold">{day}</span>
+                                                    <span className="absolute bottom-1.5 h-1 w-1 rounded-full bg-white/50"></span>
+                                                </button>
+                                            );
+                                        }
+
+                                        return (
+                                            <button key={day} className={`aspect-square flex flex-col items-center justify-center relative rounded-xl hover:bg-white/5 transition-colors ${hasData ? 'bg-surface-dark border border-white/5 text-slate-300' : 'text-slate-500'}`}>
+                                                <span className="text-sm font-medium">{day}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- Global Bottom Navigation ---
+        const BottomNav = ({ isMenuOpen, toggleMenu }) => {
+            const location = useLocation();
+            const isActive = (path) => location.pathname === path;
+
+            return (
+                <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] z-50 pointer-events-none">
+                    <div className="glass-panel rounded-full px-6 py-3 flex justify-between items-center shadow-2xl bg-[#0f172a]/90 backdrop-blur-xl border border-slate-700/50 pointer-events-auto">
+                        <Link to="/" className={`flex flex-col items-center gap-1 group ${isActive('/') ? '' : 'opacity-60 hover:opacity-100 transition-opacity'}`}>
+                            <div className={`p-2 rounded-full ${isActive('/') ? 'bg-primary/20 relative' : ''}`}>
+                                <span className={`material-symbols-outlined text-[24px] ${isActive('/') ? 'text-primary-glow' : 'text-slate-300'}`} style={isActive('/') ? {fontVariationSettings: "'FILL' 1"} : {}}>dashboard</span>
+                                {isActive('/') && <span className="absolute inset-0 rounded-full bg-primary/20 blur opacity-0 group-hover:opacity-100 transition-opacity"></span>}
+                            </div>
+                            <span className={`text-[10px] font-medium ${isActive('/') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>Hub</span>
+                        </Link>
+
+                        <Link to="/body" className={`flex flex-col items-center gap-1 group ${isActive('/body') ? '' : 'opacity-60 hover:opacity-100 transition-opacity'}`}>
+                            <div className={`p-2 rounded-full ${isActive('/body') ? 'bg-primary/20 relative' : ''}`}>
+                                <span className={`material-symbols-outlined text-[24px] ${isActive('/body') ? 'text-primary-glow' : 'text-slate-300'}`} style={isActive('/body') ? {fontVariationSettings: "'FILL' 1"} : {}}>accessibility_new</span>
+                            </div>
+                            <span className={`text-[10px] font-medium ${isActive('/body') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>Body</span>
+                        </Link>
+
+                        {/* FAB Menu Button */}
+                        <button onClick={toggleMenu} className="relative -top-5 bg-gradient-to-br from-primary to-primary-glow p-3 rounded-full shadow-[0_0_20px_rgba(91,19,236,0.4)] border-4 border-[#0a0a0c] group hover:scale-105 transition-transform flex-shrink-0">
+                            <span className={`material-symbols-outlined text-white text-[28px] transition-transform duration-300 ${isMenuOpen ? 'rotate-45' : ''}`}>add</span>
+                        </button>
+
+                        <Link to="/mind" className={`flex flex-col items-center gap-1 group ${isActive('/mind') ? '' : 'opacity-60 hover:opacity-100 transition-opacity'}`}>
+                            <div className={`p-2 rounded-full ${isActive('/mind') ? 'bg-primary/20 relative' : ''}`}>
+                                <span className={`material-symbols-outlined text-[24px] ${isActive('/mind') ? 'text-primary-glow' : 'text-slate-300'}`} style={isActive('/mind') ? {fontVariationSettings: "'FILL' 1"} : {}}>self_improvement</span>
+                            </div>
+                            <span className={`text-[10px] font-medium ${isActive('/mind') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>Mind</span>
+                        </Link>
+
+                        <Link to="/calendar" className={`flex flex-col items-center gap-1 group ${isActive('/calendar') ? '' : 'opacity-60 hover:opacity-100 transition-opacity'}`}>
+                            <div className={`p-2 rounded-full ${isActive('/calendar') ? 'bg-primary/20 relative' : ''}`}>
+                                <span className={`material-symbols-outlined text-[24px] ${isActive('/calendar') ? 'text-primary-glow' : 'text-slate-300'}`} style={isActive('/calendar') ? {fontVariationSettings: "'FILL' 1"} : {}}>calendar_month</span>
+                            </div>
+                            <span className={`text-[10px] font-medium ${isActive('/calendar') ? 'text-white' : 'text-slate-400 group-hover:text-slate-200'}`}>Evolve</span>
+                        </Link>
+                    </div>
+                </nav>
+            );
+        };
+
+        // --- Main Application ---
+        const App = () => {
+            // Data State
+            const [appState, setAppState] = useState(() => JSON.parse(localStorage.getItem(STORAGE_KEY)) || {});
+            const todayKey = getTodayKey();
+
+            // Menu Overlay State
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+            // Initialize today's data if empty
+            useEffect(() => {
+                if (!appState[todayKey]) {
+                    const newState = { ...appState, [todayKey]: defaultDayState };
+                    setAppState(newState);
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
                 }
-            }
-            grid.innerHTML = html;
-        }
+            }, []);
 
-        function changeMonth(offset) {
-            currentCalDate.setMonth(currentCalDate.getMonth() + offset);
-            renderCalendar();
-        }
-
-        // --- 5. Routing Logic ---
-        function switchView(viewId) {
-            document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.add('opacity-60');
-                btn.classList.remove('opacity-100');
-                let target = btn.getAttribute('data-target');
-                let icon = document.getElementById('icon-' + target);
-                let text = document.getElementById('text-' + target);
-                let glow = btn.querySelector('.active-glow');
+            // Master Update Function
+            const updateData = (key, updates) => {
+                const dayData = appState[key] || defaultDayState;
+                const merged = { ...dayData, ...updates };
                 
-                icon.classList.remove('text-primary-glow', 'filled');
-                icon.classList.add('text-slate-300');
-                text.classList.remove('font-bold', 'text-white');
-                text.classList.add('font-medium', 'text-slate-400');
-                glow.classList.replace('opacity-100', 'opacity-0');
-            });
+                // Recalculate Perfect Day Logic
+                const tasksDone = merged.tasks[1] && merged.tasks[2];
+                merged.isPerfect = (merged.water >= WATER_TARGET && tasksDone);
 
-            let activeBtn = document.querySelector(`.nav-btn[data-target="${viewId}"]`);
-            if(activeBtn) {
-                activeBtn.classList.remove('opacity-60');
-                activeBtn.classList.add('opacity-100');
-                document.getElementById('icon-' + viewId).classList.replace('text-slate-300', 'text-primary-glow');
-                document.getElementById('icon-' + viewId).classList.add('filled');
-                document.getElementById('text-' + viewId).classList.replace('text-slate-400', 'text-white');
-                document.getElementById('text-' + viewId).classList.replace('font-medium', 'font-bold');
-                activeBtn.querySelector('.active-glow').classList.replace('opacity-0', 'opacity-100');
-            }
+                const newState = { ...appState, [key]: merged };
+                setAppState(newState);
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(newState));
+            };
 
-            if(viewId === 'calendar') renderCalendar();
-        }
+            const resetData = () => {
+                localStorage.removeItem(STORAGE_KEY);
+                window.location.reload();
+            };
 
-        // Init App
-        updateUI();
-        switchView('hub'); 
+            const store = { appState, todayKey, updateData, resetData };
+
+            return (
+                <MemoryRouter>
+                    <BackgroundEffects />
+                    <Routes>
+                        <Route path="/" element={<Dashboard store={store} />} />
+                        <Route path="/body" element={<BodyEvolution store={store} />} />
+                        <Route path="/mind" element={<MindAndSpirit store={store} />} />
+                        <Route path="/calendar" element={<EvolutionCalendar store={store} />} />
+                    </Routes>
+                    
+                    <BottomNav isMenuOpen={isMenuOpen} toggleMenu={() => setIsMenuOpen(!isMenuOpen)} />
+
+                    {/* Quick Action FAB Bottom Sheet */}
+                    <div className={`fixed inset-0 z-[60] flex-col justify-end pointer-events-none transition-opacity duration-300 ${isMenuOpen ? 'flex opacity-100' : 'opacity-0'}`}>
+                        <div onClick={() => setIsMenuOpen(false)} className={`absolute inset-0 bg-black/60 backdrop-blur-sm pointer-events-auto transition-opacity duration-300 ${isMenuOpen ? 'opacity-100' : 'opacity-0'}`}></div>
+                        <div className={`relative z-10 w-full max-w-md mx-auto bg-surface-dark/95 backdrop-blur-xl border-t border-white/10 rounded-t-3xl p-6 pointer-events-auto shadow-[0_-10px_40px_rgba(91,19,236,0.3)] transition-transform duration-300 ${isMenuOpen ? 'translate-y-0' : 'translate-y-full'}`}>
+                            <div className="w-12 h-1 bg-white/20 rounded-full mx-auto mb-6"></div>
+                            <h3 className="text-white font-bold text-lg mb-4 px-2">記錄進化時刻</h3>
+                            <div className="grid grid-cols-2 gap-3 mb-6">
+                                <button className="bg-surface-highlight border border-white/5 hover:border-primary/50 p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors active:scale-95">
+                                    <div className="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center"><span className="material-symbols-outlined">water_drop</span></div>
+                                    <span className="text-xs text-white font-medium">水分攝入</span>
+                                </button>
+                                <button className="bg-surface-highlight border border-white/5 hover:border-primary/50 p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors active:scale-95">
+                                    <div className="w-10 h-10 rounded-full bg-gold/20 text-gold flex items-center justify-center"><span className="material-symbols-outlined">auto_stories</span></div>
+                                    <span className="text-xs text-white font-medium">靈修日誌</span>
+                                </button>
+                                <button className="bg-surface-highlight border border-white/5 hover:border-primary/50 p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors active:scale-95">
+                                    <div className="w-10 h-10 rounded-full bg-purple-500/20 text-purple-400 flex items-center justify-center"><span className="material-symbols-outlined">psychology</span></div>
+                                    <span className="text-xs text-white font-medium">專注計時</span>
+                                </button>
+                                <button className="bg-surface-highlight border border-white/5 hover:border-primary/50 p-4 rounded-2xl flex flex-col items-center gap-2 transition-colors active:scale-95">
+                                    <div className="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center"><span className="material-symbols-outlined">restaurant</span></div>
+                                    <span className="text-xs text-white font-medium">飲食任務</span>
+                                </button>
+                            </div>
+                            <button onClick={() => setIsMenuOpen(false)} className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-colors">取消</button>
+                        </div>
+                    </div>
+                </MemoryRouter>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(<App />);
     </script>
 </body>
 </html>
