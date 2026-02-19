@@ -21,6 +21,19 @@
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
 
+    <!-- Firebase SDK (ES Module Setup) -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        window.FirebaseModule = { 
+            initializeApp, getAuth, signInWithCustomToken, signInAnonymously, onAuthStateChanged, 
+            getFirestore, doc, setDoc, getDoc, onSnapshot 
+        };
+        window.dispatchEvent(new Event('firebase-module-loaded'));
+    </script>
+
     <!-- Tailwind Configuration -->
     <script>
         tailwind.config = {
@@ -144,7 +157,7 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState, useEffect, createContext, useContext, useRef, useMemo } = React;
+        const { useState, useEffect, createContext, useContext, useRef, useMemo, useCallback } = React;
         const { MemoryRouter, Routes, Route, useNavigate, useLocation } = ReactRouterDOM;
 
         const AppContext = createContext();
@@ -166,7 +179,7 @@
             reading: { category: 'mind', xp: 100, duration: 20 * 60 },
             skill: { category: 'mind', xp: 80, duration: 15 * 60 },
             review: { category: 'mind', xp: 60 },
-            strategy: { category: 'mind', xp: 60 }, // 補回策略筆記
+            strategy: { category: 'mind', xp: 60 }, 
             gratitude: { category: 'mind', xp: 50 },
             devotion: { category: 'spirit', xp: 50, duration: 10 * 60 },
             verse: { category: 'spirit', xp: 40 },
@@ -200,6 +213,11 @@
         };
 
         const AppProvider = ({ children }) => {
+            const [fbReady, setFbReady] = useState(!!window.FirebaseModule);
+            const [isLoaded, setIsLoaded] = useState(false);
+            const [user, setUser] = useState(null);
+            const [db, setDb] = useState(null);
+            
             const [profile, setProfile] = useState({ name: 'Aether', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=D4AF37' });
             const [xp, setXp] = useState(0); 
             const [streak, setStreak] = useState(0);
@@ -209,8 +227,100 @@
             const [sttLang, setSttLang] = useState('AUTO'); 
             const [surpriseQuest, setSurpriseQuest] = useState(null);
 
+            // Firebase Script Loader Listener
             useEffect(() => {
-                if (!logs[activeDate]) {
+                if (!fbReady) {
+                    const handleReady = () => setFbReady(true);
+                    window.addEventListener('firebase-module-loaded', handleReady);
+                    return () => window.removeEventListener('firebase-module-loaded', handleReady);
+                }
+            }, [fbReady]);
+
+            // Initialize Firebase & Auth
+            useEffect(() => {
+                if (!fbReady) return;
+                try {
+                    const FB = window.FirebaseModule;
+                    const configRaw = typeof __firebase_config !== 'undefined' ? __firebase_config : null;
+                    if (!configRaw) throw new Error("No config injected");
+                    
+                    const firebaseConfig = JSON.parse(configRaw);
+                    const app = FB.initializeApp(firebaseConfig);
+                    const auth = FB.getAuth(app);
+                    const firestore = FB.getFirestore(app);
+                    setDb(firestore);
+
+                    const initAuth = async () => {
+                        if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                            await FB.signInWithCustomToken(auth, __initial_auth_token);
+                        } else {
+                            await FB.signInAnonymously(auth);
+                        }
+                    };
+                    initAuth();
+
+                    const unsubscribe = FB.onAuthStateChanged(auth, (u) => setUser(u));
+                    return () => unsubscribe();
+                } catch(e) {
+                    console.warn("Local Mode Active (Cloud Sync Disabled):", e.message);
+                    setIsLoaded(true); 
+                }
+            }, [fbReady]);
+
+            // Fetch Initial Data
+            useEffect(() => {
+                if (!user || !db) return;
+                const FB = window.FirebaseModule;
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                const docRef = FB.doc(db, 'artifacts', appId, 'users', user.uid, 'ate_state', 'main');
+                
+                const unsubscribe = FB.onSnapshot(docRef, (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        if (data.profile) setProfile(data.profile);
+                        if (data.xp !== undefined) setXp(data.xp);
+                        if (data.streak !== undefined) setStreak(data.streak);
+                        if (data.logs) setLogs(data.logs);
+                    }
+                    setIsLoaded(true);
+                }, (err) => {
+                    console.error("Sync Error:", err);
+                    setIsLoaded(true);
+                });
+                
+                return () => unsubscribe();
+            }, [user, db]);
+
+            // Auto Save to Firebase
+            const firstLoadRef = useRef(true);
+            useEffect(() => {
+                if (!isLoaded || !user || !db) return;
+                if (firstLoadRef.current) {
+                    firstLoadRef.current = false;
+                    return; 
+                }
+                
+                const timer = setTimeout(async () => {
+                    try {
+                        const FB = window.FirebaseModule;
+                        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+                        const docRef = FB.doc(db, 'artifacts', appId, 'users', user.uid, 'ate_state', 'main');
+                        await FB.setDoc(docRef, { profile, xp, streak, logs }, { merge: true });
+                    } catch(e) { console.error("Cloud Save Failed", e); }
+                }, 1500); 
+
+                return () => clearTimeout(timer);
+            }, [profile, xp, streak, logs, isLoaded, user, db]);
+
+            // Fallback unblock if Firebase takes too long
+            useEffect(() => {
+                const t = setTimeout(() => setIsLoaded(true), 4000);
+                return () => clearTimeout(t);
+            }, []);
+
+            // Assure active date exists
+            useEffect(() => {
+                if (isLoaded && !logs[activeDate]) {
                     setLogs(prev => ({
                         ...prev,
                         [activeDate]: {
@@ -220,7 +330,7 @@
                         }
                     }));
                 }
-            }, [activeDate, logs]);
+            }, [activeDate, logs, isLoaded]);
 
             const levelInfo = useMemo(() => {
                 let current = LEVELS[0];
@@ -235,13 +345,13 @@
                 return { ...current, next, progress, currentXpInLevel: xp - current.minXp, totalXpForNext: next.minXp - current.minXp };
             }, [xp]);
 
-            const triggerToast = (amount, text) => {
+            const triggerToast = useCallback((amount, text) => {
                 const id = Date.now() + Math.random();
                 setToasts(prev => [...prev, { id, amount, text }]);
                 setTimeout(() => setToasts(prev => prev.filter(t => t.id !== id)), 1500);
-            };
+            }, []);
 
-            const updateTask = (date, taskKey, value) => {
+            const updateTask = useCallback((date, taskKey, value) => {
                 setLogs(prevLogs => {
                     const dayLog = prevLogs[date] || {};
                     const oldValue = dayLog[taskKey];
@@ -271,9 +381,9 @@
 
                     return { ...prevLogs, [date]: { ...dayLog, [taskKey]: value } };
                 });
-            };
+            }, [triggerToast]);
 
-            const getProgress = (date) => {
+            const getProgress = useCallback((date) => {
                 const log = logs[date] || {};
                 const checkString = (val) => val && val.trim() !== '';
                 
@@ -288,7 +398,7 @@
                 if (log.reading) mindCount++;
                 if (log.skill) mindCount++;
                 if (checkString(log.review)) mindCount++;
-                if (checkString(log.strategy)) mindCount++; // 策略筆記計入進度
+                if (checkString(log.strategy)) mindCount++; 
                 if (checkString(log.gratitude)) mindCount++;
 
                 let spiritCount = 0;
@@ -300,23 +410,21 @@
                 
                 return {
                     body: Math.round((bodyCount / 5) * 100),
-                    mind: Math.round((mindCount / 5) * 100), // 更新分母為5
+                    mind: Math.round((mindCount / 5) * 100), 
                     spirit: Math.round((spiritCount / 3) * 100),
-                    overall: Math.round((totalCompleted / 13) * 100) // 更新分母為13
+                    overall: Math.round((totalCompleted / 13) * 100) 
                 };
-            };
+            }, [logs]);
 
-            useEffect(() => {
-                if (Math.random() < 0.15 && !surpriseQuest) {
-                    setTimeout(() => {
-                        setSurpriseQuest({
-                            title: '隱藏的恩典 (Secret Grace)',
-                            desc: '此刻放下雜念，深呼吸 1 分鐘，領受雙倍祝福！',
-                            xp: 150
-                        });
-                    }, 3500);
-                }
-            }, []);
+            // Loading State UI
+            if (!isLoaded) {
+                return (
+                    <div className="min-h-[100dvh] flex flex-col items-center justify-center bg-ink">
+                        <span className="ms text-gold text-5xl animate-pulse mb-4">auto_awesome</span>
+                        <div className="text-white text-xs font-bold tracking-widest uppercase">Syncing Evolution Data...</div>
+                    </div>
+                );
+            }
 
             return (
                 <AppContext.Provider value={{ 
@@ -333,9 +441,8 @@
 
                         {children}
                         
-                        {/* XP Toasts */}
                         {toasts.map(toast => (
-                            <div key={toast.id} className="fixed left-1/2 top-[44%] z-[9999] pointer-events-none flex flex-col items-center justify-center animate-popMove font-display drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]">
+                            <div key={toast.id} className="fixed left-1/2 top-[44%] z-[9999] pointer-events-none flex flex-col items-center justify-center -translate-x-1/2 -translate-y-1/2 animate-popMove font-display drop-shadow-[0_8px_16px_rgba(0,0,0,0.45)]">
                                 <div className={`text-[36px] font-black ${toast.amount > 0 ? 'text-lime' : 'text-rose'}`}>
                                     {toast.amount > 0 ? '+' : ''}{toast.amount}
                                 </div>
@@ -344,27 +451,6 @@
                                 </div>
                             </div>
                         ))}
-
-                        {/* Surprise Quest Modal */}
-                        {surpriseQuest && (
-                            <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 animate-fadeIn">
-                                <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setSurpriseQuest(null)}></div>
-                                <div className="relative glass rounded-2xl p-6 text-center shadow-glass max-w-sm w-full border border-gold/40 z-10">
-                                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-gold via-gold2 to-gold"></div>
-                                    <span className="ms fill text-5xl text-gold mb-3 drop-shadow-[0_0_15px_rgba(212,175,55,0.8)]">auto_awesome</span>
-                                    <h3 className="text-[18px] font-display font-black text-white mb-2 tracking-wide">{surpriseQuest.title}</h3>
-                                    <p className="text-slate-300 text-[13px] mb-6 leading-relaxed">{surpriseQuest.desc}</p>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        <button onClick={() => setSurpriseQuest(null)} className="tap44 glass2 border border-white/10 rounded-xl text-[13px] font-black text-white active:scale-95 transition-transform">稍後再說</button>
-                                        <button onClick={() => {
-                                            setXp(x => x + surpriseQuest.xp);
-                                            triggerToast(surpriseQuest.xp, "完成挑戰");
-                                            setSurpriseQuest(null);
-                                        }} className="tap44 rounded-xl text-[13px] font-black text-ink bg-gradient-to-r from-gold via-gold2 to-gold shadow-gold active:scale-95 transition-transform">接受</button>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
                     </div>
                 </AppContext.Provider>
             );
@@ -372,7 +458,8 @@
 
         const useAppContext = () => useContext(AppContext);
 
-        // --- UI Components ---
+        // --- Common UI Components ---
+
         const TopDateBar = () => {
             const { activeDate, setActiveDate, getTodayString } = useAppContext();
             const todayStr = getTodayString();
@@ -397,7 +484,7 @@
                                 <div className="text-[11px] tracking-[0.22em] uppercase text-slate-400 font-extrabold">{isToday ? 'ACTIVE DATE' : 'HISTORY'}</div>
                                 <div className={`mt-1 inline-flex items-center justify-center gap-2 transition-transform ${!isToday ? 'cursor-pointer hover:scale-[0.99]' : ''}`}>
                                     <span className={`text-[15px] font-black ${isToday ? 'text-white' : 'text-gold'}`}>{displayDate}</span>
-                                    {isToday ? <span className="chip"><span className="ms fill text-gold">today</span>Today</span> : <span className="chip"><span className="ms fill text-gold">replay</span>返回</span>}
+                                    {isToday ? <span className="chip"><span className="ms fill text-gold">today</span>Today</span> : <span className="chip bg-gold/10 border-gold/30"><span className="ms fill text-gold">replay</span>返回</span>}
                                 </div>
                             </div>
                             <button onClick={() => shiftDay(1)} disabled={isToday} className={`tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center transition-transform ${isToday ? 'opacity-30' : 'active:scale-95 text-slate-300 hover:text-white'}`}>
@@ -455,7 +542,7 @@
                     setTimeLeft(taskConfig.duration);
                 }
                 return () => clearInterval(interval);
-            }, [isRunning, timeLeft, isDone, activeDate, taskKey]);
+            }, [isRunning, timeLeft, isDone, activeDate, taskKey, updateTask]);
 
             const toggleTimer = (e) => { e.stopPropagation(); setIsRunning(!isRunning); };
             const resetTimer = (e) => { e.stopPropagation(); setIsRunning(false); setTimeLeft(taskConfig.duration); };
@@ -495,18 +582,18 @@
                     </div>
 
                     <div className="shrink-0 flex items-center gap-2.5 relative z-10">
-                        {!isDone && (
+                        {!isDone ? (
                             <div className="flex items-center gap-2">
-                                {timeLeft < taskConfig.duration && (
+                                {timeLeft < taskConfig.duration ? (
                                     <button onClick={resetTimer} className="tap44 glass2 border border-white/10 rounded-full w-10 h-10 flex items-center justify-center active:scale-95 transition-transform text-slate-300 hover:text-white">
                                         <span className="ms text-[20px]">refresh</span>
                                     </button>
-                                )}
+                                ) : null}
                                 <button onClick={toggleTimer} className={`tap44 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-transform border border-white/10 ${isRunning ? 'bg-white/10 text-white' : `bg-gradient-to-r ${theme.grad} text-white`}`}>
                                     <span className="ms fill text-[22px]">{isRunning ? 'pause' : 'play_arrow'}</span>
                                 </button>
                             </div>
-                        )}
+                        ) : null}
                     </div>
                 </div>
             );
@@ -517,13 +604,13 @@
             const [isRecording, setIsRecording] = useState(false);
             const [isLangSheetOpen, setIsLangSheetOpen] = useState(false);
             
-            // 使用 ref 來避免 closure 陷阱，防止每次輸入導致辨識器重置
+            // Fix STT Bug: Separate lifecycles using refs to avoid re-renders freezing the API
             const recognitionRef = useRef(null);
             const valueRef = useRef(value);
+            const onChangeRef = useRef(onChange);
 
-            useEffect(() => {
-                valueRef.current = value;
-            }, [value]);
+            useEffect(() => { valueRef.current = value; }, [value]);
+            useEffect(() => { onChangeRef.current = onChange; }, [onChange]);
 
             useEffect(() => {
                 if ('webkitSpeechRecognition' in window) {
@@ -544,7 +631,7 @@
                         }
                         if (finalTranscript) {
                             const currentVal = valueRef.current || '';
-                            onChange((currentVal ? currentVal + ' ' : '') + finalTranscript.trim());
+                            onChangeRef.current((currentVal ? currentVal + ' ' : '') + finalTranscript.trim());
                         }
                     };
                     
@@ -555,9 +642,11 @@
                 }
 
                 return () => {
-                    if (recognitionRef.current) recognitionRef.current.stop();
+                    if (recognitionRef.current) {
+                        try { recognitionRef.current.stop(); } catch(e){}
+                    }
                 };
-            }, [sttLang, onChange]); 
+            }, [sttLang]); // ONLY reset when language changes!
 
             const toggleRecord = () => {
                 if (!recognitionRef.current) {
@@ -565,14 +654,14 @@
                     return;
                 }
                 if (isRecording) {
-                    recognitionRef.current.stop();
+                    try { recognitionRef.current.stop(); } catch(e){}
                     setIsRecording(false);
                 } else {
-                    try {
-                        recognitionRef.current.start();
+                    try { 
+                        recognitionRef.current.start(); 
                         setIsRecording(true);
                     } catch(e) {
-                        console.error("Speech API start error:", e);
+                        console.error(e);
                         setIsRecording(false);
                     }
                 }
@@ -586,7 +675,7 @@
                                 <span className={`ms text-[20px] fill ${isDone ? 'text-gold' : 'text-gold'}`}>{isDone ? 'check_circle' : 'rate_review'}</span>
                                 <div>
                                     <div className={`text-[14px] font-black ${isDone ? 'text-gold' : 'text-white'}`}>{title}</div>
-                                    <div className="text-[11px] text-slate-400 font-semibold">{isDone ? `已紀錄 +${TASKS[taskKey].xp}` : '填寫即可得分'}</div>
+                                    <div className="text-[11px] text-slate-400 font-semibold">{isDone ? `已紀錄 +${TASKS[taskKey].xp}` : '填寫或語音即可得分'}</div>
                                 </div>
                             </div>
                             <button onClick={toggleRecord} className={`tap44 glass2 border border-white/10 rounded-full w-11 h-11 flex items-center justify-center active:scale-95 transition-all ${isRecording ? 'bg-rose border-rose text-white shadow-[0_0_15px_rgba(251,113,133,0.6)] animate-pulse' : 'text-cyan'}`}>
@@ -599,8 +688,8 @@
                             placeholder={placeholder}></textarea>
                         
                         <div className="mt-3 flex items-center justify-between">
-                            <div className="text-[11px] text-slate-500 font-semibold">※ 若不支援語音，請用鍵盤手寫</div>
-                            <button onClick={() => setIsLangSheetOpen(true)} className="chip"><span className="ms fill text-violet2">language</span><span>{sttLang}</span></button>
+                            <div className="text-[11px] text-slate-500 font-semibold">※ 若不支援語音，請用鍵盤打字</div>
+                            <button onClick={() => setIsLangSheetOpen(true)} className="chip active:scale-95"><span className="ms fill text-violet2">language</span><span>{sttLang}</span></button>
                         </div>
                     </section>
 
@@ -622,7 +711,7 @@
                                     <div className="grid grid-cols-2 gap-3 mt-4">
                                         {['AUTO', 'EN', 'ZH', 'YUE'].map(lang => (
                                             <button key={lang} onClick={() => { setSttLang(lang); setIsLangSheetOpen(false); }} className={`tap44 glass2 border border-white/10 rounded-xl py-3 text-[13px] font-black active:scale-95 transition-transform ${sttLang === lang ? 'bg-white/20 text-white border-white/40' : 'text-slate-300'}`}>
-                                                {lang === 'AUTO' ? 'AUTO (中英粵混雜)' : lang === 'ZH' ? '中文' : lang === 'YUE' ? '廣東話' : lang}
+                                                {lang === 'AUTO' ? 'AUTO (中英粵混講)' : lang === 'ZH' ? '中文' : lang === 'YUE' ? '廣東話' : lang}
                                             </button>
                                         ))}
                                     </div>
@@ -889,7 +978,7 @@
                                     return (
                                         <button key={type} 
                                             onClick={() => updateTask(activeDate, 'poop', isActive ? null : type)}
-                                            className={`tap44 px-3 py-2 rounded-xl text-[12px] font-black transition-all active:scale-95 ${isActive ? 'bg-lime text-black shadow-glow' : 'glass2 border border-white/10 text-white'}`}>
+                                            className={`tap44 px-3 py-2 rounded-xl text-[13px] font-black transition-all active:scale-95 ${isActive ? 'bg-lime text-black shadow-glow' : 'glass2 border border-white/10 text-white'}`}>
                                             {type}
                                         </button>
                                     );
@@ -1160,3 +1249,5 @@
     </script>
 </body>
 </html>
+
+
